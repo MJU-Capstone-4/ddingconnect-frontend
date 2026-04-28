@@ -1,3 +1,11 @@
+---
+name: Issue
+about: 일반 이슈 템플릿
+title: ''
+labels: ''
+assignees: ''
+---
+
 ## 📝 Description
 <!-- 이슈에 대해 설명해주세요! (배경, 문제 상황, 제안 내용 등) -->
 
