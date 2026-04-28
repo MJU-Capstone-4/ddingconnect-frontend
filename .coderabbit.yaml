@@ -1,0 +1,103 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: "ko-KR"
+early_access: true
+
+tone_instructions: |
+  React/TypeScript 프로젝트의 코드 리뷰어로서 다음 기준을 우선해 리뷰해주세요.
+  - 유지보수성, 가독성, 안정성을 중심으로 확인해주세요.
+  - 현재 프로젝트의 초기 세팅 단계임을 고려해 과한 구조 변경 제안은 지양해주세요.
+  - 구체적이고 바로 반영 가능한 피드백을 남겨주세요.
+  - 단순 취향 차이보다는 버그 가능성, 타입 안정성, 협업 시 혼동 가능성이 있는 부분을 우선적으로 언급해주세요.
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  review_status: true
+  assess_linked_issues: false
+  related_prs: false
+  changed_files_summary: true
+  poem: false
+
+  path_filters:
+    - "src/**"
+    - ".github/**"
+    - "package.json"
+    - "pnpm-lock.yaml"
+    - "vite.config.ts"
+    - "tsconfig*.json"
+    - "eslint.config.js"
+    - "README.md"
+
+    - "!node_modules/**"
+    - "!dist/**"
+    - "!build/**"
+
+  path_instructions:
+    - path: "src/**"
+      instructions: |
+        src 코드 리뷰 시:
+        - React 컴포넌트와 TypeScript 타입이 명확하게 작성되었는지 확인해주세요.
+        - 불필요한 중복 코드나 과도한 추상화가 없는지 확인해주세요.
+        - 컴포넌트명은 PascalCase, 변수와 함수명은 camelCase를 권장합니다.
+        - props 타입은 컴포넌트명 + Props 형태를 권장합니다.
+        - import 경로가 지나치게 복잡해지지 않도록 확인해주세요.
+        - 접근성이나 사용자 흐름에 영향을 줄 수 있는 부분이 있다면 함께 언급해주세요.
+
+    - path: ".github/**"
+      instructions: |
+        GitHub 설정 파일 리뷰 시:
+        - PR/Issue 템플릿이 실제 팀원이 작성하기 쉬운 구조인지 확인해주세요.
+        - 자동화 설정이 의도한 브랜치와 파일 경로를 기준으로 동작하는지 확인해주세요.
+        - 불필요하게 복잡하거나 유지보수하기 어려운 설정이 있다면 간단한 대안을 제안해주세요.
+
+    - path: "vite.config.ts"
+      instructions: |
+        Vite 설정 리뷰 시:
+        - React 플러그인과 alias 설정이 TypeScript 설정과 일치하는지 확인해주세요.
+        - 초기 프로젝트 단계에 비해 과한 설정이 추가되지 않았는지 확인해주세요.
+
+    - path: "tsconfig*.json"
+      instructions: |
+        TypeScript 설정 리뷰 시:
+        - strict 옵션과 타입 검사 범위가 적절한지 확인해주세요.
+        - Vite 환경에서 필요한 설정이 누락되지 않았는지 확인해주세요.
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "develop"
+      - "main"
+    ignore_title_keywords:
+      - "[Docs]"
+      - "[skip-review]"
+
+  finishing_touches:
+    docstrings:
+      enabled: false
+    unit_tests:
+      enabled: false
+
+  tools:
+    markdownlint:
+      enabled: true
+    actionlint:
+      enabled: true
+    eslint:
+      enabled: true
+    gitleaks:
+      enabled: true
+
+knowledge_base:
+  web_search:
+    enabled: true
+    instructions: |
+      웹 검색은 React, TypeScript, Vite의 공식 문서나 일반적인 베스트 프랙티스 확인 용도로만 사용해주세요.
+      프로젝트에 아직 도입되지 않은 라이브러리나 구조를 기준으로 리뷰하지 말아주세요.
+
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "README.md"
