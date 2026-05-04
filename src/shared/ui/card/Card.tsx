@@ -1,3 +1,3 @@
-export function Card() {
-  return <div>Card</div>;
+export function Card(props: React.HTMLAttributes<HTMLDivElement>) {
+  return <div {...props} />;
 }
