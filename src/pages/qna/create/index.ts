@@ -1,0 +1,1 @@
+export { QnaCreatePage } from './QnaCreatePage';
