@@ -1,24 +1,10 @@
 @import 'tailwindcss';
 
-/*
- * Design Tokens
- *
- * Two-layer strategy:
- *   1. Raw color scale  - preserves extracted Figma colors (e.g. --color-blue-500)
- *   2. Semantic aliases  - intent-based names used in components (e.g. --color-primary)
- *
- * Components should prefer semantic names whenever possible.
- */
-
 @theme {
-  /* ------------------------------------------------------------------ */
   /* Font family                                                        */
-  /* ------------------------------------------------------------------ */
   --font-sans: 'Pretendard', system-ui, sans-serif;
 
-  /* ------------------------------------------------------------------ */
   /* Font size / line-height                                            */
-  /* ------------------------------------------------------------------ */
   --text-xs: 12px;
   --text-xs--line-height: 16px;
   --text-sm: 14px;
@@ -32,9 +18,7 @@
   --text-2xl: 24px;
   --text-2xl--line-height: 32px;
 
-  /* ------------------------------------------------------------------ */
   /* Border radius                                                      */
-  /* ------------------------------------------------------------------ */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -42,9 +26,7 @@
   --radius-2xl: 20px;
   --radius-full: 9999px;
 
-  /* ================================================================== */
-  /* Layer 1: Raw color scale                                           */
-  /* ================================================================== */
+  /* Raw color scale                                           */
 
   /* Gray */
   --color-gray-50: #f9fafb;
@@ -112,9 +94,7 @@
   --color-red-700: #dc2626;
   --color-red-800: #c10007;
 
-  /* ================================================================== */
-  /* Layer 2: Semantic aliases                                          */
-  /* ================================================================== */
+  /* Semantic aliases                                          */
 
   --color-primary: #4092ff;
   --color-primary-hover: #2784ff;
@@ -137,9 +117,7 @@
   --color-border: #cbd5e1;
 }
 
-/* -------------------------------------------------------------------- */
-/* Base layer: global defaults                                          */
-/* -------------------------------------------------------------------- */
+/* global defaults                                          */
 @layer base {
   body {
     @apply min-h-screen bg-background text-text-primary font-sans antialiased;
