@@ -79,7 +79,7 @@ jobs:
             [View Actions Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       - name: Discord notification
-        if: github.event_name == 'pull_request' && always()
+        if: github.event_name == 'pull_request' && always() && secrets.DISCORD_WEBHOOK_URL != ''
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
