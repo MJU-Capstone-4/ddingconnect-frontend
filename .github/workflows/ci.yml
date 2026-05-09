@@ -177,10 +177,10 @@ jobs:
               'deploy': 'Deploy'
             };
 
-            const match = title.match(/^(\w+)[\s(:]/);
+            const match = title.match(/^(?:\[(\w+)\]|(\w+)[\s(:])/);
             if (!match) return;
 
-            const prefix = match[1].toLowerCase();
+            const prefix = (match[1] || match[2]).toLowerCase();
             const label = prefixMap[prefix];
             if (!label) return;
 
