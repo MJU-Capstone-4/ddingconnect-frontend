@@ -1,0 +1,67 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to Personal Repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Prepare output
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Push to deployment repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
+        with:
+          source-directory: 'output'
+          destination-github-username: 'u-zzn'
+          destination-repository-name: 'ddingconnect-frontend-deploy'
+          user-email: ${{ secrets.EMAIL }}
+          commit-message: ${{ github.event.head_commit.message }}
+          target-branch: main
+
+      - name: Discord notification - Deploy success
+        if: success()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"Deploy Success\",
+                \"description\": \"**Commit:** ${{ github.event.head_commit.message }}\n**Author:** ${{ github.actor }}\",
+                \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
+                \"color\": 3066993
+              }]
+            }" \
+            $DISCORD_WEBHOOK_URL
+
+      - name: Discord notification - Deploy failure
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"Deploy Failed\",
+                \"description\": \"**Commit:** ${{ github.event.head_commit.message }}\n**Author:** ${{ github.actor }}\",
+                \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
+                \"color\": 15158332
+              }]
+            }" \
+            $DISCORD_WEBHOOK_URL
