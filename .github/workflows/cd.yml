@@ -29,7 +29,7 @@ jobs:
           destination-github-username: 'u-zzn'
           destination-repository-name: 'ddingconnect-frontend-deploy'
           user-email: ${{ secrets.EMAIL }}
-          commit-message: ${{ github.event.head_commit.message }}
+          commit-message: 'Automated deploy from ${{ github.repository }}@${{ github.sha }}'
           target-branch: main
 
       - name: Discord notification - Deploy success
