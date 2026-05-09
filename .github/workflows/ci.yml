@@ -122,7 +122,7 @@ jobs:
 
   auto-assign:
     name: Auto Assign
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -141,7 +141,7 @@ jobs:
 
   auto-label:
     name: Auto Label
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
