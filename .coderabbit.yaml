@@ -23,7 +23,7 @@ tone_instructions: |
   - 리뷰 스레드에서 후속 질문에 구체적으로 답변해주세요.
 
 reviews:
-  profile: 'chill'
+  profile: 'assertive'
   request_changes_workflow: false
   high_level_summary: true
   review_status: true
@@ -127,7 +127,7 @@ reviews:
         - 리뷰 범위와 path instructions가 현재 프로젝트 구조에 맞는지 확인합니다.
         - 지원하지 않는 설정 키가 없는지 확인합니다.
         - 설정을 과도하게 복잡하게 만들지 않습니다.
-        - 리뷰 프로필은 chill을 유지합니다.
+        - 리뷰 프로필은 assertive를 유지합니다.
 
     - path: 'vite.config.ts'
       instructions: |
