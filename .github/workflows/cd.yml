@@ -8,6 +8,8 @@ jobs:
   deploy:
     name: Deploy to Personal Repository
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
       - name: Checkout repository
@@ -33,7 +35,7 @@ jobs:
           target-branch: main
 
       - name: Discord notification - Deploy success
-        if: success()
+        if: success() && env.DISCORD_WEBHOOK_URL != ''
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
@@ -48,7 +50,7 @@ jobs:
           | curl -H "Content-Type: application/json" -X POST --data @- "$DISCORD_WEBHOOK_URL"
 
       - name: Discord notification - Deploy failure
-        if: failure()
+        if: failure() && env.DISCORD_WEBHOOK_URL != ''
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
