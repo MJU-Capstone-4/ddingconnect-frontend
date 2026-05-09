@@ -160,6 +160,10 @@ jobs:
               'chore': 'Chore',
               'refactor': 'Refactor',
               'docs': 'Docs',
+              'infra': 'Infra',
+              'api': 'API',
+              'hotfix': 'Hotfix',
+              'deploy': 'Deploy'
             };
 
             const match = title.match(/^(\w+)[\s(:]/);
