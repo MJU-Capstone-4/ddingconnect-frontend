@@ -11,7 +11,13 @@ on:
 jobs:
   validate:
     name: Validate
+    if: github.event_name != 'issues'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
       - name: Checkout repository
@@ -81,9 +87,14 @@ jobs:
             [View Actions Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       - name: Discord notification
-        if: github.event_name == 'pull_request' && always() && secrets.DISCORD_WEBHOOK_URL != ''
+        if: github.event_name == 'pull_request' && always() && env.DISCORD_WEBHOOK_URL != ''
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
           if [ "${{ steps.lint.outcome }}" = "success" ] && \
              [ "${{ steps.format.outcome }}" = "success" ] && \
@@ -96,23 +107,20 @@ jobs:
             COLOR=15158332
           fi
 
-          curl -H "Content-Type: application/json" \
-            -X POST \
-            -d "{
-              \"embeds\": [{
-                \"title\": \"CI ${STATUS}\",
-                \"description\": \"**PR:** ${{ github.event.pull_request.title }}\n**Author:** ${{ github.event.pull_request.user.login }}\n**Branch:** \`${{ github.head_ref }}\` → \`${{ github.base_ref }}\`\",
-                \"url\": \"${{ github.event.pull_request.html_url }}\",
-                \"color\": ${COLOR},
-                \"fields\": [
-                  {\"name\": \"Lint\", \"value\": \"${{ steps.lint.outcome }}\", \"inline\": true},
-                  {\"name\": \"Format\", \"value\": \"${{ steps.format.outcome }}\", \"inline\": true},
-                  {\"name\": \"Typecheck\", \"value\": \"${{ steps.typecheck.outcome }}\", \"inline\": true},
-                  {\"name\": \"Build\", \"value\": \"${{ steps.build.outcome }}\", \"inline\": true}
-                ]
-              }]
-            }" \
-            $DISCORD_WEBHOOK_URL
+          jq -n \
+            --arg title "CI ${STATUS}" \
+            --arg pr "$PR_TITLE" \
+            --arg author "$PR_AUTHOR" \
+            --arg url "$PR_URL" \
+            --arg head "$HEAD_REF" \
+            --arg base "$BASE_REF" \
+            --argjson color "$COLOR" \
+            --arg lint "${{ steps.lint.outcome }}" \
+            --arg format "${{ steps.format.outcome }}" \
+            --arg typecheck "${{ steps.typecheck.outcome }}" \
+            --arg build "${{ steps.build.outcome }}" \
+            '{embeds:[{title:$title,description:"**PR:** \($pr)\n**Author:** \($author)\n**Branch:** `\($head)` → `\($base)`",url:$url,color:$color,fields:[{name:"Lint",value:$lint,inline:true},{name:"Format",value:$format,inline:true},{name:"Typecheck",value:$typecheck,inline:true},{name:"Build",value:$build,inline:true}]}]}' \
+          | curl -H "Content-Type: application/json" -X POST --data @- "$DISCORD_WEBHOOK_URL"
 
       - name: Fail if any check failed
         if: |
