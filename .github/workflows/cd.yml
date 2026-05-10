@@ -8,6 +8,8 @@ jobs:
   deploy:
     name: Deploy to Personal Repository
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
