@@ -1,0 +1,205 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: 'ko-KR'
+early_access: true
+
+tone_instructions: |
+  React+TypeScript+Vite, Light FSD, Tailwind CSS v4, SVGR, GitHub Actions 기반 프론트엔드. 버그 가능성·보안·유지보수성·DX를 우선하고 단순 취향 nitpick은 지양. 초기 프로젝트 단계이므로 과한 구조 변경 제안 불필요. 수정 제안은 구체적으로, 프로덕션 안정성에 실질적으로 도움되는 리뷰 우선.
+
+reviews:
+  profile: 'assertive'
+  request_changes_workflow: false
+  high_level_summary: true
+  review_status: true
+  assess_linked_issues: false
+  related_prs: false
+  changed_files_summary: true
+  sequence_diagrams: true
+  poem: false
+
+  path_filters:
+    - 'src/**'
+    - '.github/**'
+    - '.coderabbit.yaml'
+    - 'package.json'
+    - 'pnpm-lock.yaml'
+    - 'vite.config.ts'
+    - 'tsconfig*.json'
+    - 'eslint.config.js'
+    - 'commitlint.config.js'
+    - 'lefthook.yml'
+    - 'vercel.json'
+    - 'build.sh'
+    - 'README.md'
+
+    - '!node_modules/**'
+    - '!dist/**'
+    - '!build/**'
+    - '!coverage/**'
+    - '!output/**'
+
+  path_instructions:
+    - path: 'src/app/**'
+      instructions: |
+        App 레이어 리뷰 시:
+        - App shell 구조, providers, router, layouts, 글로벌 스타일, Tailwind v4 테마 토큰, React Router 설정을 확인합니다.
+        - App은 가능한 한 가볍게 유지되어야 합니다.
+        - 라우팅 설정은 가독성을 유지해야 합니다.
+        - 레이아웃 컴포넌트가 과도하게 결합되지 않도록 확인합니다.
+        - Tailwind semantic 토큰이 일관되게 사용되고 있는지 확인합니다.
+        - 글로벌 CSS에서 semantic 토큰이 존재하는데 불필요한 하드코딩 값이 쓰이고 있지 않은지 확인합니다.
+
+    - path: 'src/pages/**'
+      instructions: |
+        Pages 레이어 리뷰 시:
+        - 페이지는 라우트 진입점 역할만 해야 합니다.
+        - 페이지 내 UI 조합은 허용하되, 재사용 가능한 도메인 로직은 페이지에 직접 넣지 않습니다.
+        - 페이지 컴포넌트는 PascalCase, 폴더명은 kebab-case를 따릅니다.
+        - named export를 사용합니다.
+        - import 경로는 @/ alias를 사용합니다.
+
+    - path: 'src/features/**'
+      instructions: |
+        Features 레이어 리뷰 시:
+        - feature별 UI / model / api / types 구조를 따릅니다.
+        - 도메인 로직은 전역 재사용이 필요하지 않다면 feature 내에 둡니다.
+        - feature 내부 구현이 관련 없는 다른 feature로 유출되지 않도록 확인합니다.
+        - 과도한 추상화를 지양합니다.
+        - API / model / type 경계의 가독성을 확인합니다.
+
+    - path: 'src/shared/**'
+      instructions: |
+        Shared 레이어 리뷰 시:
+        - 재사용 가능한 UI, 레이아웃 컴포넌트, assets, hooks, utils, constants, API 클라이언트, 공유 타입을 포함합니다.
+        - shared 컴포넌트는 실제로 재사용 가능해야 합니다.
+        - shared/ui에 feature 의존적인 가정이 포함되지 않도록 합니다.
+        - 아이콘 assets는 SVGR 컨벤션을 따릅니다.
+        - shared layout에 페이지별 비즈니스 로직이 포함되지 않도록 합니다.
+
+    - path: 'src/shared/assets/icons/**'
+      instructions: |
+        SVG 아이콘 리뷰 시:
+        - SVG는 SVGR과 호환되어야 합니다.
+        - SVG React import는 ?react suffix를 사용합니다.
+        - Tailwind text color를 상속하는 아이콘은 currentColor를 사용합니다.
+        - 브랜드 컬러나 멀티컬러가 의도적으로 필요한 경우가 아니라면 hardcoded fill/stroke를 피합니다.
+
+    - path: 'src/app/styles/**'
+      instructions: |
+        Tailwind v4 스타일 리뷰 시:
+        - CSS-first 테마 설정, raw 토큰, semantic 토큰, 글로벌 base 스타일을 확인합니다.
+        - semantic 토큰은 가능한 한 raw 토큰을 참조해야 합니다.
+        - raw와 semantic 레이어 간 hex 값 중복을 피합니다.
+        - 불필요한 글로벌 오버라이드를 지양합니다.
+        - 일회성 컬러 값 대신 design 토큰을 사용합니다.
+
+    - path: '.github/workflows/**'
+      instructions: |
+        GitHub Actions 워크플로우 리뷰 시:
+        - CI/CD 정확성, 보안, secret 처리, permission scope, action 버전 핀닝을 확인합니다.
+        - Discord webhook 안전성과 deployment repository 동기화를 확인합니다.
+        - third-party action을 @main에 핀닝하지 않도록 합니다.
+        - PR 제목, 작성자, 커밋 메시지를 JSON/shell에 직접 삽입하지 않고 jq --arg 등 안전한 직렬화를 사용합니다.
+        - secret이 없는 환경에서 알림 step을 guard합니다.
+        - permissions는 최소한으로 유지합니다.
+        - CI와 CD 책임을 분리합니다.
+
+    - path: '.coderabbit.yaml'
+      instructions: |
+        CodeRabbit 설정 리뷰 시:
+        - 설정 정확성과 스키마 유효성을 확인합니다.
+        - 리뷰 범위와 path instructions가 현재 프로젝트 구조에 맞는지 확인합니다.
+        - 지원하지 않는 설정 키가 없는지 확인합니다.
+        - 설정을 과도하게 복잡하게 만들지 않습니다.
+        - 리뷰 프로필은 assertive를 유지합니다.
+
+    - path: 'vite.config.ts'
+      instructions: |
+        Vite 설정 리뷰 시:
+        - React 플러그인, SVGR 플러그인, alias 설정이 TypeScript 설정과 일치하는지 확인합니다.
+        - path alias가 tsconfig와 일관되는지 확인합니다.
+        - 빌드 설정의 보안 민감한 부분을 확인합니다.
+
+    - path: 'tsconfig*.json'
+      instructions: |
+        TypeScript 설정 리뷰 시:
+        - strict 옵션과 타입 검사 범위가 적절한지 확인합니다.
+        - Vite 환경에서 필요한 설정이 누락되지 않았는지 확인합니다.
+        - path alias가 vite.config.ts와 일관되는지 확인합니다.
+
+    - path: 'eslint.config.js'
+      instructions: |
+        ESLint 설정 리뷰 시:
+        - 프로젝트 컨벤션과 일관된 규칙인지 확인합니다.
+        - TypeScript, React, import 관련 규칙이 적절한지 확인합니다.
+        - 불필요하게 strict하거나 충돌하는 규칙이 없는지 확인합니다.
+
+    - path: 'commitlint.config.js'
+      instructions: |
+        Commitlint 설정 리뷰 시:
+        - conventional commits 규칙이 프로젝트 컨벤션에 맞는지 확인합니다.
+        - 커밋 타입이 실제 사용하는 것과 일치하는지 확인합니다.
+
+    - path: 'lefthook.yml'
+      instructions: |
+        Lefthook 설정 리뷰 시:
+        - pre-commit, commit-msg 훅이 적절히 구성되어 있는지 확인합니다.
+        - ESLint, Prettier, Commitlint 연동이 올바른지 확인합니다.
+
+    - path: 'vercel.json'
+      instructions: |
+        Vercel 설정 리뷰 시:
+        - 배포 설정이 프로젝트 요구사항에 맞는지 확인합니다.
+        - 보안 관련 헤더와 리다이렉트 규칙을 확인합니다.
+        - SPA routing 설정이 올바른지 확인합니다.
+
+    - path: 'package.json'
+      instructions: |
+        package.json 리뷰 시:
+        - 패키지 매니저 일관성(pnpm)을 확인합니다.
+        - 스크립트 명령어가 적절한지 확인합니다.
+        - 불필요한 의존성 추가 여부를 확인합니다.
+
+    - path: 'pnpm-lock.yaml'
+      instructions: |
+        pnpm-lock.yaml 리뷰 시:
+        - lock 파일이 package.json과 일관되는지 확인합니다.
+        - 의도하지 않은 의존성 변경이 없는지 확인합니다.
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - 'develop'
+      - 'main'
+    ignore_title_keywords:
+      - '[Docs]'
+      - '[skip-review]'
+
+  finishing_touches:
+    docstrings:
+      enabled: false
+    unit_tests:
+      enabled: false
+
+  tools:
+    markdownlint:
+      enabled: true
+    actionlint:
+      enabled: true
+    eslint:
+      enabled: true
+    gitleaks:
+      enabled: true
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  web_search:
+    enabled: true
+
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - 'README.md'

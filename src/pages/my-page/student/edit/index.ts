@@ -1,0 +1,1 @@
+export { StudentProfileEditPage } from './StudentProfileEditPage';

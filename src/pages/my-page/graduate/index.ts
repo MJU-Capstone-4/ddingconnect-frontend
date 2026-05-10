@@ -1,0 +1,1 @@
+export { GraduateMyPage } from './GraduateMyPage';

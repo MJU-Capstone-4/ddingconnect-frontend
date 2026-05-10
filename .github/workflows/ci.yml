@@ -1,0 +1,198 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  issues:
+    types: [opened]
+
+jobs:
+  validate:
+    name: Validate
+    if: github.event_name != 'issues'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24.x'
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        id: lint
+        run: pnpm lint
+        continue-on-error: true
+
+      - name: Run format check
+        id: format
+        run: pnpm format:check
+        continue-on-error: true
+
+      - name: Run typecheck
+        id: typecheck
+        run: pnpm typecheck
+        continue-on-error: true
+
+      - name: Run build
+        id: build
+        run: pnpm build
+        continue-on-error: true
+
+      - name: PR Comment - Build Results
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: ci-result
+          message: |
+            ## CI Results
+
+            | Check | Result |
+            |-------|--------|
+            | Lint | ${{ steps.lint.outcome == 'success' && '👍 Pass' || '👎 Fail' }} |
+            | Format | ${{ steps.format.outcome == 'success' && '👍 Pass' || '👎 Fail' }} |
+            | Typecheck | ${{ steps.typecheck.outcome == 'success' && '👍 Pass' || '👎 Fail' }} |
+            | Build | ${{ steps.build.outcome == 'success' && '👍 Pass' || '👎 Fail' }} |
+
+            [View Actions Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+      - name: Discord notification
+        if: github.event_name == 'pull_request' && always() && env.DISCORD_WEBHOOK_URL != ''
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ "${{ steps.lint.outcome }}" = "success" ] && \
+             [ "${{ steps.format.outcome }}" = "success" ] && \
+             [ "${{ steps.typecheck.outcome }}" = "success" ] && \
+             [ "${{ steps.build.outcome }}" = "success" ]; then
+            STATUS="SUCCESS"
+            COLOR=3066993
+          else
+            STATUS="FAILURE"
+            COLOR=15158332
+          fi
+
+          jq -n \
+            --arg title "CI ${STATUS}" \
+            --arg pr "$PR_TITLE" \
+            --arg author "$PR_AUTHOR" \
+            --arg url "$PR_URL" \
+            --arg head "$HEAD_REF" \
+            --arg base "$BASE_REF" \
+            --argjson color "$COLOR" \
+            --arg lint "${{ steps.lint.outcome }}" \
+            --arg format "${{ steps.format.outcome }}" \
+            --arg typecheck "${{ steps.typecheck.outcome }}" \
+            --arg build "${{ steps.build.outcome }}" \
+            '{embeds:[{title:$title,description:"**PR:** \($pr)\n**Author:** \($author)\n**Branch:** `\($head)` → `\($base)`",url:$url,color:$color,fields:[{name:"Lint",value:$lint,inline:true},{name:"Format",value:$format,inline:true},{name:"Typecheck",value:$typecheck,inline:true},{name:"Build",value:$build,inline:true}]}]}' \
+          | curl -H "Content-Type: application/json" -X POST --data @- "$DISCORD_WEBHOOK_URL"
+
+      - name: Fail if any check failed
+        if: |
+          steps.lint.outcome == 'failure' ||
+          steps.format.outcome == 'failure' ||
+          steps.typecheck.outcome == 'failure' ||
+          steps.build.outcome == 'failure'
+        run: exit 1
+
+  auto-assign:
+    name: Auto Assign
+    if: |
+      (github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == false) ||
+      (github.event_name == 'issues' && github.event.action == 'opened')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Assign author
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const login = context.payload.pull_request?.user.login
+              || context.payload.issue?.user.login;
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: [login]
+            });
+
+  auto-label:
+    name: Auto Label
+    if: |
+      (github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == false) ||
+      (github.event_name == 'issues' && github.event.action == 'opened')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Add label from title prefix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request?.title
+              || context.payload.issue?.title;
+            const prefixMap = {
+              'feat': 'Feature',
+              'fix': 'Fix',
+              'init': 'Init',
+              'design': 'Design',
+              'chore': 'Chore',
+              'refactor': 'Refactor',
+              'docs': 'Docs',
+              'infra': 'Infra',
+              'api': 'API',
+              'hotfix': 'Hotfix',
+              'deploy': 'Deploy'
+            };
+
+            const match = title.match(/^(?:\[(\w+)\]|(\w+)[\s(:])/);
+            if (!match) return;
+
+            const prefix = (match[1] || match[2]).toLowerCase();
+            const label = prefixMap[prefix];
+            if (!label) return;
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [label]
+            });
