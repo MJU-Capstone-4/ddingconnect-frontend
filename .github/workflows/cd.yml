@@ -36,6 +36,7 @@ jobs:
 
       - name: Discord notification - Deploy success
         if: success() && env.DISCORD_WEBHOOK_URL != ''
+        continue-on-error: true
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
@@ -47,10 +48,12 @@ jobs:
             --arg author "$AUTHOR" \
             --arg url "$RUN_URL" \
             '{embeds:[{title:"Deploy Success",description:"**Commit:** \($commit)\n**Author:** \($author)",url:$url,color:3066993}]}' \
-          | curl -H "Content-Type: application/json" -X POST --data @- "$DISCORD_WEBHOOK_URL"
+          | curl -sS --connect-timeout 5 --max-time 10 --retry 2 --retry-delay 1 \
+            -H "Content-Type: application/json" -X POST --data @- "$DISCORD_WEBHOOK_URL"
 
       - name: Discord notification - Deploy failure
         if: failure() && env.DISCORD_WEBHOOK_URL != ''
+        continue-on-error: true
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
@@ -62,4 +65,5 @@ jobs:
             --arg author "$AUTHOR" \
             --arg url "$RUN_URL" \
             '{embeds:[{title:"Deploy Failed",description:"**Commit:** \($commit)\n**Author:** \($author)",url:$url,color:15158332}]}' \
-          | curl -H "Content-Type: application/json" -X POST --data @- "$DISCORD_WEBHOOK_URL"
+          | curl -sS --connect-timeout 5 --max-time 10 --retry 2 --retry-delay 1 \
+            -H "Content-Type: application/json" -X POST --data @- "$DISCORD_WEBHOOK_URL"
