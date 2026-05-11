@@ -3,7 +3,9 @@
 @import './utilities.css';
 
 @layer base {
+  html,
   body {
-    @apply min-h-screen bg-background text-text-primary font-sans antialiased;
+    @apply h-full bg-background text-text-primary font-sans antialiased;
+    overflow: hidden;
   }
 }
