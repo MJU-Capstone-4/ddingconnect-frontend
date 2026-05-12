@@ -11,7 +11,7 @@ export type BannerButtonProps = {
 
 const colorStyles: Record<BannerButtonColor, { bg: string; circle: string }> = {
   blue: {
-    bg: 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700',
+    bg: 'bg-primary hover:bg-primary-hover active:bg-primary-pressed',
     circle: 'bg-blue-400/30',
   },
   green: {
@@ -37,7 +37,7 @@ export const BannerButton = forwardRef<HTMLButtonElement, BannerButtonProps>(fun
       disabled={disabled}
       className={cn(
         'relative flex w-[253px] cursor-pointer items-center justify-center overflow-hidden',
-        'h-[34px] rounded-xl px-6 text-sm font-semibold text-white',
+        'h-button-sm rounded-button px-6 text-sm font-semibold text-text-on-primary',
         'transition-colors',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
         'disabled:pointer-events-none disabled:opacity-50',
