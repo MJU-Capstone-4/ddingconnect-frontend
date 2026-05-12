@@ -1,4 +1,11 @@
-export { Button } from './button';
+export { Button, PillButton, BannerButton } from './button';
+export type {
+  ButtonProps,
+  PillButtonProps,
+  PillButtonColor,
+  BannerButtonProps,
+  BannerButtonColor,
+} from './button';
 export { Input } from './input';
 export { Card } from './card';
 export { Modal } from './modal';
