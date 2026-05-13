@@ -20,7 +20,7 @@ export function SubHeader({ title, onBackClick, className }: SubHeaderProps) {
         <ArrowLeftIcon className="w-[23px] h-[23px]" />
       </button>
 
-      <h1 className="text-[20px] font-bold text-text-primary">{title}</h1>
+      <h1 className="text-xl font-bold text-text-primary">{title}</h1>
     </header>
   );
 }
