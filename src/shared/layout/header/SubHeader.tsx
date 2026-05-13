@@ -11,14 +11,16 @@ export type SubHeaderProps = {
 export function SubHeader({ title, onBackClick, className }: SubHeaderProps) {
   return (
     <header className={cn(headerBase, 'h-header gap-2 bg-surface', className)}>
-      <button
-        type="button"
-        className={cn(iconButtonBase, '-ml-2 text-text-primary')}
-        onClick={onBackClick}
-        aria-label="뒤로가기"
-      >
-        <ArrowLeftIcon className="w-[23px] h-[23px]" />
-      </button>
+      {onBackClick && (
+        <button
+          type="button"
+          className={cn(iconButtonBase, '-ml-2 text-text-primary')}
+          onClick={onBackClick}
+          aria-label="뒤로가기"
+        >
+          <ArrowLeftIcon className="w-[23px] h-[23px]" />
+        </button>
+      )}
 
       <h1 className="text-xl font-bold text-text-primary">{title}</h1>
     </header>
