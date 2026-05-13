@@ -101,9 +101,15 @@
 
   /* Semantic: Service */
   --color-coffee-chat: var(--color-blue-500);
+  --color-coffee-chat-hover: var(--color-blue-600);
+  --color-coffee-chat-pressed: var(--color-blue-700);
   --color-roadmap: var(--color-purple-500);
+  --color-roadmap-hover: var(--color-purple-600);
+  --color-roadmap-pressed: var(--color-purple-700);
   --color-qna: var(--color-pink-500);
   --color-job-info: var(--color-green-500);
+  --color-job-info-hover: var(--color-green-600);
+  --color-job-info-pressed: var(--color-green-700);
   --color-point: var(--color-yellow-400);
 
   /* Service soft (badge/tag backgrounds) */
