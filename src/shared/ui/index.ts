@@ -14,3 +14,6 @@ export { FileUpload } from './file-upload';
 export { Chip } from './chip';
 export type { ChipProps } from './chip';
 export { chipVariants } from './chip';
+export { HeroSection } from './hero-section';
+export type { HeroSectionProps, HeroSectionVariant } from './hero-section';
+export { heroSectionVariants } from './hero-section';
