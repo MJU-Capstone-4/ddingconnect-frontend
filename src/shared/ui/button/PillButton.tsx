@@ -11,8 +11,8 @@ export type PillButtonProps = {
 
 const colorStyles: Record<PillButtonColor, string> = {
   blue: 'bg-primary text-text-on-primary hover:bg-primary-hover active:bg-primary-pressed',
-  green: 'bg-green-500 text-text-on-primary hover:bg-green-600 active:bg-green-700',
-  purple: 'bg-purple-500 text-text-on-primary hover:bg-purple-600 active:bg-purple-700',
+  green: 'bg-job-info text-text-on-primary hover:bg-job-info-hover active:bg-job-info-pressed',
+  purple: 'bg-roadmap text-text-on-primary hover:bg-roadmap-hover active:bg-roadmap-pressed',
   outline:
     'bg-surface text-gray-700 border border-border hover:bg-surface-raised active:bg-gray-100',
 };
