@@ -17,9 +17,11 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router": "^7.15.0"
+    "react-router": "^7.15.0",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.3",
