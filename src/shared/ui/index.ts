@@ -17,3 +17,5 @@ export { chipVariants } from './chip';
 export { HeroSection } from './hero-section';
 export type { HeroSectionProps, HeroSectionVariant } from './hero-section';
 export { heroSectionVariants } from './hero-section';
+export { Search } from './search';
+export type { SearchProps } from './search';
