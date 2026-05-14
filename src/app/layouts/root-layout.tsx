@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router';
-import { AppHeader, BottomNav, PageLayout } from '@/shared/layout';
+import { AppHeader, BottomNavigation, PageLayout } from '@/shared/layout';
 
 export function RootLayout() {
   return (
@@ -9,7 +9,7 @@ export function RootLayout() {
         <PageLayout>
           <Outlet />
         </PageLayout>
-        <BottomNav />
+        <BottomNavigation />
       </div>
     </div>
   );
