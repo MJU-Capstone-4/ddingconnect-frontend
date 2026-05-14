@@ -17,8 +17,8 @@ export const searchInput = [
 export const searchIconBase = 'pointer-events-none size-[25px] shrink-0 text-text-muted';
 
 export const searchWidthMap = {
-  jobInfo: 'w-[284px]',
-  qna: 'w-[330px]',
+  compact: 'w-[284px]',
+  regular: 'w-[330px]',
   full: 'w-full',
 } as const;
 

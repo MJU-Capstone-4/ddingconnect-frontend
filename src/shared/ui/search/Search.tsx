@@ -12,7 +12,7 @@ import {
 } from './search.styles';
 
 export type SearchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
-  width?: 'jobInfo' | 'qna' | 'full';
+  width?: 'compact' | 'regular' | 'full';
   iconPosition?: 'left' | 'right';
   className?: string;
   inputClassName?: string;
