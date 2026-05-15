@@ -19,3 +19,5 @@ export type { HeroSectionProps, HeroSectionVariant } from './hero-section';
 export { heroSectionVariants } from './hero-section';
 export { Search } from './search';
 export type { SearchProps } from './search';
+export { FormField } from './form-field';
+export type { FormFieldProps, FormFieldElement } from './form-field';
