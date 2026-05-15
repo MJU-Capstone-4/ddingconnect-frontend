@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { forwardRef, useEffect, useId, useRef, useState } from 'react';
 
 import ChevronDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
 import { cn } from '@/shared/utils/cn';
@@ -37,19 +37,22 @@ export type SelectProps = {
   selectClassName?: string;
 };
 
-export function Select({
-  label,
-  id: idProp,
-  options,
-  placeholder,
-  error,
-  value,
-  onChange,
-  required,
-  disabled,
-  className,
-  selectClassName,
-}: SelectProps) {
+export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
+  {
+    label,
+    id: idProp,
+    options,
+    placeholder,
+    error,
+    value,
+    onChange,
+    required,
+    disabled,
+    className,
+    selectClassName,
+  },
+  ref,
+) {
   const autoId = useId();
   const selectId = idProp ?? autoId;
   const errorId = `${selectId}-error`;
@@ -93,6 +96,7 @@ export function Select({
 
       <div className="relative w-[147px]">
         <button
+          ref={ref}
           type="button"
           id={selectId}
           role="combobox"
@@ -154,4 +158,6 @@ export function Select({
       )}
     </div>
   );
-}
+});
+
+Select.displayName = 'Select';
