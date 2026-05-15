@@ -11,6 +11,7 @@ export { Card } from './card';
 export { Modal } from './modal';
 export { Badge } from './badge';
 export { FileUpload } from './file-upload';
+export type { FileUploadProps, FileUploadVariant } from './file-upload';
 export { Chip } from './chip';
 export type { ChipProps } from './chip';
 export { chipVariants } from './chip';
