@@ -42,6 +42,6 @@ export const selectOption = [
   'transition-colors hover:bg-surface-raised',
 ].join(' ');
 
-export const selectOptionSelected = 'text-primary font-semibold bg-blue-50';
+export const selectOptionSelected = 'text-primary font-semibold bg-primary/10';
 
 export const selectErrorText = 'text-xs text-error';
