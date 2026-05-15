@@ -129,7 +129,14 @@ export function Select({
                   key={opt.value}
                   role="option"
                   aria-selected={isSelected}
+                  tabIndex={0}
                   onClick={() => handleSelect(opt.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleSelect(opt.value);
+                    }
+                  }}
                   className={cn(selectOption, isSelected && selectOptionSelected)}
                 >
                   {opt.label}
