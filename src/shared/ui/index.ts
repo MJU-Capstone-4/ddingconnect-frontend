@@ -21,3 +21,5 @@ export { Search } from './search';
 export type { SearchProps } from './search';
 export { FormField } from './form-field';
 export type { FormFieldProps, FormFieldElement } from './form-field';
+export { Select } from './select';
+export type { SelectProps, SelectOption } from './select';
