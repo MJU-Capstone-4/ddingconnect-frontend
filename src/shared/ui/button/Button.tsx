@@ -1,12 +1,58 @@
 import { forwardRef } from 'react';
-import type { ButtonHTMLAttributes } from 'react';
 
 import { cn } from '@/shared/utils/cn';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+import {
+  buttonContentClass,
+  buttonDecorationLeft,
+  buttonDecorationRight,
+  buttonIconClass,
+  buttonVariants,
+} from './button.styles';
+
+export type ButtonVariant = 'solid' | 'outline' | 'ghost';
+
+export type ButtonTone = 'blue' | 'green' | 'purple' | 'yellow' | 'gray' | 'red';
+
+export type ButtonSize =
+  | 'auth'
+  | 'verification'
+  | 'modal'
+  | 'profileCta'
+  | 'dialogAction'
+  | 'jobApply'
+  | 'filter'
+  | 'qnaSubmit'
+  | 'floating'
+  | 'upload'
+  | 'compact'
+  | 'tiny';
+
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: ButtonVariant;
+  tone?: ButtonTone;
+  size?: ButtonSize;
+  fullWidth?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  withDecoration?: boolean;
+};
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { disabled, className, children, type = 'button', ...rest },
+  {
+    variant = 'solid',
+    tone = 'blue',
+    size = 'auth',
+    fullWidth = false,
+    leftIcon,
+    rightIcon,
+    withDecoration = false,
+    disabled,
+    className,
+    children,
+    type = 'button',
+    ...rest
+  },
   ref,
 ) {
   return (
@@ -14,26 +60,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={type}
       disabled={disabled}
-      className={cn(
-        'relative flex w-full cursor-pointer items-center justify-center overflow-hidden',
-        'h-button-lg rounded-button px-6 text-lg font-semibold text-text-on-primary',
-        'transition-colors',
-        'bg-primary hover:bg-primary-hover active:bg-primary-pressed',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-        'disabled:pointer-events-none disabled:opacity-50',
-        className,
-      )}
+      className={cn(buttonVariants({ variant, tone, size, fullWidth }), className)}
       {...rest}
     >
-      <span
-        className="pointer-events-none absolute -left-5 -top-5 size-16 rounded-full bg-primary/30"
-        aria-hidden="true"
-      />
-      <span
-        className="pointer-events-none absolute -bottom-5 -right-5 size-16 rounded-full bg-primary/20"
-        aria-hidden="true"
-      />
-      <span className="relative z-10">{children}</span>
+      {withDecoration && (
+        <>
+          <span className={buttonDecorationLeft} aria-hidden="true" />
+          <span className={buttonDecorationRight} aria-hidden="true" />
+        </>
+      )}
+      {leftIcon && (
+        <span className={buttonIconClass} aria-hidden="true">
+          {leftIcon}
+        </span>
+      )}
+      <span className={buttonContentClass}>{children}</span>
+      {rightIcon && (
+        <span className={buttonIconClass} aria-hidden="true">
+          {rightIcon}
+        </span>
+      )}
     </button>
   );
 });
