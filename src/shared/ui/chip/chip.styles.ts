@@ -1,9 +1,15 @@
 import { cva } from 'class-variance-authority';
 
+export const chipIconSize = {
+  sm: 'w-3 h-3',
+  md: 'w-3.5 h-3.5',
+  lg: 'w-4 h-4',
+} satisfies Record<string, string>;
+
 export const chipVariants = cva(
   [
-    'inline-flex cursor-pointer items-center justify-center',
-    'h-8 rounded-full font-medium',
+    'inline-flex cursor-pointer items-center justify-center w-fit shrink-0',
+    'rounded-full font-medium',
     'transition-colors',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
     'disabled:pointer-events-none disabled:opacity-40',
@@ -16,9 +22,17 @@ export const chipVariants = cva(
         soft: 'bg-surface-raised text-text-secondary',
       },
       size: {
-        sm: 'px-3 text-xs gap-1',
-        md: 'px-4 text-sm gap-1.5',
-        lg: 'px-5 text-base gap-2',
+        sm: 'h-6 px-3 text-xs gap-1',
+        md: 'h-[30px] px-4 text-xs gap-1.5',
+        lg: 'h-10 px-5 text-base gap-2',
+      },
+      tone: {
+        default: '',
+        gray: '',
+        blue: '',
+        purple: '',
+        pink: '',
+        green: '',
       },
       active: {
         true: '',
@@ -43,7 +57,6 @@ export const chipVariants = cva(
         active: false,
         className: 'hover:bg-gray-200 active:bg-gray-300',
       },
-
       // outlined + active
       {
         variant: 'outlined',
@@ -56,7 +69,6 @@ export const chipVariants = cva(
         active: false,
         className: 'hover:bg-surface-raised active:bg-gray-100',
       },
-
       // soft + active
       {
         variant: 'soft',
@@ -69,10 +81,18 @@ export const chipVariants = cva(
         active: false,
         className: 'hover:bg-gray-200 active:bg-gray-300',
       },
+
+      { tone: 'gray', className: 'bg-gray-200 text-gray-700 hover:bg-gray-300' },
+      { tone: 'blue', className: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+      { tone: 'blue', size: 'md', className: 'font-semibold' },
+      { tone: 'purple', className: 'bg-purple-100 text-purple-600 hover:bg-purple-50' },
+      { tone: 'pink', className: 'bg-pink-100 text-pink-500 hover:bg-pink-50' },
+      { tone: 'green', className: 'bg-green-100 text-green-600 hover:bg-green-50' },
     ],
     defaultVariants: {
       variant: 'filled',
       size: 'md',
+      tone: 'default',
       active: false,
       fullWidth: false,
     },
