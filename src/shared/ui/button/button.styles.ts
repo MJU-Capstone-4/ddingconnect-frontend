@@ -91,6 +91,11 @@ export const buttonVariants = cva(
       },
       {
         variant: 'outline',
+        tone: 'yellow',
+        className: 'border-point text-yellow-600 hover:bg-yellow-50 active:bg-yellow-100',
+      },
+      {
+        variant: 'outline',
         tone: 'gray',
         className: 'border-border text-text-secondary hover:bg-surface-raised active:bg-gray-100',
       },
@@ -103,6 +108,21 @@ export const buttonVariants = cva(
         variant: 'ghost',
         tone: 'blue',
         className: 'text-primary hover:bg-blue-50 active:bg-blue-100',
+      },
+      {
+        variant: 'ghost',
+        tone: 'green',
+        className: 'text-green-500 hover:bg-green-50 active:bg-green-100',
+      },
+      {
+        variant: 'ghost',
+        tone: 'purple',
+        className: 'text-roadmap hover:bg-purple-50 active:bg-purple-100',
+      },
+      {
+        variant: 'ghost',
+        tone: 'yellow',
+        className: 'text-yellow-600 hover:bg-yellow-50 active:bg-yellow-100',
       },
       {
         variant: 'ghost',
