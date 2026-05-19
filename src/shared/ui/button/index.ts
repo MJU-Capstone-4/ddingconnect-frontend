@@ -1,6 +1,3 @@
 export { Button } from './Button';
-export { PillButton } from './PillButton';
-export { BannerButton } from './BannerButton';
-export type { ButtonProps } from './Button';
-export type { PillButtonProps, PillButtonColor } from './PillButton';
-export type { BannerButtonProps, BannerButtonColor } from './BannerButton';
+export { buttonVariants } from './button.styles';
+export type { ButtonProps, ButtonVariant, ButtonTone, ButtonSize } from './Button';
