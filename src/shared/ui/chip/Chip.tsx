@@ -1,13 +1,15 @@
 import { forwardRef } from 'react';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ComponentType, ReactNode, SVGProps } from 'react';
 import type { VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/shared/utils/cn';
-import { chipVariants } from './chip.styles';
+import { chipIconSize, chipVariants } from './chip.styles';
+
+type SvgIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
 export type ChipProps = {
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
+  leftIcon?: SvgIcon;
+  rightIcon?: SvgIcon;
 } & VariantProps<typeof chipVariants> &
   Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
     children: ReactNode;
@@ -17,10 +19,10 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   {
     variant,
     size,
+    tone,
     active,
-    fullWidth,
-    leftIcon,
-    rightIcon,
+    leftIcon: LeftIcon,
+    rightIcon: RightIcon,
     disabled,
     className,
     children,
@@ -29,18 +31,21 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   },
   ref,
 ) {
+  const resolvedSize = size ?? 'md';
+  const iconClass = cn('shrink-0', chipIconSize[resolvedSize]);
+
   return (
     <button
       ref={ref}
       type={type}
       disabled={disabled}
       aria-pressed={active ?? undefined}
-      className={cn(chipVariants({ variant, size, active, fullWidth }), className)}
+      className={cn(chipVariants({ variant, size, tone, active }), className)}
       {...rest}
     >
-      {leftIcon && <span className="shrink-0">{leftIcon}</span>}
+      {LeftIcon && <LeftIcon className={iconClass} />}
       {children}
-      {rightIcon && <span className="shrink-0">{rightIcon}</span>}
+      {RightIcon && <RightIcon className={iconClass} />}
     </button>
   );
 });
