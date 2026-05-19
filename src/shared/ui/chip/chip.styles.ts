@@ -44,38 +44,32 @@ export const chipVariants = cva(
       },
     },
     compoundVariants: [
-      // filled + active
       {
         variant: 'filled',
         active: true,
         className:
           'bg-primary text-text-on-primary hover:bg-primary-hover active:bg-primary-pressed',
       },
-      // filled + inactive
       {
         variant: 'filled',
         active: false,
         className: 'hover:bg-gray-200 active:bg-gray-300',
       },
-      // outlined + active
       {
         variant: 'outlined',
         active: true,
         className: 'border-primary text-primary bg-blue-50 hover:bg-blue-100 active:bg-blue-200',
       },
-      // outlined + inactive
       {
         variant: 'outlined',
         active: false,
         className: 'hover:bg-surface-raised active:bg-gray-100',
       },
-      // soft + active
       {
         variant: 'soft',
         active: true,
         className: 'bg-blue-100 text-primary hover:bg-blue-200 active:bg-blue-300',
       },
-      // soft + inactive
       {
         variant: 'soft',
         active: false,
