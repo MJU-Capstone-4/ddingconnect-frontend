@@ -8,7 +8,7 @@ export const chipIconSize = {
 
 export const chipVariants = cva(
   [
-    'inline-flex cursor-pointer items-center justify-center w-fit shrink-0',
+    'inline-flex cursor-pointer items-center justify-center w-fit shrink-0 whitespace-nowrap',
     'rounded-full font-medium',
     'transition-colors',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
