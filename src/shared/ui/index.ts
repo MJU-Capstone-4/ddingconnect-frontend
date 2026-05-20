@@ -20,3 +20,10 @@ export { FormField } from './form-field';
 export type { FormFieldProps, FormFieldElement } from './form-field';
 export { Select } from './select';
 export type { SelectProps, SelectOption } from './select';
+export { ActivitySummary } from './activity-summary';
+export type {
+  ActivitySummaryProps,
+  ActivitySummaryItemData,
+  ActivitySummaryTone,
+  SvgIcon,
+} from './activity-summary';
