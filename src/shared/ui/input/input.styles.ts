@@ -1,14 +1,6 @@
 import { cva } from 'class-variance-authority';
 
-export type InputSize =
-  | 'auth'
-  | 'verification'
-  | 'signup'
-  | 'qnaTitle'
-  | 'grade'
-  | 'profileInfo'
-  | 'socialLink'
-  | 'default';
+export type InputSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'compact' | 'mini' | 'default';
 
 export const inputBoxVariants = cva(
   [
@@ -21,13 +13,13 @@ export const inputBoxVariants = cva(
   {
     variants: {
       size: {
-        auth: 'w-[358px] h-[58px] px-4 gap-3',
-        verification: 'w-[186px] h-[45px] px-3 gap-2',
-        signup: 'w-[323px] h-[45px] px-4 gap-2',
-        qnaTitle: 'w-[319px] h-[40px] px-3 gap-2',
-        grade: 'w-[147px] h-[40px] px-3 gap-2',
-        profileInfo: 'w-[265px] h-[34px] px-3 gap-2',
-        socialLink: 'w-[189px] h-[34px] px-2 gap-1.5',
+        xl: 'w-[358px] h-[58px] px-4 gap-3',
+        md: 'w-[186px] h-[45px] px-3 gap-2',
+        lg: 'w-[323px] h-[45px] px-4 gap-2',
+        sm: 'w-[319px] h-[40px] px-3 gap-2',
+        xs: 'w-[147px] h-[40px] px-3 gap-2',
+        compact: 'w-[265px] h-[34px] px-3 gap-2',
+        mini: 'w-[189px] h-[34px] px-2 gap-1.5',
         default: 'w-full h-10 px-3 gap-2',
       },
       hasError: {
@@ -49,24 +41,24 @@ export const inputFieldBase = [
 ].join(' ');
 
 export const inputIconSizeMap: Record<InputSize, string> = {
-  auth: 'w-5 h-5',
-  verification: 'w-4 h-4',
-  signup: 'w-4 h-4',
-  qnaTitle: 'w-4 h-4',
-  grade: 'w-4 h-4',
-  profileInfo: 'w-3.5 h-3.5',
-  socialLink: 'w-3.5 h-3.5',
+  xl: 'w-5 h-5',
+  lg: 'w-4 h-4',
+  md: 'w-4 h-4',
+  sm: 'w-4 h-4',
+  xs: 'w-4 h-4',
+  compact: 'w-3.5 h-3.5',
+  mini: 'w-3.5 h-3.5',
   default: 'w-4 h-4',
 };
 
 export const inputTextSizeMap: Record<InputSize, string> = {
-  auth: 'text-sm',
-  verification: 'text-xs',
-  signup: 'text-xs',
-  qnaTitle: 'text-xs',
-  grade: 'text-xs',
-  profileInfo: 'text-xs',
-  socialLink: 'text-xs',
+  xl: 'text-sm',
+  lg: 'text-xs',
+  md: 'text-xs',
+  sm: 'text-xs',
+  xs: 'text-xs',
+  compact: 'text-xs',
+  mini: 'text-xs',
   default: 'text-xs',
 };
 
