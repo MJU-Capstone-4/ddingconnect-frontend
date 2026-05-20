@@ -85,8 +85,7 @@ function ModalRoot({
   const [overlayInteractive, setOverlayInteractive] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
-    const timer = setTimeout(() => setOverlayInteractive(true), 80);
+    const timer = setTimeout(() => setOverlayInteractive(open), open ? 80 : 0);
     return () => clearTimeout(timer);
   }, [open]);
 
