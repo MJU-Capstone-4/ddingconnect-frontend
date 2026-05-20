@@ -65,7 +65,7 @@ export const modalHeaderDecoration2 = 'size-32 -bottom-10 -left-8 bg-white/10';
 export const modalContentDecoration1 = 'size-36 -top-10 -left-10';
 export const modalContentDecoration2 = 'size-36 -bottom-10 -right-10';
 
-export const modalContentDecorationToneMap: Record<string, string> = {
+export const modalContentDecorationToneMap: Record<ModalTone, string> = {
   blue: 'bg-blue-50',
   yellow: 'bg-yellow-100',
   green: 'bg-green-50',
