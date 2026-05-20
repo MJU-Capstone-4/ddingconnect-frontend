@@ -19,11 +19,11 @@ export function ActivitySummary({ title = '나의 활동', items, className }: A
   return (
     <section className={cn(activitySummaryContainer, className)} aria-label={title}>
       <h2 className={activitySummaryTitle}>{title}</h2>
-      <div className={activitySummaryGrid} role="list">
+      <ul className={activitySummaryGrid}>
         {items.map((item) => (
           <ActivitySummaryItem key={item.label} {...item} />
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
