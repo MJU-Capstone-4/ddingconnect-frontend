@@ -18,18 +18,22 @@ import {
 
 type SvgIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
-export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
+type InputBaseProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
   label?: string;
   error?: string;
   helperText?: string;
   size?: InputSize;
   leftIcon?: SvgIcon;
   rightIcon?: SvgIcon;
-  onRightIconClick?: () => void;
-  rightIconLabel?: string;
   inputClassName?: string;
   wrapperClassName?: string;
 };
+
+export type InputProps = InputBaseProps &
+  (
+    | { onRightIconClick?: undefined; rightIconLabel?: string }
+    | { onRightIconClick: () => void; rightIconLabel: string }
+  );
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   {
