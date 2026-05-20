@@ -15,7 +15,13 @@ export function MainHeader({
   className,
 }: MainHeaderProps) {
   return (
-    <header className={cn(headerBase, 'h-header justify-between bg-surface z-header', className)}>
+    <header
+      className={cn(
+        headerBase,
+        'h-header justify-between bg-surface z-[var(--z-header)]',
+        className,
+      )}
+    >
       <div aria-label="띵커넥트 홈">
         <LogoIcon className="w-8 h-8" aria-hidden="true" />
       </div>

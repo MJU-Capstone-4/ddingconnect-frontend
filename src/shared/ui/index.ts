@@ -3,6 +3,7 @@ export type { ButtonProps, ButtonVariant, ButtonTone, ButtonSize } from './butto
 export { Input } from './input';
 export { Card } from './card';
 export { Modal } from './modal';
+export type { ModalTone, ModalContentSize } from './modal';
 export { Badge } from './badge';
 export { FileUpload } from './file-upload';
 export type { FileUploadProps, FileUploadVariant } from './file-upload';

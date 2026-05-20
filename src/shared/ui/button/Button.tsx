@@ -26,7 +26,8 @@ export type ButtonSize =
   | 'floating'
   | 'upload'
   | 'compact'
-  | 'tiny';
+  | 'tiny'
+  | 'delete';
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
