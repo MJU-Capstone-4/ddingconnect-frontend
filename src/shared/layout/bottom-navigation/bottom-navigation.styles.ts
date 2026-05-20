@@ -1,5 +1,5 @@
 export const navRoot =
-  'shrink-0 w-full bg-surface border-t border-border-light z-header pb-[env(safe-area-inset-bottom,0px)]';
+  'shrink-0 w-full bg-surface border-t border-border-light z-[var(--z-header)] pb-[env(safe-area-inset-bottom,0px)]';
 
 export const navList = 'flex items-center w-full h-bottom-nav';
 
