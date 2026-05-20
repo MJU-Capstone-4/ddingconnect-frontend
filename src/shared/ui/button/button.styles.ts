@@ -35,6 +35,7 @@ export const buttonVariants = cva(
         upload: 'h-10 w-[277px] rounded-button text-xs px-4',
         compact: 'h-[21px] w-[69px] rounded-button text-2xs px-2',
         tiny: 'h-[19px] w-[38px] rounded-full text-[11px] px-1.5',
+        delete: 'h-10 w-14 rounded-button text-xs px-3',
       },
       fullWidth: {
         true: 'w-full',
