@@ -1,6 +1,7 @@
 export { Button, buttonVariants } from './button';
 export type { ButtonProps, ButtonVariant, ButtonTone, ButtonSize } from './button';
-export { Input } from './input';
+export { Input, PasswordInput } from './input';
+export type { InputProps, PasswordInputProps, InputSize } from './input';
 export { Card } from './card';
 export { Modal } from './modal';
 export type { ModalTone, ModalContentSize } from './modal';
