@@ -65,7 +65,11 @@ export function QnaPostCard({
       onKeyDown={
         isClickable
           ? (e) => {
-              if (e.key === 'Enter' || e.key === ' ') onClick?.();
+              if (e.target instanceof Element && e.target.closest('button')) return;
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick?.();
+              }
             }
           : undefined
       }
