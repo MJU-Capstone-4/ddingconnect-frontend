@@ -6,7 +6,7 @@ export const cardClickable =
 
 export const iconWrapBase = 'shrink-0 w-10 h-10 rounded-full flex items-center justify-center';
 
-export const iconWrapVariants: Record<string, string> = {
+export const iconWrapVariants: Record<'coffeechat' | 'job' | 'qna' | 'roadmap', string> = {
   coffeechat: `${iconWrapBase} bg-coffee-chat-soft text-coffee-chat`,
   job: `${iconWrapBase} bg-job-info-soft text-job-info`,
   qna: `${iconWrapBase} bg-qna-soft text-qna`,
