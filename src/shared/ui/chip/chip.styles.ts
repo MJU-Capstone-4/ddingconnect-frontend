@@ -24,7 +24,7 @@ export const chipVariants = cva(
       size: {
         sm: 'h-6 px-3 text-xs gap-1',
         md: 'h-[30px] px-4 text-xs gap-1.5',
-        lg: 'h-10 px-5 text-base gap-2',
+        lg: 'h-10 px-5 text-xs gap-2',
       },
       tone: {
         default: '',
