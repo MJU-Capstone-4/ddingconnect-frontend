@@ -41,7 +41,7 @@ export function PointChargeOption({
           active={true}
           size="lg"
           type="button"
-          aria-label={`${tokenAmount}토큰 충전하기`}
+          aria-label={`${tokenAmount}토큰 ₩${price.toLocaleString('ko-KR')} 충전하기`}
           onClick={onClick}
         >
           ₩{price.toLocaleString('ko-KR')}
