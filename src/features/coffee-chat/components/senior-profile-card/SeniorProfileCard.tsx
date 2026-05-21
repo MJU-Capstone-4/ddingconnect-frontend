@@ -26,7 +26,7 @@ export type SeniorProfileCardProps = {
   job: string;
   career: string;
   techStacks: string[];
-  onClick?: () => void;
+  onClick: () => void;
   className?: string;
 };
 
