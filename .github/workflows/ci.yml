@@ -175,7 +175,7 @@ jobs:
               'init':     '🌱 Init',
               'design':   '🎨 Design',
               'chore':    '🧹 Chore',
-              'refactor': '🛠 Refactor',
+              'refactor': '🛠️ Refactor',
               'docs':     '📄 Docs',
               'infra':    '🌐 Infra',
               'api':      '🔗 Api',
