@@ -31,7 +31,7 @@ jobs:
         with:
           source-directory: 'output'
           destination-github-username: 'u-zzn'
-          destination-repository-name: 'ddingconnect-frontend-deploy'
+          destination-repository-name: 'ddingconnect-frontend'
           user-email: ${{ secrets.EMAIL }}
           commit-message: 'Automated deploy from ${{ github.repository }}@${{ github.sha }}'
           target-branch: main
