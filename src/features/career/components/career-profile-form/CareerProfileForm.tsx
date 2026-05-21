@@ -44,11 +44,16 @@ export function CareerProfileForm({
   onSubmit,
   className,
 }: CareerProfileFormProps) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    onSubmit?.();
+  }
+
   return (
     <div className={cn(container, className)}>
       <p className={sectionTitle}>정보 입력</p>
 
-      <div className={formBody}>
+      <form className={formBody} onSubmit={handleSubmit}>
         <div className={twoColRow}>
           <Select
             label="현재 학년"
@@ -96,11 +101,11 @@ export function CareerProfileForm({
         />
 
         <div className={submitWrapper}>
-          <Button type="button" tone={tone} size="auth" fullWidth onClick={onSubmit}>
+          <Button type="submit" tone={tone} size="auth" fullWidth>
             {submitLabel}
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
