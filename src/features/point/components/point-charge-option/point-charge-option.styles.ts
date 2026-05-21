@@ -11,4 +11,4 @@ export const icon = 'w-5 h-5';
 
 export const tokenText = 'text-xs font-semibold text-text-primary';
 
-export const divider = 'border-b border-border-light';
+export const divider = 'border-0 border-b border-border-light';
