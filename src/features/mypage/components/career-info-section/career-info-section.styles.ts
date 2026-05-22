@@ -15,4 +15,4 @@ export const groupDivider = 'h-px bg-border-light w-full';
 export const viewChip = 'pointer-events-none';
 
 export const groupInput =
-  'h-6 px-3 text-xs rounded-full bg-surface border border-dashed border-border text-text-secondary placeholder:text-text-muted focus:outline-none min-w-[7.5rem]';
+  'h-6 px-3 text-xs rounded-full bg-surface border border-dashed border-border text-text-secondary placeholder:text-text-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-primary min-w-[7.5rem]';
