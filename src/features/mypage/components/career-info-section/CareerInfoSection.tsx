@@ -50,7 +50,7 @@ function GroupInput({ groupLabel, placeholder, onAdd }: GroupInputProps) {
       value={value}
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={(e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
           e.preventDefault();
           commit();
         }
