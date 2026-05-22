@@ -30,15 +30,16 @@ const CHIP_SIZE = {
 type GroupInputProps = {
   groupLabel: string;
   placeholder: string;
+  items: string[];
   onAdd: (groupLabel: string, value: string) => void;
 };
 
-function GroupInput({ groupLabel, placeholder, onAdd }: GroupInputProps) {
+function GroupInput({ groupLabel, placeholder, items, onAdd }: GroupInputProps) {
   const [value, setValue] = useState('');
 
   const commit = () => {
     const trimmed = value.trim();
-    if (trimmed) {
+    if (trimmed && !items.includes(trimmed)) {
       onAdd(groupLabel, trimmed);
       setValue('');
     }
@@ -108,6 +109,7 @@ export function CareerInfoSection({
                   <GroupInput
                     groupLabel={group.label}
                     placeholder={group.placeholder ?? `${group.label} 입력하기`}
+                    items={group.items}
                     onAdd={onAddItem}
                   />
                 )}
