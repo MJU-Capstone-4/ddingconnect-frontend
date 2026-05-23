@@ -34,6 +34,7 @@ export function AccountInfoSection({
           aria-label="닉네임"
           placeholder="사용할 닉네임"
           value={nickname}
+          readOnly={!onNicknameChange}
           onChange={(e) => onNicknameChange?.(e.target.value)}
           leftIcon={UserIcon}
         />
@@ -45,6 +46,7 @@ export function AccountInfoSection({
           aria-label="비밀번호"
           placeholder="비밀번호 (8자 이상)"
           value={password}
+          readOnly={!onPasswordChange}
           onChange={(e) => onPasswordChange?.(e.target.value)}
           leftIcon={LockIcon}
         />
@@ -56,6 +58,7 @@ export function AccountInfoSection({
           aria-label="비밀번호 확인"
           placeholder="비밀번호 재입력"
           value={passwordConfirm}
+          readOnly={!onPasswordConfirmChange}
           onChange={(e) => onPasswordConfirmChange?.(e.target.value)}
           leftIcon={LockIcon}
         />
