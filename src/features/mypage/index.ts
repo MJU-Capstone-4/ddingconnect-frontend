@@ -10,3 +10,5 @@ export { SocialLinkSection } from './components/social-link-section';
 export type { SocialLinkSectionProps, SocialLinkItem } from './components/social-link-section';
 export { AccountSettingSection } from './components/account-setting-section';
 export type { AccountSettingSectionProps } from './components/account-setting-section';
+export { PortfolioSection } from './components/portfolio-section';
+export type { PortfolioSectionProps } from './components/portfolio-section';
