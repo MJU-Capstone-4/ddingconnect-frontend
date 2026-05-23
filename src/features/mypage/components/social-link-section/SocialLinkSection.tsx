@@ -34,6 +34,15 @@ type SocialLinkSectionEditProps = {
 
 export type SocialLinkSectionProps = SocialLinkSectionViewProps | SocialLinkSectionEditProps;
 
+function getSafeHref(url: string): string {
+  try {
+    const { protocol } = new URL(url);
+    return protocol === 'http:' || protocol === 'https:' ? url : '#';
+  } catch {
+    return '#';
+  }
+}
+
 const iconWrapperVariant: Record<SocialLinkItem['platform'], string> = {
   github: S.iconWrapperGithub,
   linkedin: S.iconWrapperLinkedin,
@@ -58,7 +67,7 @@ export function SocialLinkSection(props: SocialLinkSectionProps) {
           links.map((link) => (
             <div key={link.id} className={S.viewItemRow}>
               <a
-                href={link.href ?? link.url}
+                href={getSafeHref(link.href ?? link.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={S.viewItemLink}
