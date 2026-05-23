@@ -62,7 +62,10 @@ export function EmailVerificationSection({
           aria-label="인증번호"
           placeholder="인증번호 6자리"
           value={verificationCode}
-          onChange={(e) => onVerificationCodeChange?.(e.target.value)}
+          onChange={(e) => {
+            const sanitized = e.target.value.replace(/\D+/g, '').slice(0, 6);
+            onVerificationCodeChange?.(sanitized);
+          }}
           wrapperClassName={styles.inputWrapper}
           className={styles.inputBox}
           maxLength={6}
