@@ -48,7 +48,7 @@ export function AccountSettingSection({
           variant="outline"
           tone="red"
           size="accountSetting"
-          className="justify-start bg-red-50"
+          className="justify-start"
           onClick={onWithdraw}
         >
           회원 탈퇴
