@@ -50,6 +50,7 @@ export function EmailVerificationSection({
           tone="blue"
           leftIcon={<SendIcon className="w-3.5 h-3.5" aria-hidden="true" />}
           onClick={onSendCode}
+          disabled={!onSendCode}
         >
           인증번호발송
         </Button>
@@ -67,7 +68,13 @@ export function EmailVerificationSection({
           maxLength={6}
           inputMode="numeric"
         />
-        <Button type="button" size="verification" tone={tone} onClick={onVerify}>
+        <Button
+          type="button"
+          size="verification"
+          tone={tone}
+          onClick={onVerify}
+          disabled={!onVerify}
+        >
           인증 확인
         </Button>
       </div>
