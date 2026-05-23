@@ -27,7 +27,6 @@ export function AccountSettingSection({
           tone="gray"
           size="accountSetting"
           className="justify-start"
-          aria-label="비밀번호 재설정"
           onClick={onResetPassword}
         >
           비밀번호 재설정
@@ -39,7 +38,6 @@ export function AccountSettingSection({
           tone="gray"
           size="accountSetting"
           className="justify-start"
-          aria-label="로그아웃"
           onClick={onLogout}
         >
           로그아웃
@@ -51,7 +49,6 @@ export function AccountSettingSection({
           tone="red"
           size="accountSetting"
           className="justify-start bg-red-50"
-          aria-label="회원 탈퇴"
           onClick={onWithdraw}
         >
           회원 탈퇴
