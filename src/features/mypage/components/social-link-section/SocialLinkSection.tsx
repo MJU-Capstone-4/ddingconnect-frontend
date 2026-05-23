@@ -35,11 +35,17 @@ type SocialLinkSectionEditProps = {
 export type SocialLinkSectionProps = SocialLinkSectionViewProps | SocialLinkSectionEditProps;
 
 function getSafeHref(url: string): string {
+  const isAllowed = (protocol: string) => protocol === 'http:' || protocol === 'https:';
   try {
     const { protocol } = new URL(url);
-    return protocol === 'http:' || protocol === 'https:' ? url : '#';
+    return isAllowed(protocol) ? url : '#';
   } catch {
-    return '#';
+    try {
+      const normalized = new URL('https://' + url);
+      return isAllowed(normalized.protocol) ? normalized.href : '#';
+    } catch {
+      return '#';
+    }
   }
 }
 
