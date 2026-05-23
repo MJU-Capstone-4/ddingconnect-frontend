@@ -46,12 +46,14 @@ export function PortfolioSection({
 
       {isEmpty ? (
         <div
-          role="button"
-          tabIndex={0}
           className={S.cardRowClickable}
-          onClick={onClick}
-          onKeyDown={handleKeyDown}
-          aria-label="포트폴리오 업로드"
+          {...(onClick && {
+            role: 'button' as const,
+            tabIndex: 0,
+            onClick,
+            onKeyDown: handleKeyDown,
+            'aria-label': '포트폴리오 업로드',
+          })}
         >
           <span className={cn(S.iconWrapperBase, S.iconWrapperEmpty)}>
             <PlusIcon className={S.plusIcon} aria-hidden="true" />
@@ -76,6 +78,7 @@ export function PortfolioSection({
             size="delete"
             tone="red"
             onClick={onDelete}
+            disabled={!onDelete}
             aria-label="포트폴리오 삭제"
           >
             삭제
@@ -83,12 +86,14 @@ export function PortfolioSection({
         </div>
       ) : (
         <div
-          role="button"
-          tabIndex={0}
           className={S.cardRowClickable}
-          onClick={onClick}
-          onKeyDown={handleKeyDown}
-          aria-label={`${portfolio!.title} 보기`}
+          {...(onClick && {
+            role: 'button' as const,
+            tabIndex: 0,
+            onClick,
+            onKeyDown: handleKeyDown,
+            'aria-label': `${portfolio!.title} 보기`,
+          })}
         >
           <span className={cn(S.iconWrapperBase, S.iconWrapperFilled)}>
             <PortfolioIcon className={S.portfolioIcon} aria-hidden="true" />
