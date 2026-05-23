@@ -36,6 +36,7 @@ export const buttonVariants = cva(
         compact: 'h-[21px] w-[69px] rounded-button text-2xs px-2',
         tiny: 'h-[19px] w-[38px] rounded-full text-[11px] px-1.5',
         delete: 'h-10 w-14 rounded-button text-xs px-3',
+        accountSetting: 'h-[43px] w-[304px] rounded-full text-xs px-5',
       },
       fullWidth: {
         true: 'w-full',

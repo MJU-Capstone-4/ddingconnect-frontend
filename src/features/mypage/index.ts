@@ -8,3 +8,5 @@ export { CareerInfoSection } from './components/career-info-section';
 export type { CareerInfoSectionProps, CareerInfoGroup } from './components/career-info-section';
 export { SocialLinkSection } from './components/social-link-section';
 export type { SocialLinkSectionProps, SocialLinkItem } from './components/social-link-section';
+export { AccountSettingSection } from './components/account-setting-section';
+export type { AccountSettingSectionProps } from './components/account-setting-section';
