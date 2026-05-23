@@ -16,15 +16,23 @@ export type SocialLinkItem = {
   href?: string;
 };
 
-export type SocialLinkSectionProps = {
-  mode?: 'view' | 'edit';
+type SocialLinkSectionViewProps = {
+  mode?: 'view';
   links: SocialLinkItem[];
-  onUrlChange?: (id: string, value: string) => void;
-  onDelete?: (id: string) => void;
-  addValue?: string;
-  onAddChange?: (value: string) => void;
   className?: string;
 };
+
+type SocialLinkSectionEditProps = {
+  mode: 'edit';
+  links: SocialLinkItem[];
+  onUrlChange: (id: string, value: string) => void;
+  onDelete: (id: string) => void;
+  addValue: string;
+  onAddChange: (value: string) => void;
+  className?: string;
+};
+
+export type SocialLinkSectionProps = SocialLinkSectionViewProps | SocialLinkSectionEditProps;
 
 const iconWrapperVariant: Record<SocialLinkItem['platform'], string> = {
   github: S.iconWrapperGithub,
@@ -38,21 +46,15 @@ function PlatformIcon({ platform }: { platform: SocialLinkItem['platform'] }) {
   return <LinkedinIcon className={S.iconLinkedin} aria-hidden="true" />;
 }
 
-export function SocialLinkSection({
-  mode = 'view',
-  links,
-  onUrlChange,
-  onDelete,
-  addValue = '',
-  onAddChange,
-  className,
-}: SocialLinkSectionProps) {
+export function SocialLinkSection(props: SocialLinkSectionProps) {
+  const { links, className } = props;
+
   return (
     <section className={cn(S.section, className)}>
       <h2 className={S.sectionTitle}>소셜 링크</h2>
 
       <div className={S.itemsWrapper}>
-        {mode === 'view' ? (
+        {props.mode !== 'edit' ? (
           links.map((link) => (
             <div key={link.id} className={S.viewItemRow}>
               <a
@@ -83,14 +85,14 @@ export function SocialLinkSection({
                   </span>
                   <Input
                     value={link.url}
-                    onChange={(e) => onUrlChange?.(link.id, e.target.value)}
+                    onChange={(e) => props.onUrlChange(link.id, e.target.value)}
                     wrapperClassName="flex-1"
                     aria-label={`${link.label} URL`}
                   />
                   <Button
                     size="delete"
                     tone="red"
-                    onClick={() => onDelete?.(link.id)}
+                    onClick={() => props.onDelete(link.id)}
                     aria-label={`${link.label} 삭제`}
                   >
                     삭제
@@ -105,8 +107,8 @@ export function SocialLinkSection({
                   <PlusIcon className={S.iconAdd} aria-hidden="true" />
                 </span>
                 <Input
-                  value={addValue}
-                  onChange={(e) => onAddChange?.(e.target.value)}
+                  value={props.addValue}
+                  onChange={(e) => props.onAddChange(e.target.value)}
                   placeholder="링크를 입력해주세요"
                   wrapperClassName="flex-1"
                   aria-label="링크 추가"
