@@ -57,7 +57,7 @@ export function LoginPage() {
             />
             <span>로그인 유지</span>
           </label>
-          <a href="#" className={styles.resetLink}>
+          <a href="#" className={styles.resetLink} onClick={(e) => e.preventDefault()}>
             비밀번호 재설정
           </a>
         </div>
