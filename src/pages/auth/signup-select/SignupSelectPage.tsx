@@ -43,19 +43,7 @@ export function SignupSelectPage() {
 
       <div className={S.cardList}>
         {SIGNUP_TYPES.map(({ id, title, subtitle, path, iconWrapperClass }) => (
-          <div
-            key={id}
-            className={S.card}
-            role="button"
-            tabIndex={0}
-            onClick={() => navigate(path)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                navigate(path);
-              }
-            }}
-          >
+          <Link key={id} to={path} className={S.card}>
             <div className={iconWrapperClass}>
               <GraduationIcon className={S.cardIcon} aria-hidden="true" />
             </div>
@@ -63,7 +51,7 @@ export function SignupSelectPage() {
               <span className={S.cardTitle}>{title}</span>
               <span className={S.cardSubtitle}>{subtitle}</span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
