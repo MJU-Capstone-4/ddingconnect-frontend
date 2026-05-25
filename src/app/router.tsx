@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router';
-import { RootLayout } from '@/app/layouts';
+import { RootLayout, AuthLayout } from '@/app/layouts';
 import { HomePage } from '@/pages/home';
 import { LoginPage } from '@/pages/auth/login';
 import { SignupSelectPage } from '@/pages/auth/signup-select';
@@ -23,15 +23,18 @@ import { QnaDetailPage } from '@/pages/qna/detail';
 
 export const router = createBrowserRouter([
   {
-    element: <RootLayout />,
+    element: <AuthLayout />,
     children: [
-      { path: '/', element: <HomePage /> },
-
-      // auth
       { path: '/auth/login', element: <LoginPage /> },
       { path: '/auth/signup-select', element: <SignupSelectPage /> },
       { path: '/auth/student-signup', element: <StudentSignupPage /> },
       { path: '/auth/graduate-signup', element: <GraduateSignupPage /> },
+    ],
+  },
+  {
+    element: <RootLayout />,
+    children: [
+      { path: '/', element: <HomePage /> },
 
       // career-map
       { path: '/career-map/input', element: <CareerMapInputPage /> },
