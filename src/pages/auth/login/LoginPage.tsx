@@ -16,7 +16,6 @@ export function LoginPage() {
 
   const handleSubmit = () => {
     // TODO: 로그인 API 연동
-    console.log({ email, password, keepLogin });
   };
 
   return (
