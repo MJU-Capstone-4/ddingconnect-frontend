@@ -14,12 +14,13 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [keepLogin, setKeepLogin] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     // TODO: 로그인 API 연동
   };
 
   return (
-    <div className={styles.page}>
+    <form className={styles.page} onSubmit={handleSubmit}>
       <div className={styles.logoSection}>
         <LogoIcon className={styles.logoIcon} aria-hidden="true" />
         <h1 className={styles.serviceName}>DdingConnect</h1>
@@ -63,7 +64,7 @@ export function LoginPage() {
       </div>
 
       <div className={styles.bottomSection}>
-        <Button type="submit" size="auth" withDecoration onClick={handleSubmit}>
+        <Button type="submit" size="auth" withDecoration>
           로그인
         </Button>
         <p className={styles.signupRow}>
@@ -73,6 +74,6 @@ export function LoginPage() {
           </Link>
         </p>
       </div>
-    </div>
+    </form>
   );
 }
