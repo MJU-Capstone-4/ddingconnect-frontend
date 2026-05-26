@@ -16,7 +16,7 @@ export const fileUploadRootError = [
 export const fileUploadRootDisabled = 'pointer-events-none cursor-not-allowed opacity-50';
 
 export const fileUploadVariantMap = {
-  signup: 'w-[358px] h-[146px]',
+  signup: 'w-full h-[146px]',
   modal: 'w-[277px] h-[130px]',
 } as const;
 
