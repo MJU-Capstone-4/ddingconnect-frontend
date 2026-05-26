@@ -12,4 +12,7 @@ export const tokenText = 'text-xs font-bold text-text-primary';
 
 export const popularLabel = 'text-2xs font-medium text-primary leading-none';
 
+export const priceButton =
+  'h-8 min-w-[74px] rounded-full border border-black/[0.18] bg-primary px-3 text-xs font-medium text-white hover:bg-primary-hover active:bg-primary-pressed';
+
 export const divider = 'border-0 border-b border-border-light';

@@ -9,6 +9,7 @@ import {
   icon,
   tokenText,
   popularLabel,
+  priceButton,
   divider,
 } from './point-charge-option.styles';
 
@@ -41,7 +42,7 @@ export function PointChargeOption({
         </div>
         <button
           type="button"
-          className="h-8 min-w-[74px] rounded-full border border-black/[0.18] bg-primary px-3 text-xs font-medium text-white hover:bg-primary-hover active:bg-primary-pressed"
+          className={priceButton}
           aria-label={`${tokenAmount}토큰 ₩${price.toLocaleString('ko-KR')} 충전하기`}
           onClick={onClick}
         >
