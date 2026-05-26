@@ -17,7 +17,7 @@ export const heroSectionVariants = cva('relative w-full overflow-hidden', {
       roadmap: 'bg-gradient-roadmap',
       qna: 'bg-gradient-qna',
       jobInfo: 'bg-gradient-job-info',
-      point: 'bg-gradient-point',
+      point: 'bg-point',
       activity: 'bg-gradient-job-info',
     },
     collapsed: {

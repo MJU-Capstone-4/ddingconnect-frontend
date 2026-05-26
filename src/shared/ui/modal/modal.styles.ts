@@ -25,7 +25,7 @@ export const modalHeaderVariants = cva('relative overflow-hidden shrink-0', {
   variants: {
     tone: {
       blue: 'bg-gradient-primary',
-      yellow: 'bg-gradient-point',
+      yellow: 'bg-point',
       green: 'bg-gradient-job-info',
       purple: 'bg-gradient-roadmap',
     },

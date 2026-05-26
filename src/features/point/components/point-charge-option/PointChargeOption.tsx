@@ -1,20 +1,22 @@
 import PointIcon from '@/shared/assets/icons/point.svg?react';
-import { Chip } from '@/shared/ui';
 import { cn } from '@/shared/utils/cn';
 
 import {
   container,
   row,
   leftGroup,
-  iconWrap,
+  labelColumn,
   icon,
   tokenText,
+  popularLabel,
+  priceButton,
   divider,
 } from './point-charge-option.styles';
 
 export type PointChargeOptionProps = {
   tokenAmount: number;
   price: number;
+  isPopular?: boolean;
   showDivider?: boolean;
   onClick?: () => void;
   className?: string;
@@ -23,6 +25,7 @@ export type PointChargeOptionProps = {
 export function PointChargeOption({
   tokenAmount,
   price,
+  isPopular,
   showDivider = true,
   onClick,
   className,
@@ -31,21 +34,20 @@ export function PointChargeOption({
     <div className={cn(container, className)}>
       <div className={row}>
         <div className={leftGroup}>
-          <div className={iconWrap}>
-            <PointIcon className={icon} aria-hidden="true" />
+          <PointIcon className={icon} aria-hidden="true" />
+          <div className={labelColumn}>
+            {isPopular && <span className={popularLabel}>인기</span>}
+            <span className={tokenText}>{tokenAmount} 토큰</span>
           </div>
-          <span className={tokenText}>{tokenAmount}토큰</span>
         </div>
-        <Chip
-          variant="filled"
-          active={true}
-          size="lg"
+        <button
           type="button"
+          className={priceButton}
           aria-label={`${tokenAmount}토큰 ₩${price.toLocaleString('ko-KR')} 충전하기`}
           onClick={onClick}
         >
           ₩{price.toLocaleString('ko-KR')}
-        </Chip>
+        </button>
       </div>
       {showDivider && <hr className={divider} />}
     </div>
