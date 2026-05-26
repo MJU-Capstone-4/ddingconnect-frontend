@@ -5,6 +5,7 @@ import {
   container,
   row,
   leftGroup,
+  labelColumn,
   icon,
   tokenText,
   popularLabel,
@@ -33,7 +34,7 @@ export function PointChargeOption({
       <div className={row}>
         <div className={leftGroup}>
           <PointIcon className={icon} aria-hidden="true" />
-          <div className="flex flex-col">
+          <div className={labelColumn}>
             {isPopular && <span className={popularLabel}>인기</span>}
             <span className={tokenText}>{tokenAmount} 토큰</span>
           </div>
