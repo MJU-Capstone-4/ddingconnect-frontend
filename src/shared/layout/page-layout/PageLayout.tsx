@@ -14,7 +14,7 @@ export function PageLayout({
   withSafeArea = true,
 }: PageLayoutProps) {
   const classes = [
-    'flex-1 min-h-0 overflow-y-auto',
+    'flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
     withPadding && 'px-page-x pt-page-y',
     className,
   ]
