@@ -13,7 +13,7 @@
     background: linear-gradient(135deg, var(--color-green-500), var(--color-green-400));
   }
   .bg-gradient-point {
-    background: linear-gradient(135deg, var(--color-yellow-400), var(--color-yellow-300));
+    background: var(--color-yellow-400);
   }
 
   /* Primary gradient */
