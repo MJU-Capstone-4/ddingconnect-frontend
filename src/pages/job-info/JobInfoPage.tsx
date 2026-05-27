@@ -1,5 +1,14 @@
 import { useState } from 'react';
 
+import {
+  CAREER_OPTIONS,
+  MOCK_JOBS,
+  MOCK_SENIOR_JOB,
+  POSITION_OPTIONS,
+  REGION_OPTIONS,
+  getFilteredJobs,
+} from '@/features/job-info/model';
+import type { CareerType, PositionType, RegionType } from '@/features/job-info/types';
 import { JobPostCard } from '@/features/job/components/job-post-card';
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import CloseIcon from '@/shared/assets/icons/close.svg?react';
@@ -10,106 +19,6 @@ import { HeroSection } from '@/shared/ui/hero-section';
 import { Search } from '@/shared/ui/search';
 
 import * as styles from './job-info-page.styles';
-
-type PositionType = '백엔드' | '프론트엔드' | '데이터';
-type CareerType = '신입' | '1-3년' | '3-5년' | '경력무관';
-type RegionType = '서울' | '경기' | '인천' | '부산';
-
-type JobData = {
-  id: number;
-  companyName: string;
-  position: string;
-  positionType: PositionType;
-  location: string;
-  region: RegionType;
-  experience: CareerType;
-  salary: string;
-  dDay: string;
-  techStacks?: string[];
-  isNew?: boolean;
-};
-
-const POSITION_OPTIONS: PositionType[] = ['백엔드', '프론트엔드', '데이터'];
-const CAREER_OPTIONS: CareerType[] = ['신입', '1-3년', '3-5년', '경력무관'];
-const REGION_OPTIONS: RegionType[] = ['서울', '경기', '인천', '부산'];
-
-const MOCK_SENIOR_JOB = {
-  companyName: '들어가고 싶은 회사',
-  position: '백엔드 개발자',
-  location: '경기 성남시',
-  experience: '신입',
-  salary: '회사내규',
-  dDay: 'D-7',
-  isNew: true,
-} as const;
-
-const MOCK_JOBS: JobData[] = [
-  {
-    id: 1,
-    companyName: '들어가고 싶은 회사',
-    position: '백엔드 개발자',
-    positionType: '백엔드',
-    location: '경기 성남시',
-    region: '경기',
-    experience: '신입',
-    salary: '회사내규',
-    dDay: 'D-7',
-    techStacks: ['JavaScript', 'React', 'Node.js'],
-    isNew: true,
-  },
-  {
-    id: 2,
-    companyName: '들어가고 싶은 회사',
-    position: '백엔드 개발자',
-    positionType: '백엔드',
-    location: '경기 성남시',
-    region: '경기',
-    experience: '신입',
-    salary: '회사내규',
-    dDay: 'D-7',
-    techStacks: ['JavaScript', 'React', 'Node.js'],
-    isNew: true,
-  },
-  {
-    id: 3,
-    companyName: '네카라쿠배',
-    position: '프론트엔드 개발자',
-    positionType: '프론트엔드',
-    location: '서울 강남구',
-    region: '서울',
-    experience: '1-3년',
-    salary: '4,000만원',
-    dDay: 'D-14',
-    techStacks: ['TypeScript', 'React', 'Next.js'],
-    isNew: false,
-  },
-  {
-    id: 4,
-    companyName: '데이터 분석 기업',
-    position: '데이터 분석가',
-    positionType: '데이터',
-    location: '인천 연수구',
-    region: '인천',
-    experience: '3-5년',
-    salary: '협의',
-    dDay: 'D-3',
-    techStacks: ['Python', 'SQL', 'Tableau'],
-    isNew: false,
-  },
-  {
-    id: 5,
-    companyName: '좋은 스타트업',
-    position: '백엔드 개발자',
-    positionType: '백엔드',
-    location: '부산 해운대구',
-    region: '부산',
-    experience: '경력무관',
-    salary: '5,000만원',
-    dDay: 'D-21',
-    techStacks: ['Java', 'Spring', 'MySQL'],
-    isNew: true,
-  },
-];
 
 export function JobInfoPage() {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -135,17 +44,11 @@ export function JobInfoPage() {
     setIsFilterOpen(false);
   }
 
-  const filteredJobs = MOCK_JOBS.filter((job) => {
-    const kw = searchKeyword.trim().toLowerCase();
-    const matchSearch =
-      !kw ||
-      job.companyName.toLowerCase().includes(kw) ||
-      job.position.toLowerCase().includes(kw) ||
-      job.techStacks?.some((t) => t.toLowerCase().includes(kw));
-    const matchPosition = !selectedPosition || job.positionType === selectedPosition;
-    const matchCareer = !selectedCareer || job.experience === selectedCareer;
-    const matchRegion = !selectedRegion || job.region === selectedRegion;
-    return matchSearch && matchPosition && matchCareer && matchRegion;
+  const filteredJobs = getFilteredJobs(MOCK_JOBS, {
+    searchKeyword,
+    position: selectedPosition,
+    career: selectedCareer,
+    region: selectedRegion,
   });
 
   return (
