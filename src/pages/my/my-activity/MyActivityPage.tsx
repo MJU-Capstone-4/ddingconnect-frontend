@@ -113,101 +113,107 @@ export function MyActivityPage() {
       </div>
 
       <div className={styles.sections}>
-        <section className={styles.section} aria-label="커피챗 활동">
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionTitleRow}>
-              <span className={styles.sectionTitle}>커피챗</span>
-              <span className={styles.sectionCount}>{COFFEE_CHAT_TOTAL}</span>
-            </div>
-            <button
-              type="button"
-              className={styles.viewAllBtn}
-              onClick={() => {
-                // TODO: 커피챗 전체보기 연결
-              }}
-              aria-label="커피챗 전체보기"
-            >
-              전체보기
-              <ChevronRightIcon className="w-3.5 h-3.5" aria-hidden="true" />
-            </button>
-          </div>
-          <div className={styles.cardList}>
-            {MOCK_COFFEE_CHATS.map((chat, i) => (
-              <SeniorProfileCard
-                key={i}
-                {...chat}
+        {(selectedCategory === '전체' || selectedCategory === '커피챗') && (
+          <section className={styles.section} aria-label="커피챗 활동">
+            <div className={styles.sectionHeader}>
+              <div className={styles.sectionTitleRow}>
+                <span className={styles.sectionTitle}>커피챗</span>
+                <span className={styles.sectionCount}>{COFFEE_CHAT_TOTAL}</span>
+              </div>
+              <button
+                type="button"
+                className={styles.viewAllBtn}
                 onClick={() => {
-                  // TODO: 선배 상세 페이지 연결
+                  // TODO: 커피챗 전체보기 연결
                 }}
-                className="w-full"
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.section} aria-label="로드맵 활동">
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionTitleRow}>
-              <span className={styles.sectionTitle}>로드맵</span>
-              <span className={styles.sectionCount}>{ROADMAP_TOTAL}</span>
+                aria-label="커피챗 전체보기"
+              >
+                전체보기
+                <ChevronRightIcon className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
             </div>
-            <button
-              type="button"
-              className={styles.viewAllBtn}
-              onClick={() => {
-                // TODO: 로드맵 전체보기 연결
-              }}
-              aria-label="로드맵 전체보기"
-            >
-              전체보기
-              <ChevronRightIcon className="w-3.5 h-3.5" aria-hidden="true" />
-            </button>
-          </div>
-          <div className={styles.cardList}>
-            {MOCK_ROADMAPS.map((roadmap) => (
-              <RoadmapResultCard
-                key={roadmap.title}
-                {...roadmap}
-                onDownload={() => {
-                  // TODO: 로드맵 다운로드
-                }}
-                className="w-full"
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.section} aria-label="Q&A 활동">
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionTitleRow}>
-              <span className={styles.sectionTitle}>Q&A</span>
-              <span className={styles.sectionCount}>{QNA_TOTAL}</span>
+            <div className={styles.cardList}>
+              {MOCK_COFFEE_CHATS.map((chat, i) => (
+                <SeniorProfileCard
+                  key={i}
+                  {...chat}
+                  onClick={() => {
+                    // TODO: 선배 상세 페이지 연결
+                  }}
+                  className="w-full"
+                />
+              ))}
             </div>
-            <button
-              type="button"
-              className={styles.viewAllBtn}
-              onClick={() => {
-                // TODO: Q&A 전체보기 연결
-              }}
-              aria-label="Q&A 전체보기"
-            >
-              전체보기
-              <ChevronRightIcon className="w-3.5 h-3.5" aria-hidden="true" />
-            </button>
-          </div>
-          <div className={styles.cardList}>
-            {MOCK_QNAS.map((qna) => (
-              <QnaPostCard
-                key={qna.title}
-                {...qna}
+          </section>
+        )}
+
+        {(selectedCategory === '전체' || selectedCategory === '로드맵') && (
+          <section className={styles.section} aria-label="로드맵 활동">
+            <div className={styles.sectionHeader}>
+              <div className={styles.sectionTitleRow}>
+                <span className={styles.sectionTitle}>로드맵</span>
+                <span className={styles.sectionCount}>{ROADMAP_TOTAL}</span>
+              </div>
+              <button
+                type="button"
+                className={styles.viewAllBtn}
                 onClick={() => {
-                  // TODO: Q&A 상세 페이지 연결
+                  // TODO: 로드맵 전체보기 연결
                 }}
-                className="w-full"
-              />
-            ))}
-          </div>
-        </section>
+                aria-label="로드맵 전체보기"
+              >
+                전체보기
+                <ChevronRightIcon className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
+            </div>
+            <div className={styles.cardList}>
+              {MOCK_ROADMAPS.map((roadmap) => (
+                <RoadmapResultCard
+                  key={roadmap.title}
+                  {...roadmap}
+                  onDownload={() => {
+                    // TODO: 로드맵 다운로드
+                  }}
+                  className="w-full"
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {(selectedCategory === '전체' || selectedCategory === 'Q&A') && (
+          <section className={styles.section} aria-label="Q&A 활동">
+            <div className={styles.sectionHeader}>
+              <div className={styles.sectionTitleRow}>
+                <span className={styles.sectionTitle}>Q&A</span>
+                <span className={styles.sectionCount}>{QNA_TOTAL}</span>
+              </div>
+              <button
+                type="button"
+                className={styles.viewAllBtn}
+                onClick={() => {
+                  // TODO: Q&A 전체보기 연결
+                }}
+                aria-label="Q&A 전체보기"
+              >
+                전체보기
+                <ChevronRightIcon className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
+            </div>
+            <div className={styles.cardList}>
+              {MOCK_QNAS.map((qna) => (
+                <QnaPostCard
+                  key={qna.title}
+                  {...qna}
+                  onClick={() => {
+                    // TODO: Q&A 상세 페이지 연결
+                  }}
+                  className="w-full"
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
