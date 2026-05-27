@@ -17,6 +17,7 @@ import {
   metaRow,
   metaText,
   nameGroup,
+  newBadge,
   positionStyle,
   topRow,
 } from './job-post-card.styles';
@@ -29,6 +30,8 @@ export type JobPostCardProps = {
   salary: string;
   dDay: string;
   techStacks?: string[];
+  isNew?: boolean;
+  buttonTone?: 'blue' | 'green';
   onApply?: () => void;
   className?: string;
 };
@@ -41,6 +44,8 @@ export function JobPostCard({
   salary,
   dDay,
   techStacks,
+  isNew,
+  buttonTone = 'green',
   onApply,
   className,
 }: JobPostCardProps) {
@@ -54,6 +59,11 @@ export function JobPostCard({
           <p className={companyNameStyle}>{companyName}</p>
           <p className={positionStyle}>{position}</p>
         </div>
+        {isNew && (
+          <span className={newBadge} aria-label="신규 공고">
+            NEW
+          </span>
+        )}
       </div>
 
       <div className={metaGrid}>
@@ -89,7 +99,7 @@ export function JobPostCard({
         className="mt-3"
         fullWidth
         size="jobApply"
-        tone="green"
+        tone={buttonTone}
         variant="solid"
         type="button"
         aria-label={`${companyName} 지원하기`}
