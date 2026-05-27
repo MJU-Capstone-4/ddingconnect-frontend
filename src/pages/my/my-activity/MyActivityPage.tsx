@@ -60,7 +60,7 @@ const MOCK_QNAS: QnaMock[] = [
     createdAt: '2시간 전',
     title: 'Spring Boot와 Node.js 중 어떤 걸 먼저 공부해야 할까요?',
     preview:
-      '프론트엔드는 React를 공부하고 있는데, 백엔도도 배우고 싶습니다. 어느 것부터 시작하는 게 좋을까요?',
+      '프론트엔드는 React를 공부하고 있는데, 백엔드도 배우고 싶습니다. 어느 것부터 시작하는 게 좋을까요?',
     likeCount: 24,
     commentCount: 12,
     viewCount: 156,
