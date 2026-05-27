@@ -17,6 +17,7 @@ import { GraduateMyPage } from '@/pages/my-page/graduate';
 import { GraduateProfileEditPage } from '@/pages/my-page/graduate/edit';
 import { NotificationPage } from '@/pages/notification';
 import { PointChargePage } from '@/pages/point/charge';
+import { MyActivityPage } from '@/pages/my/my-activity';
 import { QnaListPage } from '@/pages/qna/list';
 import { QnaCreatePage } from '@/pages/qna/create';
 import { QnaDetailPage } from '@/pages/qna/detail';
@@ -47,6 +48,9 @@ export const router = createBrowserRouter([
 
       // job-info
       { path: '/job-info', element: <JobInfoPage /> },
+
+      // my
+      { path: '/my/activity', element: <MyActivityPage /> },
 
       // my-page
       { path: '/my-page/student', element: <StudentMyPage /> },
