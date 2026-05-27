@@ -8,6 +8,7 @@ import {
   actionButton,
   actionCount,
   actionIcon,
+  actionIconLiked,
   actions,
   card,
   contentSection,
@@ -15,6 +16,7 @@ import {
   footer,
   header,
   iconWrapper,
+  iconWrapperLiked,
   metaGroup,
   metaText,
   preview as previewStyle,
@@ -35,6 +37,7 @@ export type QnaPostCardProps = {
   likeCount: number;
   commentCount: number;
   viewCount: number;
+  isLiked?: boolean;
   onClick?: () => void;
   onLikeClick?: () => void;
   onCommentClick?: () => void;
@@ -50,6 +53,7 @@ export function QnaPostCard({
   likeCount,
   commentCount,
   viewCount,
+  isLiked = false,
   onClick,
   onLikeClick,
   onCommentClick,
@@ -103,9 +107,10 @@ export function QnaPostCard({
               onLikeClick?.();
             }}
             aria-label={`좋아요 ${likeCount}개`}
+            aria-pressed={isLiked}
           >
-            <span className={iconWrapper}>
-              <LikeIcon className={actionIcon} aria-hidden="true" />
+            <span className={isLiked ? iconWrapperLiked : iconWrapper}>
+              <LikeIcon className={isLiked ? actionIconLiked : actionIcon} aria-hidden="true" />
             </span>
             <span className={actionCount}>{likeCount}</span>
           </button>

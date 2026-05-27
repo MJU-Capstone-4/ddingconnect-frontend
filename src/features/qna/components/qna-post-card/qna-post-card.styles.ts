@@ -25,7 +25,12 @@ export const actionButton =
 export const iconWrapper =
   'w-[30px] h-[30px] rounded-full bg-gray-100 flex items-center justify-center shrink-0';
 
+export const iconWrapperLiked =
+  'w-[30px] h-[30px] rounded-full bg-primary flex items-center justify-center shrink-0';
+
 export const actionIcon = 'w-[15px] h-[15px] text-primary shrink-0';
+
+export const actionIconLiked = 'w-[15px] h-[15px] text-white shrink-0';
 
 export const actionCount = 'text-xs font-medium text-text-secondary';
 
