@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   CAREER_OPTIONS,
@@ -29,6 +29,44 @@ export function JobInfoPage() {
   const [tempPosition, setTempPosition] = useState<PositionType | null>(null);
   const [tempCareer, setTempCareer] = useState<CareerType | null>(null);
   const [tempRegion, setTempRegion] = useState<RegionType | null>(null);
+
+  const filterTriggerRef = useRef<HTMLButtonElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isFilterOpen) {
+      closeBtnRef.current?.focus();
+    } else {
+      filterTriggerRef.current?.focus();
+    }
+  }, [isFilterOpen]);
+
+  function handleDialogKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Escape') {
+      setIsFilterOpen(false);
+      return;
+    }
+    if (e.key === 'Tab') {
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable || focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+  }
 
   function openFilter() {
     setTempPosition(selectedPosition);
@@ -73,6 +111,7 @@ export function JobInfoPage() {
           />
         </div>
         <button
+          ref={filterTriggerRef}
           type="button"
           className={styles.filterBtn}
           aria-label="필터 열기"
@@ -120,14 +159,17 @@ export function JobInfoPage() {
         <>
           <div className={styles.filterOverlay} aria-hidden="true" />
           <div
+            ref={dialogRef}
             className={styles.filterSheet}
             role="dialog"
             aria-modal="true"
             aria-label="필터 패널"
+            onKeyDown={handleDialogKeyDown}
           >
             <div className={styles.filterHeader}>
               <span className={styles.filterTitle}>필터</span>
               <button
+                ref={closeBtnRef}
                 type="button"
                 className={styles.filterCloseBtn}
                 aria-label="필터 닫기"
