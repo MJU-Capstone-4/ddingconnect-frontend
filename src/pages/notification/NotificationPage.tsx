@@ -113,7 +113,7 @@ export function NotificationPage() {
               size="dialogAction"
               tone="blue"
               leftIcon={<CheckIcon className="w-3.5 h-3.5" />}
-              className="flex-1 !w-auto"
+              className="flex-1 w-auto!"
               onClick={() => {
                 console.log('수락하기');
                 setIsModalOpen(false);
@@ -126,7 +126,7 @@ export function NotificationPage() {
               variant="outline"
               tone="gray"
               leftIcon={<CloseIcon className="w-3.5 h-3.5" />}
-              className="flex-1 !w-auto"
+              className="flex-1 w-auto!"
               onClick={() => {
                 console.log('거절하기');
                 setIsModalOpen(false);
