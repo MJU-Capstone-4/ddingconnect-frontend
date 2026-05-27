@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { QnaPostCard } from '@/features/qna/components';
 import type { QnaPostCategory } from '@/features/qna/components';
@@ -113,6 +114,7 @@ const MOCK_POSTS: QnaPost[] = [
 ];
 
 export function QnaListPage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('전체');
   const [sortType, setSortType] = useState<SortType>('기본');
@@ -260,9 +262,7 @@ export function QnaListPage() {
         type="button"
         className={styles.fab}
         aria-label="글쓰기"
-        onClick={() => {
-          console.log('글쓰기');
-        }}
+        onClick={() => navigate('/qna/create')}
       >
         <PlusIcon className="w-5 h-5" aria-hidden="true" />
       </button>
