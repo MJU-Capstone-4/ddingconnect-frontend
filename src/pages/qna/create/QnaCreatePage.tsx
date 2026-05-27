@@ -115,7 +115,7 @@ export function QnaCreatePage() {
           tone="gray"
           size="qnaSubmit"
           className="flex-1"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/qna')}
         >
           취소
         </Button>
