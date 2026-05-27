@@ -5,7 +5,7 @@ import type { BottomNavigationItem } from '@/shared/layout/bottom-navigation';
 function getActiveKey(pathname: string): BottomNavigationItem['key'] | undefined {
   if (pathname === '/') return 'home';
   if (pathname.startsWith('/coffee-chat')) return 'coffeeChat';
-  if (pathname.startsWith('/career-map')) return 'roadmap';
+  if (pathname.startsWith('/roadmap') || pathname.startsWith('/career-map')) return 'roadmap';
   if (pathname.startsWith('/qna')) return 'qna';
   if (pathname.startsWith('/my-page') || pathname.startsWith('/my/')) return 'my';
   return undefined;
