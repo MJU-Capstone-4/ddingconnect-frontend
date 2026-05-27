@@ -8,7 +8,10 @@ export const iconBox =
 
 export const iconBoxIcon = 'w-7 h-7 text-text-secondary';
 
-export const nameGroup = 'flex flex-col gap-0.5';
+export const nameGroup = 'flex flex-col gap-0.5 flex-1';
+
+export const newBadge =
+  'self-start shrink-0 rounded-full bg-red-500 text-white text-[10px] font-bold px-2 h-[18px] flex items-center leading-none';
 
 export const companyNameStyle = 'text-[15px] font-bold text-text-primary leading-tight';
 
