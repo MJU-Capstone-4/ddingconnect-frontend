@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import { RoadmapResultCard } from '@/features/roadmap/components';
 import ArrowDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
@@ -15,6 +15,7 @@ const MOCK_ROADMAPS = [
 ];
 
 export function RoadmapResultPage() {
+  const infoContentId = useId();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   function handleDownload(id: number) {
@@ -38,6 +39,7 @@ export function RoadmapResultPage() {
           className={styles.infoToggleButton}
           onClick={() => setIsInfoOpen((prev) => !prev)}
           aria-expanded={isInfoOpen}
+          aria-controls={infoContentId}
         >
           <span className={styles.infoToggleTitle}>정보 입력</span>
           <ArrowDownIcon
@@ -46,7 +48,11 @@ export function RoadmapResultPage() {
           />
         </button>
 
-        {isInfoOpen && <div className={styles.infoContent}>{/* TODO: 정보 입력 폼 */}</div>}
+        {isInfoOpen && (
+          <div id={infoContentId} className={styles.infoContent}>
+            {/* TODO: 정보 입력 폼 */}
+          </div>
+        )}
       </div>
 
       <section className={styles.roadmapSection}>
