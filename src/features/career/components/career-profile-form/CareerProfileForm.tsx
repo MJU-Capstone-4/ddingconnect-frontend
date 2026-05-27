@@ -6,7 +6,6 @@ import {
   container,
   formBody,
   sectionTitle,
-  selectFullWidth,
   submitWrapper,
   twoColRow,
 } from './career-profile-form.styles';
@@ -61,13 +60,13 @@ export function CareerProfileForm({
             value={values.grade}
             placeholder="1"
             onChange={(value) => onChange('grade', value)}
-            className={selectFullWidth}
           />
           <Input
             label="현재 학점"
             value={values.gpa}
             placeholder="3.5 / 4.5"
             onChange={(e) => onChange('gpa', e.target.value)}
+            wrapperClassName="flex-1"
           />
         </div>
 
