@@ -402,7 +402,7 @@ export function GraduateMyPage() {
         <section className={S.cardSection} aria-label="내 명함">
           <div className={S.cardSectionHeader}>
             <h2 className={S.cardSectionTitle}>내 명함</h2>
-            {profile.hasBusinessCard && (
+            {isEditMode && profile.hasBusinessCard && (
               <Button
                 type="button"
                 size="tiny"
@@ -432,15 +432,17 @@ export function GraduateMyPage() {
             )}
           </div>
 
-          <Button
-            type="button"
-            tone="blue"
-            size="accountSetting"
-            fullWidth
-            onClick={() => setIsCardModalOpen(true)}
-          >
-            명함 변경하기
-          </Button>
+          {isEditMode && (
+            <Button
+              type="button"
+              tone="blue"
+              size="accountSetting"
+              fullWidth
+              onClick={() => setIsCardModalOpen(true)}
+            >
+              명함 변경하기
+            </Button>
+          )}
         </section>
 
         {/* 소셜 링크 */}
