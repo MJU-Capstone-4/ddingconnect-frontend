@@ -516,7 +516,7 @@ export function GraduateMyPage() {
           onLogout={() => {
             clearAuthenticated();
             clearUserRole();
-            navigate('/auth/login');
+            navigate('/auth/login', { replace: true });
           }}
           onWithdraw={() => {
             // TODO: 회원 탈퇴 API 연동
