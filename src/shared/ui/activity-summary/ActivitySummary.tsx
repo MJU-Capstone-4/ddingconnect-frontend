@@ -24,13 +24,15 @@ export function ActivitySummary({
 }: ActivitySummaryProps) {
   return (
     <section className={cn(activitySummaryContainer, className)} aria-label={title}>
-      {onTitleClick ? (
-        <button type="button" onClick={onTitleClick} className={activitySummaryTitle}>
-          {title}
-        </button>
-      ) : (
-        <h2 className={activitySummaryTitle}>{title}</h2>
-      )}
+      <h2 className={activitySummaryTitle}>
+        {onTitleClick ? (
+          <button type="button" onClick={onTitleClick}>
+            {title}
+          </button>
+        ) : (
+          title
+        )}
+      </h2>
       <ul className={activitySummaryGrid}>
         {items.map((item) => (
           <ActivitySummaryItem key={item.label} {...item} />
