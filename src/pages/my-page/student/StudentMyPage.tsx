@@ -195,7 +195,7 @@ export function StudentMyPage() {
       <section className={S.heroSection} aria-label="프로필">
         <div className={S.avatarWrapper}>
           <div className={S.avatarCircle} aria-hidden="true">
-            {profile.nickname.charAt(0)}
+            {currentData.nickname.charAt(0)}
           </div>
 
           {!isEditMode && (
