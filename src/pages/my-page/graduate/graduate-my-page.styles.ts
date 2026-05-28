@@ -65,21 +65,32 @@ export const iconDepartment = 'bg-pink-50 text-pink-400';
 // 나의 공고 올리기 section (new)
 export const jobPostingSection = 'rounded-card bg-surface px-5 py-6';
 
+export const jobPostingSectionHeader = 'flex items-center justify-between mb-4';
+
 export const jobPostingSectionTitle = 'text-[15px] font-semibold text-text-primary mb-4';
 
 export const jobPostingCardRow =
   'flex items-center gap-3 py-4 w-full rounded-xl cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-opacity hover:opacity-80 active:opacity-60';
 
+export const jobPostingCardRowStatic = 'flex items-center gap-3 py-4 w-full';
+
 export const jobPostingIconWrapper =
   'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gray-600';
 
+export const jobPostingViewIconWrapper =
+  'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-green-400';
+
 export const jobPostingPlusIcon = 'w-4 h-4 text-white';
+
+export const jobPostingBagIcon = 'w-5 h-5 text-white';
 
 export const jobPostingTextContent = 'flex flex-col gap-0.5 flex-1 min-w-0';
 
 export const jobPostingTextLabel = 'text-xs text-text-secondary';
 
 export const jobPostingTextMain = 'text-xs font-semibold text-text-primary truncate';
+
+export const jobPostingViewTextMain = 'text-sm font-semibold text-text-primary truncate';
 
 export const jobPostingChevron = 'w-4 h-4 text-gray-300 shrink-0';
 

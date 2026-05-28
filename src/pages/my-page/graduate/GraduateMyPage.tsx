@@ -370,34 +370,79 @@ export function GraduateMyPage() {
         />
 
         {/* 나의 공고 올리기 */}
-        <section className={S.jobPostingSection} aria-label="나의 공고 올리기">
-          <h2 className={S.jobPostingSectionTitle}>나의 공고 올리기</h2>
-          <div
-            className={S.jobPostingCardRow}
-            role="button"
-            tabIndex={0}
-            onClick={handleOpenJobPostingModal}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleOpenJobPostingModal();
-              }
-            }}
-            aria-label="나의 공고 올리기"
-          >
-            <span className={S.jobPostingIconWrapper}>
-              <PlusIcon className={S.jobPostingPlusIcon} aria-hidden="true" />
-            </span>
-            <div className={S.jobPostingTextContent}>
-              <span className={S.jobPostingTextLabel}>공고올리기</span>
-              <span className={S.jobPostingTextMain}>
-                {hasJobPosting
-                  ? profile.jobPostingLinks[0]
-                  : `${profile.nickname}의 채용공고를 올려주세요`}
+        <section
+          className={S.jobPostingSection}
+          aria-label={isEditMode ? '나의 공고 올리기' : '공고'}
+        >
+          <h2 className={S.jobPostingSectionTitle}>{isEditMode ? '나의 공고 올리기' : '공고'}</h2>
+
+          {!hasJobPosting ? (
+            <div
+              className={S.jobPostingCardRow}
+              {...(isEditMode && {
+                role: 'button' as const,
+                tabIndex: 0,
+                onClick: handleOpenJobPostingModal,
+                onKeyDown: (e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleOpenJobPostingModal();
+                  }
+                },
+                'aria-label': '공고 올리기',
+              })}
+            >
+              <span className={S.jobPostingIconWrapper}>
+                <PlusIcon className={S.jobPostingPlusIcon} aria-hidden="true" />
               </span>
+              <div className={S.jobPostingTextContent}>
+                <span className={S.jobPostingTextLabel}>
+                  {isEditMode ? '공고 올리기' : '공고 링크'}
+                </span>
+                <span className={S.jobPostingTextMain}>공고를 올려주세요</span>
+              </div>
+              <ChevronRightIcon className={S.jobPostingChevron} aria-hidden="true" />
             </div>
-            <ChevronRightIcon className={S.jobPostingChevron} aria-hidden="true" />
-          </div>
+          ) : isEditMode ? (
+            <div className={S.jobPostingCardRowStatic}>
+              <span className={S.jobPostingViewIconWrapper}>
+                <BagIcon className={S.jobPostingBagIcon} aria-hidden="true" />
+              </span>
+              <div className={S.jobPostingTextContent}>
+                <span className={S.jobPostingTextLabel}>공고 올리기</span>
+                <span className={S.jobPostingTextMain}>{currentData.jobPostingLinks[0]}</span>
+              </div>
+              <Button
+                type="button"
+                size="delete"
+                tone="red"
+                onClick={handleDeleteJobPosting}
+                aria-label="공고 삭제"
+              >
+                삭제
+              </Button>
+            </div>
+          ) : (
+            <div
+              className={S.jobPostingCardRow}
+              role="button"
+              tabIndex={0}
+              onClick={() => {}}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
+              }}
+              aria-label={`${profile.nickname}의 채용공고 확인`}
+            >
+              <span className={S.jobPostingViewIconWrapper}>
+                <BagIcon className={S.jobPostingBagIcon} aria-hidden="true" />
+              </span>
+              <div className={S.jobPostingTextContent}>
+                <span className={S.jobPostingTextLabel}>공고 링크</span>
+                <span className={S.jobPostingViewTextMain}>{profile.jobPostingLinks[0]}</span>
+              </div>
+              <ChevronRightIcon className={S.jobPostingChevron} aria-hidden="true" />
+            </div>
+          )}
         </section>
 
         {/* 내 명함 */}
