@@ -26,8 +26,8 @@ export function CareerFieldsSection({
     <section className={cn(S.section, className)} aria-label={title}>
       <h2 className={S.sectionTitle}>{title}</h2>
       <ul>
-        {fields.map((field) => (
-          <li key={field.label} className={S.row}>
+        {fields.map((field, index) => (
+          <li key={`${field.label}-${index}`} className={S.row}>
             <div className={cn(S.iconWrapper, field.iconClassName)} aria-hidden="true">
               {field.icon}
             </div>
