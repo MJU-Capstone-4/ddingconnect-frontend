@@ -120,6 +120,14 @@ export function StudentMyPage() {
     setDraftProfile((p) => ({ ...p, portfolio: null }));
   };
 
+  const handleAddPortfolio = () => {
+    // TODO: 파일 업로드 API 연동
+    setDraftProfile((p) => ({
+      ...p,
+      portfolio: { title: '이후배 포트폴리오', url: '' },
+    }));
+  };
+
   const currentData = isEditMode ? draftProfile : profile;
 
   const basicInfoItems: BasicInfoItem[] = [
@@ -269,10 +277,9 @@ export function StudentMyPage() {
           mode={isEditMode ? 'edit' : 'view'}
           portfolio={currentData.portfolio}
           label="이후배 포트폴리오"
+          onClick={isEditMode ? handleAddPortfolio : undefined}
           onDelete={isEditMode ? handleDeletePortfolio : undefined}
         />
-
-        {isEditMode && <PortfolioSection mode="view" portfolio={null} label="이후배 포트폴리오" />}
 
         <AccountSettingSection
           onResetPassword={() => {}}
