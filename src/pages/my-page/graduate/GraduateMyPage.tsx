@@ -581,7 +581,13 @@ export function GraduateMyPage() {
       </Modal>
 
       {/* 나의 공고 올리기 Modal */}
-      <Modal open={isJobPostingModalOpen} onOpenChange={(open) => setIsJobPostingModalOpen(open)}>
+      <Modal
+        open={isJobPostingModalOpen}
+        onOpenChange={(open) => {
+          setIsJobPostingModalOpen(open);
+          if (!open) setPendingJobLinks(['']);
+        }}
+      >
         <Modal.Content size="lg">
           <Modal.Header tone="green">
             <Modal.Icon>
