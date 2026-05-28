@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
@@ -17,6 +18,7 @@ const INITIAL_DATA: CareerProfileFormValues = {
 };
 
 export function RoadmapPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<CareerProfileFormValues>(INITIAL_DATA);
 
   function handleChange(field: keyof CareerProfileFormValues, value: string) {
@@ -24,8 +26,8 @@ export function RoadmapPage() {
   }
 
   function handleGenerateRoadmap() {
-    console.log('로드맵 생성:', formData);
-    // TODO: API 연동
+    // TODO: 로드맵 생성 API 연동
+    navigate('/roadmap/result');
   }
 
   return (
