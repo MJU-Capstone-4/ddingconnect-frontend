@@ -89,7 +89,7 @@ export function GraduateMyPage() {
   };
 
   const handleSave = () => {
-    console.log(draftProfile);
+    // TODO: 프로필 수정 API 연동
     setProfile(draftProfile);
     setIsEditMode(false);
   };
