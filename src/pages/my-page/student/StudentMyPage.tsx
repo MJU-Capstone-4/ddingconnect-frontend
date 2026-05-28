@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
@@ -120,12 +120,21 @@ export function StudentMyPage() {
     setDraftProfile((p) => ({ ...p, portfolio: null }));
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleAddPortfolio = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     // TODO: 파일 업로드 API 연동
     setDraftProfile((p) => ({
       ...p,
-      portfolio: { title: '이후배 포트폴리오', url: '' },
+      portfolio: { title: file.name, url: '' },
     }));
+    e.target.value = '';
   };
 
   const currentData = isEditMode ? draftProfile : profile;
@@ -287,6 +296,14 @@ export function StudentMyPage() {
           onWithdraw={() => {}}
         />
       </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf"
+        className="hidden"
+        onChange={handleFileChange}
+      />
     </div>
   );
 }
