@@ -124,9 +124,9 @@ export function CoffeeChatApplyPage() {
         <CareerFieldsSection fields={careerFields} />
 
         {/* 기술 스택 */}
-        <section className="rounded-card bg-surface px-5 pt-6 pb-5" aria-label="기술 스택">
-          <h2 className="text-[15px] font-semibold text-text-primary mb-4">기술 스택</h2>
-          <div className="flex flex-wrap gap-2">
+        <section className={S.techStackSection} aria-label="기술 스택">
+          <h2 className={S.techStackTitle}>기술 스택</h2>
+          <div className={S.techStackList}>
             {MOCK_SENIOR.techStacks.map((stack) => (
               <Chip key={stack} tone="gray" size="sm" className="pointer-events-none">
                 {stack}

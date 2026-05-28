@@ -13,3 +13,8 @@ export const iconExperience = 'bg-green-50 text-green-500';
 
 // 선배 프로필 카드 full-width 오버라이드
 export const profileCard = 'w-full';
+
+// 기술 스택 섹션
+export const techStackSection = 'rounded-card bg-surface px-5 pt-6 pb-5';
+export const techStackTitle = 'text-[15px] font-semibold text-text-primary mb-4';
+export const techStackList = 'flex flex-wrap gap-2';
