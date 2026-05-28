@@ -31,7 +31,7 @@ export function PortfolioSection({
   className,
 }: PortfolioSectionProps) {
   const isEdit = mode === 'edit';
-  const isEmpty = !portfolio && !isEdit;
+  const isEmpty = !portfolio;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
