@@ -1,7 +1,6 @@
 import GithubIcon from '@/shared/assets/icons/github.svg?react';
 import LinkedinIcon from '@/shared/assets/icons/linkedin.svg?react';
 import ChevronRightIcon from '@/shared/assets/icons/chevron-right.svg?react';
-import PlusIcon from '@/shared/assets/icons/plus.svg?react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
@@ -27,8 +26,6 @@ type SocialLinkSectionEditProps = {
   links: SocialLinkItem[];
   onUrlChange: (id: string, value: string) => void;
   onDelete: (id: string) => void;
-  addValue: string;
-  onAddChange: (value: string) => void;
   className?: string;
 };
 
@@ -115,21 +112,6 @@ export function SocialLinkSection(props: SocialLinkSectionProps) {
                 </div>
               </div>
             ))}
-            <div className={S.editItemBlock}>
-              <span className={S.editItemLabel}>링크추가하기</span>
-              <div className={S.editItemRow}>
-                <span className={cn(S.iconWrapperBase, S.iconWrapperAdd)}>
-                  <PlusIcon className={S.iconAdd} aria-hidden="true" />
-                </span>
-                <Input
-                  value={props.addValue}
-                  onChange={(e) => props.onAddChange(e.target.value)}
-                  placeholder="링크를 입력해주세요"
-                  wrapperClassName="flex-1"
-                  aria-label="링크 추가"
-                />
-              </div>
-            </div>
           </>
         )}
       </div>
