@@ -1,5 +1,6 @@
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import ClockIcon from '@/shared/assets/icons/clock.svg?react';
+import LocationIcon from '@/shared/assets/icons/location.svg?react';
 import { Button, Chip } from '@/shared/ui';
 import { cn } from '@/shared/utils/cn';
 
@@ -25,7 +26,9 @@ export type SeniorProfileCardProps = {
   company: string;
   job: string;
   career: string;
-  techStacks: string[];
+  region?: string;
+  techStacks?: string[];
+  buttonLabel?: string;
   onClick: () => void;
   className?: string;
 };
@@ -37,7 +40,9 @@ export function SeniorProfileCard({
   company,
   job,
   career,
-  techStacks,
+  region,
+  techStacks = [],
+  buttonLabel = '선배 페이지 둘러보기',
   onClick,
   className,
 }: SeniorProfileCardProps) {
@@ -66,6 +71,12 @@ export function SeniorProfileCard({
           <ClockIcon className={infoIcon} aria-hidden="true" />
           <span className={infoText}>{career}</span>
         </div>
+        {region && (
+          <div className={infoRow}>
+            <LocationIcon className={infoIcon} aria-hidden="true" />
+            <span className={infoText}>{region}</span>
+          </div>
+        )}
       </div>
 
       {techStacks.length > 0 && (
@@ -84,10 +95,10 @@ export function SeniorProfileCard({
         tone="blue"
         variant="solid"
         type="button"
-        aria-label={`${name} 선배 페이지 둘러보기`}
+        aria-label={`${name} ${buttonLabel}`}
         onClick={onClick}
       >
-        선배 페이지 둘러보기
+        {buttonLabel}
       </Button>
     </div>
   );
