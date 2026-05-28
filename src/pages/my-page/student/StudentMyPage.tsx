@@ -204,7 +204,6 @@ export function StudentMyPage() {
               className={S.avatarEditButton}
               onClick={enterEditMode}
               aria-label="프로필 수정"
-              aria-pressed={false}
             >
               <EditIcon className="w-3 h-3" aria-hidden="true" />
             </button>
