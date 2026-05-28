@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
+import PortfolioIcon from '@/shared/assets/icons/portfolio.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
 import CommentIcon from '@/shared/assets/icons/comment.svg?react';
@@ -15,6 +16,7 @@ import EditIcon from '@/shared/assets/icons/edit.svg?react';
 import { ActivitySummary } from '@/shared/ui/activity-summary';
 import type { ActivitySummaryItemData } from '@/shared/ui/activity-summary';
 import { Button } from '@/shared/ui/button';
+import { Modal, FileUpload } from '@/shared/ui';
 import {
   BasicInfoSection,
   CareerInfoSection,
@@ -116,21 +118,22 @@ export function StudentMyPage() {
     setDraftProfile((p) => ({ ...p, portfolio: null }));
   };
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   const handleAddPortfolio = () => {
-    fileInputRef.current?.click();
+    setIsPortfolioModalOpen(true);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handlePortfolioUploadConfirm = () => {
+    if (!pendingFile) return;
     // TODO: 파일 업로드 API 연동
     setDraftProfile((p) => ({
       ...p,
-      portfolio: { title: file.name, url: '' },
+      portfolio: { title: pendingFile.name, url: '' },
     }));
-    e.target.value = '';
+    setPendingFile(null);
+    setIsPortfolioModalOpen(false);
   };
 
   const currentData = isEditMode ? draftProfile : profile;
@@ -291,13 +294,37 @@ export function StudentMyPage() {
         />
       </div>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf"
-        className="hidden"
-        onChange={handleFileChange}
-      />
+      <Modal
+        open={isPortfolioModalOpen}
+        onOpenChange={(open) => {
+          setIsPortfolioModalOpen(open);
+          if (!open) setPendingFile(null);
+        }}
+      >
+        <Modal.Content size="lg">
+          <Modal.Header tone="yellow">
+            <Modal.Icon>
+              <PortfolioIcon className="w-5 h-5" aria-hidden="true" />
+            </Modal.Icon>
+            <Modal.Title>포트폴리오 업로드하기</Modal.Title>
+            <Modal.Close />
+          </Modal.Header>
+          <Modal.Body className="flex items-center justify-center">
+            <FileUpload file={pendingFile} onFileChange={setPendingFile} variant="modal" />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              type="button"
+              tone="blue"
+              size="upload"
+              onClick={handlePortfolioUploadConfirm}
+              disabled={!pendingFile}
+            >
+              업로드 완료
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </div>
   );
 }
