@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { clearAuthenticated } from '@/features/auth/model/auth-state';
+import { clearAuthenticated, clearUserRole } from '@/features/auth/model/auth-state';
 
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import CardIcon from '@/shared/assets/icons/card.svg?react';
@@ -515,6 +515,7 @@ export function GraduateMyPage() {
           }}
           onLogout={() => {
             clearAuthenticated();
+            clearUserRole();
             navigate('/auth/login');
           }}
           onWithdraw={() => {
