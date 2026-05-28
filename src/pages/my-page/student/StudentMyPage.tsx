@@ -147,12 +147,14 @@ export function StudentMyPage() {
       value: currentData.department,
       icon: <GraduationIcon className="w-5 h-5" aria-hidden="true" />,
       iconWrapperClassName: S.iconDepartment,
+      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, department: v })) : undefined,
     },
     {
       label: '학년',
       value: currentData.grade,
       icon: <BagIcon className="w-5 h-5" aria-hidden="true" />,
       iconWrapperClassName: S.iconGrade,
+      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, grade: v })) : undefined,
     },
   ];
 
