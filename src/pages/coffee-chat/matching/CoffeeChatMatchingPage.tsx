@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
@@ -17,6 +18,7 @@ const INITIAL_DATA: CareerProfileFormValues = {
 };
 
 export function CoffeeChatMatchingPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<CareerProfileFormValues>(INITIAL_DATA);
 
   function handleChange(field: keyof CareerProfileFormValues, value: string) {
@@ -25,7 +27,7 @@ export function CoffeeChatMatchingPage() {
 
   function handleMatch() {
     // TODO: 커피챗 매칭 API 연동
-    console.log(formData);
+    navigate('/coffee-chat/matching-result');
   }
 
   return (

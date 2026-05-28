@@ -56,22 +56,18 @@ const MOCK_SENIOR: SeniorProfile = {
 
 const handleApply = () => {
   // TODO: 커피챗 신청 API 연동
-  console.log('apply coffee chat');
 };
 
 const handlePortfolioClick = () => {
   // TODO: 포트폴리오 링크 이동
-  console.log('open portfolio');
 };
 
 const handleJobPostingClick = () => {
   // TODO: 공고 링크 이동
-  console.log('open job posting');
 };
 
 const handleSaveBusinessCard = () => {
   // TODO: 명함 저장 기능 구현
-  console.log('save business card');
 };
 
 export function CoffeeChatApplyPage() {
