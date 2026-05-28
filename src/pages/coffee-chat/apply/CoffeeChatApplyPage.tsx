@@ -100,7 +100,7 @@ export function CoffeeChatApplyPage() {
     <div className={S.page}>
       <HeroSection
         variant="coffeeChat"
-        title="커피챗 매치"
+        title="커피챗 매칭"
         description="선배들과 1:1로 연결되어 진로 고민을 해결하세요"
         icon={<CoffeeIcon className="w-7 h-7 text-white" aria-hidden="true" />}
         className={S.heroBreakout}
