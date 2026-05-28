@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { RootLayout, AuthLayout, ProtectedRoute } from '@/app/layouts';
+import { getUserRole } from '@/features/auth/model/auth-state';
 import { HomePage } from '@/pages/home';
 import { LoginPage } from '@/pages/auth/login';
 import { SignupSelectPage } from '@/pages/auth/signup-select';
@@ -26,6 +27,11 @@ import { QnaListPage } from '@/pages/qna/list';
 import { QnaCreatePage } from '@/pages/qna/create';
 import { QnaDetailPage } from '@/pages/qna/detail';
 
+function MyPageRedirect() {
+  const role = getUserRole();
+  return <Navigate to={role === 'GRADUATE' ? '/my-page/graduate' : '/my-page/student'} replace />;
+}
+
 export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
@@ -46,7 +52,7 @@ export const router = createBrowserRouter([
 
           // redirects
           { path: '/coffee-chat', element: <Navigate to="/coffee-chat/matching" replace /> },
-          { path: '/my', element: <Navigate to="/my-page/student" replace /> },
+          { path: '/my', element: <MyPageRedirect /> },
 
           // roadmap
           { path: '/roadmap', element: <RoadmapPage /> },
