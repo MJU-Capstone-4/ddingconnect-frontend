@@ -24,7 +24,7 @@ export function StudentSignupPage() {
 
   const handleSubmit = () => {
     // TODO: 회원가입 API 연동
-    console.log({ email, verificationCode, nickname, password, passwordConfirm, uploadedFile });
+    navigate('/auth/login');
   };
 
   return (
