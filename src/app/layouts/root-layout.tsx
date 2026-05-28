@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import { AppHeader, BottomNavigation, PageLayout } from '@/shared/layout';
 import type { BottomNavigationItem } from '@/shared/layout/bottom-navigation';
 
@@ -15,6 +15,7 @@ const HIDE_HEADER_PATHS = ['/'];
 
 export function RootLayout() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div className="h-dvh bg-background overflow-hidden">
@@ -23,7 +24,10 @@ export function RootLayout() {
         <PageLayout>
           <Outlet />
         </PageLayout>
-        <BottomNavigation activeKey={getActiveKey(pathname)} />
+        <BottomNavigation
+          activeKey={getActiveKey(pathname)}
+          onItemClick={(item) => navigate(item.href)}
+        />
       </div>
     </div>
   );
