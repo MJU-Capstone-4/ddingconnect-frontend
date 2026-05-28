@@ -16,7 +16,6 @@ type PortfolioData = {
 export type PortfolioSectionProps = {
   mode?: PortfolioSectionMode;
   portfolio?: PortfolioData | null;
-  label?: string;
   onClick?: () => void;
   onDelete?: () => void;
   className?: string;
@@ -25,7 +24,6 @@ export type PortfolioSectionProps = {
 export function PortfolioSection({
   mode = 'view',
   portfolio,
-  label,
   onClick,
   onDelete,
   className,
@@ -42,7 +40,7 @@ export function PortfolioSection({
 
   return (
     <section className={cn(S.section, className)}>
-      <h2 className={S.sectionTitle}>포트폴리오</h2>
+      <h2 className={S.sectionTitle}>{isEdit ? '나의 포트폴리오 올리기' : '포트폴리오'}</h2>
 
       {isEmpty ? (
         <div
@@ -59,7 +57,7 @@ export function PortfolioSection({
             <PlusIcon className={S.plusIcon} aria-hidden="true" />
           </span>
           <div className={S.textContent}>
-            {label && <span className={S.textLabel}>{label}</span>}
+            <span className={S.textLabel}>{isEdit ? '포트폴리오 올리기' : '포트폴리오 링크'}</span>
             <span className={S.textMain}>포트폴리오를 업로드해주세요</span>
           </div>
           <ChevronRightIcon className={S.chevronIcon} aria-hidden="true" />
@@ -70,7 +68,7 @@ export function PortfolioSection({
             <PortfolioIcon className={S.portfolioIcon} aria-hidden="true" />
           </span>
           <div className={S.textContent}>
-            <span className={S.textLabel}>{portfolio?.title ?? ''}</span>
+            <span className={S.textLabel}>포트폴리오 올리기</span>
             <span className={S.textMain}>{portfolio?.url ?? ''}</span>
           </div>
           <Button
@@ -99,7 +97,7 @@ export function PortfolioSection({
             <PortfolioIcon className={S.portfolioIcon} aria-hidden="true" />
           </span>
           <div className={S.textContent}>
-            <span className={S.textLabel}>{portfolio!.title}</span>
+            <span className={S.textLabel}>포트폴리오 링크</span>
             <span className={S.textMain}>{portfolio!.url}</span>
           </div>
           <ChevronRightIcon className={S.chevronIcon} aria-hidden="true" />

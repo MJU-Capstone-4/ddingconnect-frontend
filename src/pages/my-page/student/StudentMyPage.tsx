@@ -281,7 +281,6 @@ export function StudentMyPage() {
         <PortfolioSection
           mode={isEditMode ? 'edit' : 'view'}
           portfolio={currentData.portfolio}
-          label="이후배 포트폴리오"
           onClick={isEditMode ? handleAddPortfolio : undefined}
           onDelete={isEditMode ? handleDeletePortfolio : undefined}
         />

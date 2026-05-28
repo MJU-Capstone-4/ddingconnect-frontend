@@ -362,7 +362,6 @@ export function GraduateMyPage() {
         <PortfolioSection
           mode={isEditMode ? 'edit' : 'view'}
           portfolio={currentData.portfolio}
-          label="이선배의 포트폴리오"
           onClick={isEditMode ? () => setIsPortfolioModalOpen(true) : undefined}
           onDelete={isEditMode ? handleDeletePortfolio : undefined}
         />
