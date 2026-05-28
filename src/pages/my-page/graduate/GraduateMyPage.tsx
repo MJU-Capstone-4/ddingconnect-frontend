@@ -140,14 +140,12 @@ export function GraduateMyPage() {
 
   const handleCardUploadConfirm = () => {
     if (!pendingCardFile) return;
-    setProfile((p) => ({ ...p, hasBusinessCard: true }));
     setDraftProfile((p) => ({ ...p, hasBusinessCard: true }));
     setPendingCardFile(null);
     setIsCardModalOpen(false);
   };
 
   const handleDeleteCard = () => {
-    setProfile((p) => ({ ...p, hasBusinessCard: false }));
     setDraftProfile((p) => ({ ...p, hasBusinessCard: false }));
   };
 
@@ -449,7 +447,7 @@ export function GraduateMyPage() {
         <section className={S.cardSection} aria-label="내 명함">
           <div className={S.cardSectionHeader}>
             <h2 className={S.cardSectionTitle}>내 명함</h2>
-            {isEditMode && profile.hasBusinessCard && (
+            {isEditMode && currentData.hasBusinessCard && (
               <Button
                 type="button"
                 size="tiny"
@@ -463,7 +461,7 @@ export function GraduateMyPage() {
           </div>
 
           <div className={S.cardPreviewArea}>
-            {profile.hasBusinessCard ? (
+            {currentData.hasBusinessCard ? (
               <>
                 <span className={S.cardRegisteredBadge}>
                   <CheckIcon className={S.cardBadgeCheck} aria-hidden="true" />
