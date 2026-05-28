@@ -115,7 +115,7 @@ export function NotificationPage() {
               leftIcon={<CheckIcon className="w-3.5 h-3.5" />}
               className="flex-1 w-auto!"
               onClick={() => {
-                console.log('수락하기');
+                // TODO: 커피챗 수락 API 연동
                 setIsModalOpen(false);
               }}
             >
@@ -128,7 +128,7 @@ export function NotificationPage() {
               leftIcon={<CloseIcon className="w-3.5 h-3.5" />}
               className="flex-1 w-auto!"
               onClick={() => {
-                console.log('거절하기');
+                // TODO: 커피챗 거절 API 연동
                 setIsModalOpen(false);
               }}
             >
