@@ -127,7 +127,9 @@ export function JobInfoPage() {
           {...MOCK_SENIOR_JOB}
           buttonTone="blue"
           className={styles.cardFullWidth}
-          onApply={() => console.log('선배 공고 지원하기')}
+          onApply={() => {
+            // TODO: 공고 지원 API 연동
+          }}
         />
       </section>
 
@@ -146,7 +148,9 @@ export function JobInfoPage() {
               techStacks={job.techStacks}
               isNew={job.isNew}
               className={styles.cardFullWidth}
-              onApply={() => console.log(`공고 지원하기: ${job.companyName}`)}
+              onApply={() => {
+                // TODO: 공고 지원 API 연동
+              }}
             />
           ))}
           {filteredJobs.length === 0 && (
@@ -157,7 +161,11 @@ export function JobInfoPage() {
 
       {isFilterOpen && (
         <>
-          <div className={styles.filterOverlay} aria-hidden="true" />
+          <div
+            className={styles.filterOverlay}
+            aria-hidden="true"
+            onClick={() => setIsFilterOpen(false)}
+          />
           <div
             ref={dialogRef}
             className={styles.filterSheet}
