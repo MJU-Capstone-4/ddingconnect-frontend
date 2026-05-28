@@ -66,8 +66,6 @@ export function StudentMyPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profile, setProfile] = useState<Profile>(MOCK_PROFILE);
   const [draftProfile, setDraftProfile] = useState<Profile>(MOCK_PROFILE);
-  const [addLinkValue, setAddLinkValue] = useState('');
-
   const enterEditMode = () => {
     setDraftProfile(profile);
     setIsEditMode(true);
@@ -76,7 +74,6 @@ export function StudentMyPage() {
   const handleCancel = () => {
     setDraftProfile(profile);
     setIsEditMode(false);
-    setAddLinkValue('');
   };
 
   const handleSave = () => {
@@ -84,7 +81,6 @@ export function StudentMyPage() {
     console.log(draftProfile);
     setProfile(draftProfile);
     setIsEditMode(false);
-    setAddLinkValue('');
   };
 
   const handleAddCareerItem = (groupLabel: string, value: string) => {
@@ -112,7 +108,7 @@ export function StudentMyPage() {
   const handleDeleteLink = (id: string) => {
     setDraftProfile((p) => ({
       ...p,
-      socialLinks: p.socialLinks.filter((l) => l.id !== id),
+      socialLinks: p.socialLinks.map((l) => (l.id === id ? { ...l, url: '' } : l)),
     }));
   };
 
@@ -275,8 +271,6 @@ export function StudentMyPage() {
             links={draftProfile.socialLinks}
             onUrlChange={handleLinkUrlChange}
             onDelete={handleDeleteLink}
-            addValue={addLinkValue}
-            onAddChange={setAddLinkValue}
           />
         ) : (
           <SocialLinkSection links={profile.socialLinks} />
