@@ -64,7 +64,7 @@ const MOCK_PROFILE: GraduateProfile = {
     title: '이선배의 포트폴리오',
     url: 'portfolio.honggildong.com',
   },
-  jobPostingLinks: [],
+  jobPostingLinks: ['recruit.navercorp.com/rcrt/list.do'],
   hasBusinessCard: true,
 };
 
@@ -151,13 +151,17 @@ export function GraduateMyPage() {
     setDraftProfile((p) => ({ ...p, hasBusinessCard: false }));
   };
 
+  const handleDeleteJobPosting = () => {
+    setDraftProfile((p) => ({ ...p, jobPostingLinks: [] }));
+  };
+
   // Job posting modal
   const [isJobPostingModalOpen, setIsJobPostingModalOpen] = useState(false);
   const [pendingJobLinks, setPendingJobLinks] = useState<string[]>(['']);
 
   const handleOpenJobPostingModal = () => {
     setPendingJobLinks(
-      profile.jobPostingLinks.length > 0 ? [...profile.jobPostingLinks, ''] : [''],
+      draftProfile.jobPostingLinks.length > 0 ? [...draftProfile.jobPostingLinks, ''] : [''],
     );
     setIsJobPostingModalOpen(true);
   };
@@ -176,8 +180,7 @@ export function GraduateMyPage() {
 
   const handleJobPostingUploadConfirm = () => {
     const validLinks = pendingJobLinks.filter((l) => l.trim());
-    console.log('job posting links:', validLinks);
-    setProfile((p) => ({ ...p, jobPostingLinks: validLinks }));
+    setDraftProfile((p) => ({ ...p, jobPostingLinks: validLinks }));
     setIsJobPostingModalOpen(false);
   };
 
@@ -251,7 +254,7 @@ export function GraduateMyPage() {
     },
   ];
 
-  const hasJobPosting = profile.jobPostingLinks.length > 0;
+  const hasJobPosting = currentData.jobPostingLinks.length > 0;
 
   return (
     <div className={S.page}>
