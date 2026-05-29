@@ -15,7 +15,7 @@
     "typecheck": "tsc -b",
     "commitlint": "commitlint --edit",
     "prepare": "lefthook install",
-    "api:generate": "swagger-typescript-api -p ./swagger/openapi.json -o ./src/shared/api/generated -n api.ts --no-client"
+    "api:generate": "swagger-typescript-api generate -p ./swagger/openapi.json -o ./src/shared/api/generated -n api.ts --no-client"
   },
   "dependencies": {
     "axios": "^1.16.1",
