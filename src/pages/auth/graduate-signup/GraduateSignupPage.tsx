@@ -152,8 +152,14 @@ export function GraduateSignupPage() {
               tone="purple"
               email={email}
               verificationCode={verificationCode}
-              onEmailChange={setEmail}
-              onVerificationCodeChange={setVerificationCode}
+              onEmailChange={(v) => {
+                setEmail(v);
+                setIsEmailVerified(false);
+              }}
+              onVerificationCodeChange={(v) => {
+                setVerificationCode(v);
+                setIsEmailVerified(false);
+              }}
               onSendCode={handleSendCode}
               onVerify={handleVerify}
               isSendingCode={sendCodeMutation.isPending}
