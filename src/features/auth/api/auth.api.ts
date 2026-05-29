@@ -27,3 +27,7 @@ export const signup = async (formData: FormData): Promise<string> => {
   const { data } = await apiClient.post<ApiResponseString>('/api/v1/auth/signup', formData);
   return data.result ?? '';
 };
+
+export const deleteAccount = async (): Promise<void> => {
+  await apiClient.delete('/api/v1/members/me');
+};
