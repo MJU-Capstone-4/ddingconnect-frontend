@@ -1,0 +1,9 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ddingconnect API",
+    "version": "1.0.0",
+    "description": "백엔드 swagger 스펙이 준비되면 실제 URL로 교체하거나 파일을 덮어쓰세요."
+  },
+  "paths": {}
+}
