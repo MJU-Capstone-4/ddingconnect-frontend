@@ -10,7 +10,8 @@ import type {
 
 export const login = async (body: LoginRequest): Promise<TokenResponse> => {
   const { data } = await apiClient.post<ApiResponseTokenResponse>('/api/v1/auth/login', body);
-  return data.result!;
+  if (!data.result) throw new Error('Missing auth result from login response');
+  return data.result;
 };
 
 export const sendCode = async (body: CodeSendRequest): Promise<string> => {
