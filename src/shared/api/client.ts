@@ -18,5 +18,11 @@ apiClient.interceptors.request.use((config) => {
 
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(error),
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('accessToken');
+      window.location.replace('/auth/login');
+    }
+    return Promise.reject(error);
+  },
 );
