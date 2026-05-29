@@ -21,10 +21,14 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isAuthRoute = (error.config?.url ?? '').includes('/auth/');
+    const hasToken = Boolean(localStorage.getItem('accessToken'));
+
+    if (error.response?.status === 401 && hasToken && !isAuthRoute) {
       localStorage.removeItem('accessToken');
       window.location.replace('/auth/login');
     }
+
     return Promise.reject(error);
   },
 );
