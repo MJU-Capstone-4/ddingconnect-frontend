@@ -69,13 +69,16 @@ export function EmailVerificationSection({
           placeholder="인증번호 6자리"
           value={verificationCode}
           onChange={(e) => {
-            const sanitized = e.target.value.replace(/\D+/g, '').slice(0, 6);
+            const sanitized = e.target.value
+              .toUpperCase()
+              .replace(/[^A-Z0-9]/g, '')
+              .slice(0, 6);
             onVerificationCodeChange?.(sanitized);
           }}
           wrapperClassName={styles.inputWrapper}
           className={styles.inputBox}
           maxLength={6}
-          inputMode="numeric"
+          inputMode="text"
         />
         <Button
           type="button"
