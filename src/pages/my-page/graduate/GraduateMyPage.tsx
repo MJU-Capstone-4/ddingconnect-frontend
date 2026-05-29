@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { clearAuthenticated, clearUserRole } from '@/features/auth/model/auth-state';
+import { clearAccessToken, clearUserRole } from '@/features/auth/model/auth-state';
 
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import CardIcon from '@/shared/assets/icons/card.svg?react';
@@ -514,7 +514,7 @@ export function GraduateMyPage() {
             // TODO: 비밀번호 재설정 API 연동
           }}
           onLogout={() => {
-            clearAuthenticated();
+            clearAccessToken();
             clearUserRole();
             navigate('/auth/login', { replace: true });
           }}

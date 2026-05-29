@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { clearAuthenticated, clearUserRole } from '@/features/auth/model/auth-state';
+import { clearAccessToken, clearUserRole } from '@/features/auth/model/auth-state';
 
 import PortfolioIcon from '@/shared/assets/icons/portfolio.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
@@ -296,7 +296,7 @@ export function StudentMyPage() {
             // TODO: 비밀번호 재설정 API 연동
           }}
           onLogout={() => {
-            clearAuthenticated();
+            clearAccessToken();
             clearUserRole();
             navigate('/auth/login', { replace: true });
           }}

@@ -1,18 +1,22 @@
-const AUTH_KEY = 'isAuthenticated';
+const ACCESS_TOKEN_KEY = 'accessToken';
 const ROLE_KEY = 'userRole';
 
 export type UserRole = 'STUDENT' | 'GRADUATE';
 
+export function getAccessToken(): string | null {
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
+}
+
+export function setAccessToken(token: string): void {
+  localStorage.setItem(ACCESS_TOKEN_KEY, token);
+}
+
+export function clearAccessToken(): void {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
 export function isAuthenticated(): boolean {
-  return localStorage.getItem(AUTH_KEY) === 'true';
-}
-
-export function setAuthenticated(): void {
-  localStorage.setItem(AUTH_KEY, 'true');
-}
-
-export function clearAuthenticated(): void {
-  localStorage.removeItem(AUTH_KEY);
+  return Boolean(getAccessToken());
 }
 
 export function getUserRole(): UserRole | null {
