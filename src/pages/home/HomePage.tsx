@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import AlarmIcon from '@/shared/assets/icons/alarm.svg?react';
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
+import CardIcon from '@/shared/assets/icons/card.svg?react';
 import ChevronRightIcon from '@/shared/assets/icons/chevron-right.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import CommentIcon from '@/shared/assets/icons/comment.svg?react';
@@ -9,7 +12,9 @@ import MaruIcon from '@/shared/assets/icons/maru.svg?react';
 import PointIcon from '@/shared/assets/icons/point.svg?react';
 import { ActivitySummary } from '@/shared/ui/activity-summary';
 import type { ActivitySummaryItemData } from '@/shared/ui/activity-summary';
+import { Button } from '@/shared/ui/button';
 import { Chip } from '@/shared/ui/chip';
+import { Modal } from '@/shared/ui/modal';
 
 import * as styles from './home-page.styles';
 
@@ -27,6 +32,9 @@ const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
 ];
 
 export function HomePage() {
+  const navigate = useNavigate();
+  const [isPointModalOpen, setIsPointModalOpen] = useState(false);
+
   return (
     <div className={styles.page}>
       {/* Hero */}
@@ -37,10 +45,20 @@ export function HomePage() {
             <span className={styles.logoText}>DdingConnect</span>
           </div>
           <div className={styles.heroTopRight}>
-            <Chip leftIcon={PointIcon} size="md" className={styles.pointChip}>
+            <Chip
+              leftIcon={PointIcon}
+              size="md"
+              className={styles.pointChip}
+              onClick={() => setIsPointModalOpen(true)}
+            >
               {MOCK_USER.point.toLocaleString()}P
             </Chip>
-            <button type="button" className={styles.bellButton} aria-label="알림">
+            <button
+              type="button"
+              className={styles.bellButton}
+              aria-label="알림"
+              onClick={() => navigate('/notification')}
+            >
               <AlarmIcon className={styles.bellIcon} aria-hidden="true" />
               <span className={styles.bellDot} aria-hidden="true" />
             </button>
@@ -63,7 +81,7 @@ export function HomePage() {
         </div>
 
         <div className={styles.activityWrap}>
-          <ActivitySummary items={MOCK_ACTIVITY} />
+          <ActivitySummary items={MOCK_ACTIVITY} onTitleClick={() => navigate('/my/activity')} />
         </div>
       </section>
 
@@ -73,6 +91,7 @@ export function HomePage() {
           type="button"
           className={`${styles.ctaCard} ${styles.ctaCoffee}`}
           aria-label="커피챗 매칭"
+          onClick={() => navigate('/coffee-chat/matching')}
         >
           <span className={styles.ctaDeco1} />
           <span className={styles.ctaDeco2} />
@@ -92,6 +111,7 @@ export function HomePage() {
           type="button"
           className={`${styles.ctaCard} ${styles.ctaRoadmap}`}
           aria-label="취업 로드맵"
+          onClick={() => navigate('/roadmap')}
         >
           <span className={styles.ctaDeco1} />
           <span className={styles.ctaDeco2} />
@@ -112,7 +132,12 @@ export function HomePage() {
       <section className={styles.moreSection} aria-label="더 알아보기">
         <h2 className={styles.moreSectionTitle}>더 알아보기</h2>
         <div className={styles.moreGrid}>
-          <button type="button" className={styles.moreCard} aria-label="QnA 게시판으로 이동">
+          <button
+            type="button"
+            className={styles.moreCard}
+            aria-label="QnA 게시판으로 이동"
+            onClick={() => navigate('/qna')}
+          >
             <div className={styles.moreCardTop}>
               <div className={styles.moreQnaIconWrap}>
                 <CommentIcon className={styles.moreQnaIcon} aria-hidden="true" />
@@ -123,7 +148,12 @@ export function HomePage() {
             <p className={styles.moreCardSubtitle}>익명 질문하기</p>
           </button>
 
-          <button type="button" className={styles.moreCard} aria-label="구직정보로 이동">
+          <button
+            type="button"
+            className={styles.moreCard}
+            aria-label="구직정보로 이동"
+            onClick={() => navigate('/job-info')}
+          >
             <div className={styles.moreCardTop}>
               <div className={styles.moreJobIconWrap}>
                 <BagIcon className={styles.moreJobIcon} aria-hidden="true" />
@@ -135,6 +165,41 @@ export function HomePage() {
           </button>
         </div>
       </section>
+      <Modal open={isPointModalOpen} onOpenChange={setIsPointModalOpen}>
+        <Modal.Content size="md" withDecoration decorationTone="yellow">
+          <Modal.Body className="flex flex-col items-center justify-center gap-1">
+            <div className="flex items-center justify-center size-14 rounded-2xl bg-point mb-2">
+              <PointIcon className="w-8 h-8 text-gray-800" aria-hidden="true" />
+            </div>
+            <p className="text-sm text-text-secondary">내 포인트</p>
+            <p className="text-2xl font-bold text-yellow-500">
+              {MOCK_USER.point.toLocaleString()}P
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              type="button"
+              size="modal"
+              tone="yellow"
+              leftIcon={<CardIcon className="w-4 h-4" />}
+              onClick={() => {
+                setIsPointModalOpen(false);
+                navigate('/point/charge');
+              }}
+            >
+              포인트 충전하기
+            </Button>
+            <Button
+              type="button"
+              size="modal"
+              tone="gray"
+              onClick={() => setIsPointModalOpen(false)}
+            >
+              닫기
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </div>
   );
 }

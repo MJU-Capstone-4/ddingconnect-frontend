@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { clearAuthenticated, clearUserRole } from '@/features/auth/model/auth-state';
 
 import PortfolioIcon from '@/shared/assets/icons/portfolio.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
@@ -65,6 +67,7 @@ const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
 ];
 
 export function StudentMyPage() {
+  const navigate = useNavigate();
   const [isEditMode, setIsEditMode] = useState(false);
   const [profile, setProfile] = useState<Profile>(MOCK_PROFILE);
   const [draftProfile, setDraftProfile] = useState<Profile>(MOCK_PROFILE);
@@ -249,7 +252,10 @@ export function StudentMyPage() {
             <p className={S.nickname}>{profile.nickname}</p>
             <span className={S.verifiedBadge}>재학생 인증완료</span>
             <div className={S.activityWrapper}>
-              <ActivitySummary items={MOCK_ACTIVITY} />
+              <ActivitySummary
+                items={MOCK_ACTIVITY}
+                onTitleClick={() => navigate('/my/activity')}
+              />
             </div>
           </>
         )}
@@ -286,9 +292,17 @@ export function StudentMyPage() {
         />
 
         <AccountSettingSection
-          onResetPassword={() => {}}
-          onLogout={() => {}}
-          onWithdraw={() => {}}
+          onResetPassword={() => {
+            // TODO: 비밀번호 재설정 API 연동
+          }}
+          onLogout={() => {
+            clearAuthenticated();
+            clearUserRole();
+            navigate('/auth/login', { replace: true });
+          }}
+          onWithdraw={() => {
+            // TODO: 회원 탈퇴 API 연동
+          }}
         />
       </div>
 

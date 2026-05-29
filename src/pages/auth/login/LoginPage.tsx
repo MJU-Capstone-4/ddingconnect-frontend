@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import { setAuthenticated } from '@/features/auth/model/auth-state';
 
 import LockIcon from '@/shared/assets/icons/lock.svg?react';
 import LogoIcon from '@/shared/assets/icons/logo.svg?react';
@@ -10,6 +11,7 @@ import { Input, PasswordInput } from '@/shared/ui/input';
 import * as styles from './login-page.styles';
 
 export function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [keepLogin, setKeepLogin] = useState(false);
@@ -17,6 +19,8 @@ export function LoginPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // TODO: 로그인 API 연동
+    setAuthenticated();
+    navigate('/');
   };
 
   return (

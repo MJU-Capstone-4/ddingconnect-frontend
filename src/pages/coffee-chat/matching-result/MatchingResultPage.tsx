@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { SeniorProfileCard } from '@/features/coffee-chat/components';
 import ArrowDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
@@ -39,12 +40,12 @@ const MOCK_MATCHED_SENIORS = [
 ];
 
 export function MatchingResultPage() {
+  const navigate = useNavigate();
   const infoContentId = useId();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   function handleOpenSeniorPage(id: number) {
-    // TODO: 선배 상세 페이지 이동
-    console.log(id);
+    navigate(`/coffee-chat/apply/${id}`);
   }
 
   return (

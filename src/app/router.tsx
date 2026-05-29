@@ -1,5 +1,6 @@
-import { createBrowserRouter } from 'react-router';
-import { RootLayout, AuthLayout } from '@/app/layouts';
+import { createBrowserRouter, Navigate } from 'react-router';
+import { RootLayout, AuthLayout, ProtectedRoute } from '@/app/layouts';
+import { getUserRole } from '@/features/auth/model/auth-state';
 import { HomePage } from '@/pages/home';
 import { LoginPage } from '@/pages/auth/login';
 import { SignupSelectPage } from '@/pages/auth/signup-select';
@@ -26,6 +27,11 @@ import { QnaListPage } from '@/pages/qna/list';
 import { QnaCreatePage } from '@/pages/qna/create';
 import { QnaDetailPage } from '@/pages/qna/detail';
 
+function MyPageRedirect() {
+  const role = getUserRole();
+  return <Navigate to={role === 'GRADUATE' ? '/my-page/graduate' : '/my-page/student'} replace />;
+}
+
 export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
@@ -37,47 +43,56 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <RootLayout />,
+    element: <ProtectedRoute />,
     children: [
-      { path: '/', element: <HomePage /> },
+      {
+        element: <RootLayout />,
+        children: [
+          { path: '/', element: <HomePage /> },
 
-      // roadmap
-      { path: '/roadmap', element: <RoadmapPage /> },
-      { path: '/roadmap/result', element: <RoadmapResultPage /> },
+          // redirects
+          { path: '/coffee-chat', element: <Navigate to="/coffee-chat/matching" replace /> },
+          { path: '/my', element: <MyPageRedirect /> },
 
-      // career-map
-      { path: '/career-map/input', element: <CareerMapInputPage /> },
-      { path: '/career-map/result', element: <CareerMapResultPage /> },
+          // roadmap
+          { path: '/roadmap', element: <RoadmapPage /> },
+          { path: '/roadmap/result', element: <RoadmapResultPage /> },
 
-      // coffee-chat
-      { path: '/coffee-chat/input', element: <CoffeeChatInputPage /> },
-      { path: '/coffee-chat/matching', element: <CoffeeChatMatchingPage /> },
-      { path: '/coffee-chat/matching-result', element: <MatchingResultPage /> },
-      { path: '/coffee-chat/senior-profile/:id', element: <SeniorProfilePage /> },
-      { path: '/coffee-chat/apply/:id', element: <CoffeeChatApplyPage /> },
+          // career-map
+          { path: '/career-map/input', element: <CareerMapInputPage /> },
+          { path: '/career-map/result', element: <CareerMapResultPage /> },
 
-      // job-info
-      { path: '/job-info', element: <JobInfoPage /> },
+          // coffee-chat
+          { path: '/coffee-chat/input', element: <CoffeeChatInputPage /> },
+          { path: '/coffee-chat/matching', element: <CoffeeChatMatchingPage /> },
+          { path: '/coffee-chat/matching-result', element: <MatchingResultPage /> },
+          { path: '/coffee-chat/senior-profile/:id', element: <SeniorProfilePage /> },
+          { path: '/coffee-chat/apply/:id', element: <CoffeeChatApplyPage /> },
 
-      // my
-      { path: '/my/activity', element: <MyActivityPage /> },
+          // job-info
+          { path: '/job-info', element: <JobInfoPage /> },
 
-      // my-page
-      { path: '/my-page/student', element: <StudentMyPage /> },
-      { path: '/my-page/student/edit', element: <StudentProfileEditPage /> },
-      { path: '/my-page/graduate', element: <GraduateMyPage /> },
-      { path: '/my-page/graduate/edit', element: <GraduateProfileEditPage /> },
+          // my
+          { path: '/my/activity', element: <MyActivityPage /> },
 
-      // notification
-      { path: '/notification', element: <NotificationPage /> },
+          // my-page
+          { path: '/my-page/student', element: <StudentMyPage /> },
+          { path: '/my-page/student/edit', element: <StudentProfileEditPage /> },
+          { path: '/my-page/graduate', element: <GraduateMyPage /> },
+          { path: '/my-page/graduate/edit', element: <GraduateProfileEditPage /> },
 
-      // point
-      { path: '/point/charge', element: <PointChargePage /> },
+          // notification
+          { path: '/notification', element: <NotificationPage /> },
 
-      // qna
-      { path: '/qna', element: <QnaListPage /> },
-      { path: '/qna/create', element: <QnaCreatePage /> },
-      { path: '/qna/:id', element: <QnaDetailPage /> },
+          // point
+          { path: '/point/charge', element: <PointChargePage /> },
+
+          // qna
+          { path: '/qna', element: <QnaListPage /> },
+          { path: '/qna/create', element: <QnaCreatePage /> },
+          { path: '/qna/:id', element: <QnaDetailPage /> },
+        ],
+      },
     ],
   },
 ]);

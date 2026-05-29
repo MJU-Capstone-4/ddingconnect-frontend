@@ -249,6 +249,7 @@ export function QnaListPage() {
               commentCount={post.commentCount}
               viewCount={post.viewCount}
               isLiked={likedIds.has(post.id)}
+              onClick={() => navigate(`/qna/${post.id}`)}
               onLikeClick={() => handleLikeClick(post.id)}
               className="w-full"
             />

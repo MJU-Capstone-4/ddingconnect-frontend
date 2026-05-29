@@ -19,7 +19,7 @@ export function QnaCreatePage() {
 
   function handleSubmit() {
     // TODO: 질문 등록 API 연동
-    console.log({ category, title, content });
+    navigate('/qna');
   }
 
   return (
