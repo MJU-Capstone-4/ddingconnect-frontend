@@ -1,0 +1,50 @@
+export const queryKeys = {
+  auth: {
+    all: ['auth'] as const,
+    me: () => [...queryKeys.auth.all, 'me'] as const,
+  },
+
+  member: {
+    all: ['member'] as const,
+    me: () => [...queryKeys.member.all, 'me'] as const,
+    detail: (id: number) => [...queryKeys.member.all, id] as const,
+  },
+
+  coffeeChat: {
+    all: ['coffeeChat'] as const,
+    lists: () => [...queryKeys.coffeeChat.all, 'list'] as const,
+    list: (params?: Record<string, unknown>) => [...queryKeys.coffeeChat.lists(), params] as const,
+    detail: (id: number) => [...queryKeys.coffeeChat.all, id] as const,
+  },
+
+  qna: {
+    all: ['qna'] as const,
+    lists: () => [...queryKeys.qna.all, 'list'] as const,
+    list: (params?: Record<string, unknown>) => [...queryKeys.qna.lists(), params] as const,
+    detail: (id: number) => [...queryKeys.qna.all, id] as const,
+  },
+
+  jobInfo: {
+    all: ['jobInfo'] as const,
+    lists: () => [...queryKeys.jobInfo.all, 'list'] as const,
+    list: (params?: Record<string, unknown>) => [...queryKeys.jobInfo.lists(), params] as const,
+    detail: (id: number) => [...queryKeys.jobInfo.all, id] as const,
+  },
+
+  roadmap: {
+    all: ['roadmap'] as const,
+    lists: () => [...queryKeys.roadmap.all, 'list'] as const,
+    detail: (id: number) => [...queryKeys.roadmap.all, id] as const,
+  },
+
+  notification: {
+    all: ['notification'] as const,
+    lists: () => [...queryKeys.notification.all, 'list'] as const,
+  },
+
+  point: {
+    all: ['point'] as const,
+    balance: () => [...queryKeys.point.all, 'balance'] as const,
+    history: () => [...queryKeys.point.all, 'history'] as const,
+  },
+};

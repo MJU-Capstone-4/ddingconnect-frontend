@@ -18,6 +18,8 @@
     "api:generate": "swagger-typescript-api generate -p ./swagger/openapi.json -o ./src/shared/api/generated -n api.ts --no-client"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.100.14",
+    "@tanstack/react-query-devtools": "^5.100.14",
     "axios": "^1.16.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
