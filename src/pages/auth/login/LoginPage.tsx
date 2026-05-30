@@ -1,27 +1,47 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { setAuthenticated } from '@/features/auth/model/auth-state';
+import { Link } from 'react-router';
 
 import LockIcon from '@/shared/assets/icons/lock.svg?react';
 import LogoIcon from '@/shared/assets/icons/logo.svg?react';
 import MailIcon from '@/shared/assets/icons/mail.svg?react';
 import { Button } from '@/shared/ui/button';
 import { Input, PasswordInput } from '@/shared/ui/input';
+import { useLoginMutation } from '@/features/auth/hooks';
 
 import * as styles from './login-page.styles';
 
+function getApiError(error: unknown, fallback: string): string {
+  const axiosError = error as { response?: { data?: { message?: string } } };
+  return axiosError?.response?.data?.message ?? fallback;
+}
+
 export function LoginPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [keepLogin, setKeepLogin] = useState(false);
+  const [validationError, setValidationError] = useState('');
+
+  const loginMutation = useLoginMutation();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: 로그인 API 연동
-    setAuthenticated();
-    navigate('/');
+    setValidationError('');
+
+    if (!email) {
+      setValidationError('이메일을 입력해주세요.');
+      return;
+    }
+    if (!password) {
+      setValidationError('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    loginMutation.mutate({ email, password });
   };
+
+  const errorMessage =
+    validationError ||
+    (loginMutation.error ? getApiError(loginMutation.error, '로그인에 실패했습니다.') : '');
 
   return (
     <form className={styles.page} onSubmit={handleSubmit}>
@@ -65,11 +85,13 @@ export function LoginPage() {
             비밀번호 재설정
           </a>
         </div>
+
+        {errorMessage && <p className="text-sm text-red-500 text-center">{errorMessage}</p>}
       </div>
 
       <div className={styles.bottomSection}>
-        <Button type="submit" size="auth" withDecoration>
-          로그인
+        <Button type="submit" size="auth" withDecoration disabled={loginMutation.isPending}>
+          {loginMutation.isPending ? '로그인 중...' : '로그인'}
         </Button>
         <p className={styles.signupRow}>
           계정이 없으신가요?{' '}

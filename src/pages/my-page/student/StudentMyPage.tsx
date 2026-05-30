@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { clearAuthenticated, clearUserRole } from '@/features/auth/model/auth-state';
+import { clearAccessToken, clearUserRole } from '@/features/auth/model/auth-state';
+import { useDeleteAccountMutation } from '@/features/auth/hooks';
 
 import PortfolioIcon from '@/shared/assets/icons/portfolio.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
@@ -69,6 +70,8 @@ const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
 export function StudentMyPage() {
   const navigate = useNavigate();
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
   const [profile, setProfile] = useState<Profile>(MOCK_PROFILE);
   const [draftProfile, setDraftProfile] = useState<Profile>(MOCK_PROFILE);
   const enterEditMode = () => {
@@ -296,15 +299,40 @@ export function StudentMyPage() {
             // TODO: 비밀번호 재설정 API 연동
           }}
           onLogout={() => {
-            clearAuthenticated();
+            clearAccessToken();
             clearUserRole();
             navigate('/auth/login', { replace: true });
           }}
-          onWithdraw={() => {
-            // TODO: 회원 탈퇴 API 연동
-          }}
+          onWithdraw={() => setIsWithdrawModalOpen(true)}
         />
       </div>
+
+      <Modal open={isWithdrawModalOpen} onOpenChange={setIsWithdrawModalOpen}>
+        <Modal.Content size="lg">
+          <Modal.Header tone="blue">
+            <Modal.Title>회원 탈퇴</Modal.Title>
+            <Modal.Close />
+          </Modal.Header>
+          <Modal.Body>
+            <p className="text-center text-sm text-text-primary py-2">
+              정말 탈퇴하시겠습니까?
+              <br />
+              탈퇴 시 모든 정보가 삭제되며 복구할 수 없습니다.
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              type="button"
+              tone="red"
+              size="upload"
+              onClick={() => deleteAccount()}
+              disabled={isDeleting}
+            >
+              {isDeleting ? '처리 중...' : '탈퇴하기'}
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
 
       <Modal
         open={isPortfolioModalOpen}

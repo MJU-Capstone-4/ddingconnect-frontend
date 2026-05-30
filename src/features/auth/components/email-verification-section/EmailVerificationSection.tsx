@@ -16,6 +16,9 @@ type EmailVerificationSectionProps = {
   onVerificationCodeChange?: (value: string) => void;
   onSendCode?: () => void;
   onVerify?: () => void;
+  isSendingCode?: boolean;
+  isVerifying?: boolean;
+  isCodeVerified?: boolean;
   className?: string;
 };
 
@@ -27,6 +30,9 @@ export function EmailVerificationSection({
   onVerificationCodeChange,
   onSendCode,
   onVerify,
+  isSendingCode = false,
+  isVerifying = false,
+  isCodeVerified = false,
   className,
 }: EmailVerificationSectionProps) {
   return (
@@ -50,9 +56,9 @@ export function EmailVerificationSection({
           tone="blue"
           leftIcon={<SendIcon className="w-3.5 h-3.5" aria-hidden="true" />}
           onClick={onSendCode}
-          disabled={!onSendCode}
+          disabled={!onSendCode || isSendingCode}
         >
-          인증번호발송
+          {isSendingCode ? '발송 중...' : '인증번호발송'}
         </Button>
       </div>
 
@@ -63,22 +69,25 @@ export function EmailVerificationSection({
           placeholder="인증번호 6자리"
           value={verificationCode}
           onChange={(e) => {
-            const sanitized = e.target.value.replace(/\D+/g, '').slice(0, 6);
+            const sanitized = e.target.value
+              .toUpperCase()
+              .replace(/[^A-Z0-9]/g, '')
+              .slice(0, 6);
             onVerificationCodeChange?.(sanitized);
           }}
           wrapperClassName={styles.inputWrapper}
           className={styles.inputBox}
           maxLength={6}
-          inputMode="numeric"
+          inputMode="text"
         />
         <Button
           type="button"
           size="verification"
           tone={tone}
           onClick={onVerify}
-          disabled={!onVerify}
+          disabled={!onVerify || isVerifying || isCodeVerified}
         >
-          인증 확인
+          {isCodeVerified ? '인증 완료' : isVerifying ? '확인 중...' : '인증 확인'}
         </Button>
       </div>
     </div>
