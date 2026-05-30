@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { clearAccessToken, clearUserRole } from '@/features/auth/model/auth-state';
 import { useDeleteAccountMutation } from '@/features/auth/hooks';
@@ -30,8 +30,17 @@ import {
   CareerInfoSection,
   PortfolioSection,
   SocialLinkSection,
+  useMyPageQuery,
+  useUpdateMyPageMutation,
+  techStacksToLabels,
+  labelsToTechStacks,
+  jobTypeToLabel,
+  labelToJobType,
+  careerYearToLabel,
+  labelToCareerYear,
 } from '@/features/mypage';
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
+import type { MyPageResponse, CreateJobPostRequest } from '@/shared/api/generated/api';
 
 import * as S from './graduate-my-page.styles';
 
@@ -76,13 +85,63 @@ const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
   { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
 ];
 
+function mapApiToProfile(data: MyPageResponse): GraduateProfile {
+  const p = data.profile ?? {};
+  return {
+    nickname: p.nickname ?? '',
+    email: p.email ?? '',
+    studentId: p.studentNumber ?? '',
+    department: p.department ?? '',
+    jobType: jobTypeToLabel(p.jobType),
+    company: p.company ?? '',
+    experience: careerYearToLabel(p.careerYear),
+    skills: techStacksToLabels(data.techStacks),
+    socialLinks: [
+      { id: 'github', platform: 'github', label: 'GitHub', url: p.githubLink ?? '' },
+      { id: 'linkedin', platform: 'linkedin', label: 'LinkedIn', url: p.linkedinLink ?? '' },
+    ],
+    portfolio: p.portfolio ? { title: '포트폴리오', url: p.portfolio } : null,
+    jobPostingLinks: (data.jobPosts ?? []).map((j) => j.detailUrl ?? '').filter(Boolean),
+    hasBusinessCard: Boolean(p.businessCardImage),
+  };
+}
+
 export function GraduateMyPage() {
   const navigate = useNavigate();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
-  const [profile, setProfile] = useState<GraduateProfile>(MOCK_PROFILE);
   const [draftProfile, setDraftProfile] = useState<GraduateProfile>(MOCK_PROFILE);
+
+  const { data: mypageData } = useMyPageQuery();
+  const { mutate: updateMyPage, isPending: isSaving } = useUpdateMyPageMutation();
+
+  const profile = useMemo(
+    () => (mypageData ? mapApiToProfile(mypageData) : MOCK_PROFILE),
+    [mypageData],
+  );
+
+  const originalJobPostIds = useMemo(
+    () => (mypageData?.jobPosts ?? []).map((j) => j.id).filter((id): id is number => id != null),
+    [mypageData],
+  );
+
+  const activityItems: ActivitySummaryItemData[] = mypageData?.activity
+    ? [
+        {
+          icon: CoffeeIcon,
+          count: mypageData.activity.coffeeChatCount ?? 0,
+          label: '커피챗',
+          tone: 'blue',
+        },
+        {
+          icon: CommentIcon,
+          count: mypageData.activity.questionCount ?? 0,
+          label: 'QnA',
+          tone: 'pink',
+        },
+      ]
+    : MOCK_ACTIVITY;
 
   const enterEditMode = () => {
     setDraftProfile(profile);
@@ -90,14 +149,47 @@ export function GraduateMyPage() {
   };
 
   const handleCancel = () => {
-    setDraftProfile(profile);
     setIsEditMode(false);
   };
 
   const handleSave = () => {
-    // TODO: 프로필 수정 API 연동
-    setProfile(draftProfile);
-    setIsEditMode(false);
+    const github = draftProfile.socialLinks.find((l) => l.id === 'github')?.url;
+    const linkedin = draftProfile.socialLinks.find((l) => l.id === 'linkedin')?.url;
+
+    const currentUrls = draftProfile.jobPostingLinks;
+    let jobPostsToAdd: CreateJobPostRequest[] | undefined;
+    let jobPostIdsToDelete: number[] | undefined;
+
+    if (originalJobPostIds.length > 0) {
+      jobPostIdsToDelete = originalJobPostIds;
+      if (currentUrls.length > 0) {
+        jobPostsToAdd = currentUrls.map((url) => ({ detailUrl: url }));
+      }
+    } else if (currentUrls.length > 0) {
+      jobPostsToAdd = currentUrls.map((url) => ({ detailUrl: url }));
+    }
+
+    updateMyPage(
+      {
+        profile: {
+          nickname: draftProfile.nickname || undefined,
+          department: draftProfile.department || undefined,
+          githubLink: github || undefined,
+          linkedinLink: linkedin || undefined,
+          portfolio: draftProfile.portfolio?.url || undefined,
+          jobType: labelToJobType(draftProfile.jobType),
+          company: draftProfile.company || undefined,
+          careerYear: labelToCareerYear(draftProfile.experience),
+        },
+        techStacks: labelsToTechStacks(draftProfile.skills),
+        jobPostsToAdd,
+        jobPostIdsToDelete,
+      },
+      {
+        onSuccess: () => setIsEditMode(false),
+        onError: () => setIsEditMode(false),
+      },
+    );
   };
 
   const handleAddSkill = (_groupLabel: string, value: string) => {
@@ -297,9 +389,10 @@ export function GraduateMyPage() {
                 size="compact"
                 leftIcon={<CheckIcon className="w-3.5 h-3.5" />}
                 onClick={handleSave}
+                disabled={isSaving}
                 className={S.editSaveButton}
               >
-                수정 완료
+                {isSaving ? '저장 중...' : '수정 완료'}
               </Button>
               <Button
                 type="button"
@@ -308,6 +401,7 @@ export function GraduateMyPage() {
                 size="compact"
                 leftIcon={<CloseIcon className="w-3.5 h-3.5" />}
                 onClick={handleCancel}
+                disabled={isSaving}
                 className={S.editCancelButton}
               >
                 취소
@@ -320,7 +414,7 @@ export function GraduateMyPage() {
             <span className={S.verifiedBadge}>졸업생 인증완료</span>
             <div className={S.activityWrapper}>
               <ActivitySummary
-                items={MOCK_ACTIVITY}
+                items={activityItems}
                 onTitleClick={() => navigate('/my/activity')}
               />
             </div>
@@ -513,9 +607,7 @@ export function GraduateMyPage() {
 
         {/* 계정 설정 */}
         <AccountSettingSection
-          onResetPassword={() => {
-            // TODO: 비밀번호 재설정 API 연동
-          }}
+          onResetPassword={() => {}}
           onLogout={() => {
             clearAccessToken();
             clearUserRole();
@@ -607,7 +699,13 @@ export function GraduateMyPage() {
             <Modal.Close />
           </Modal.Header>
           <Modal.Body className="flex items-center justify-center">
-            <FileUpload file={pendingCardFile} onFileChange={setPendingCardFile} variant="modal" />
+            <FileUpload
+              file={pendingCardFile}
+              onFileChange={setPendingCardFile}
+              variant="modal"
+              accept="image/png,image/jpeg,image/webp"
+              description="PNG, JPEG, WebP 형식의 파일만 가능합니다"
+            />
           </Modal.Body>
           <Modal.Footer>
             <Button
