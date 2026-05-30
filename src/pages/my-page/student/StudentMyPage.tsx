@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { clearAccessToken, clearUserRole } from '@/features/auth/model/auth-state';
 import { useDeleteAccountMutation } from '@/features/auth/hooks';
@@ -26,8 +26,17 @@ import {
   SocialLinkSection,
   PortfolioSection,
   AccountSettingSection,
+  useMyPageQuery,
+  useUpdateMyPageMutation,
+  techStacksToLabels,
+  targetJobsToLabels,
+  labelsToTechStacks,
+  labelsToTargetJobs,
+  gradeToLabel,
+  labelToGrade,
 } from '@/features/mypage';
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
+import type { MyPageResponse } from '@/shared/api/generated/api';
 
 import * as S from './student-my-page.styles';
 
@@ -67,28 +76,93 @@ const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
   { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
 ];
 
+function mapApiToProfile(data: MyPageResponse): Profile {
+  const p = data.profile ?? {};
+  return {
+    nickname: p.nickname ?? '',
+    email: p.email ?? '',
+    studentId: p.studentNumber ?? '',
+    department: p.department ?? '',
+    grade: gradeToLabel(p.grade),
+    interests: targetJobsToLabels(data.targetJobs),
+    skills: techStacksToLabels(data.techStacks),
+    socialLinks: [
+      { id: 'github', platform: 'github', label: 'GitHub', url: p.githubLink ?? '' },
+      { id: 'linkedin', platform: 'linkedin', label: 'LinkedIn', url: p.linkedinLink ?? '' },
+    ],
+    portfolio: p.portfolio ? { title: '포트폴리오', url: p.portfolio } : null,
+  };
+}
+
 export function StudentMyPage() {
   const navigate = useNavigate();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
-  const [profile, setProfile] = useState<Profile>(MOCK_PROFILE);
   const [draftProfile, setDraftProfile] = useState<Profile>(MOCK_PROFILE);
+
+  const { data: mypageData } = useMyPageQuery();
+  const { mutate: updateMyPage, isPending: isSaving } = useUpdateMyPageMutation();
+
+  const profile = useMemo(
+    () => (mypageData ? mapApiToProfile(mypageData) : MOCK_PROFILE),
+    [mypageData],
+  );
+
+  const activityItems: ActivitySummaryItemData[] = mypageData?.activity
+    ? [
+        {
+          icon: CoffeeIcon,
+          count: mypageData.activity.coffeeChatCount ?? 0,
+          label: '커피챗',
+          tone: 'blue',
+        },
+        {
+          icon: MapIcon,
+          count: mypageData.activity.roadmapCount ?? 0,
+          label: '로드맵',
+          tone: 'purple',
+        },
+        {
+          icon: CommentIcon,
+          count: mypageData.activity.questionCount ?? 0,
+          label: 'QnA',
+          tone: 'pink',
+        },
+      ]
+    : MOCK_ACTIVITY;
+
   const enterEditMode = () => {
     setDraftProfile(profile);
     setIsEditMode(true);
   };
 
   const handleCancel = () => {
-    setDraftProfile(profile);
     setIsEditMode(false);
   };
 
   const handleSave = () => {
-    // TODO: 프로필 수정 API 연동
-    console.log(draftProfile);
-    setProfile(draftProfile);
-    setIsEditMode(false);
+    const github = draftProfile.socialLinks.find((l) => l.id === 'github')?.url;
+    const linkedin = draftProfile.socialLinks.find((l) => l.id === 'linkedin')?.url;
+
+    updateMyPage(
+      {
+        profile: {
+          nickname: draftProfile.nickname || undefined,
+          department: draftProfile.department || undefined,
+          grade: labelToGrade(draftProfile.grade),
+          githubLink: github || undefined,
+          linkedinLink: linkedin || undefined,
+          portfolio: draftProfile.portfolio?.url || undefined,
+        },
+        techStacks: labelsToTechStacks(draftProfile.skills),
+        targetJobs: labelsToTargetJobs(draftProfile.interests),
+      },
+      {
+        onSuccess: () => setIsEditMode(false),
+        onError: () => setIsEditMode(false),
+      },
+    );
   };
 
   const handleAddCareerItem = (groupLabel: string, value: string) => {
@@ -127,13 +201,8 @@ export function StudentMyPage() {
   const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
 
-  const handleAddPortfolio = () => {
-    setIsPortfolioModalOpen(true);
-  };
-
   const handlePortfolioUploadConfirm = () => {
     if (!pendingFile) return;
-    // TODO: 파일 업로드 API 연동
     setDraftProfile((p) => ({
       ...p,
       portfolio: { title: pendingFile.name, url: '' },
@@ -197,7 +266,6 @@ export function StudentMyPage() {
 
   return (
     <div className={S.page}>
-      {/* Hero / Profile 상단 영역 */}
       <section className={S.heroSection} aria-label="프로필">
         <div className={S.avatarWrapper}>
           <div className={S.avatarCircle} aria-hidden="true">
@@ -233,9 +301,10 @@ export function StudentMyPage() {
                 size="compact"
                 leftIcon={<CheckIcon className="w-3.5 h-3.5" />}
                 onClick={handleSave}
+                disabled={isSaving}
                 className={S.editSaveButton}
               >
-                수정 완료
+                {isSaving ? '저장 중...' : '수정 완료'}
               </Button>
               <Button
                 type="button"
@@ -244,6 +313,7 @@ export function StudentMyPage() {
                 size="compact"
                 leftIcon={<CloseIcon className="w-3.5 h-3.5" />}
                 onClick={handleCancel}
+                disabled={isSaving}
                 className={S.editCancelButton}
               >
                 취소
@@ -256,7 +326,7 @@ export function StudentMyPage() {
             <span className={S.verifiedBadge}>재학생 인증완료</span>
             <div className={S.activityWrapper}>
               <ActivitySummary
-                items={MOCK_ACTIVITY}
+                items={activityItems}
                 onTitleClick={() => navigate('/my/activity')}
               />
             </div>
@@ -264,7 +334,6 @@ export function StudentMyPage() {
         )}
       </section>
 
-      {/* 정보 섹션 */}
       <div className={S.sectionsWrapper}>
         <BasicInfoSection mode={isEditMode ? 'edit' : 'view'} items={basicInfoItems} />
 
@@ -290,14 +359,12 @@ export function StudentMyPage() {
         <PortfolioSection
           mode={isEditMode ? 'edit' : 'view'}
           portfolio={currentData.portfolio}
-          onClick={isEditMode ? handleAddPortfolio : undefined}
+          onClick={isEditMode ? () => setIsPortfolioModalOpen(true) : undefined}
           onDelete={isEditMode ? handleDeletePortfolio : undefined}
         />
 
         <AccountSettingSection
-          onResetPassword={() => {
-            // TODO: 비밀번호 재설정 API 연동
-          }}
+          onResetPassword={() => {}}
           onLogout={() => {
             clearAccessToken();
             clearUserRole();
