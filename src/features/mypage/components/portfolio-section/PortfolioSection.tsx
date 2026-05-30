@@ -69,7 +69,7 @@ export function PortfolioSection({
           </span>
           <div className={S.textContent}>
             <span className={S.textLabel}>포트폴리오 올리기</span>
-            <span className={S.textMain}>{portfolio?.url ?? ''}</span>
+            <span className={S.textMain}>{portfolio?.title ?? ''}</span>
           </div>
           <Button
             type="button"
@@ -85,20 +85,32 @@ export function PortfolioSection({
       ) : (
         <div
           className={S.cardRowClickable}
-          {...(onClick && {
-            role: 'button' as const,
-            tabIndex: 0,
-            onClick,
-            onKeyDown: handleKeyDown,
-            'aria-label': `${portfolio!.title} 보기`,
-          })}
+          role="button"
+          tabIndex={0}
+          onClick={() => {
+            const url = portfolio!.url;
+            if (!url) return;
+            const href = url.startsWith('blob:') || url.startsWith('http') ? url : `https://${url}`;
+            window.open(href, '_blank', 'noopener,noreferrer');
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              const url = portfolio!.url;
+              if (!url) return;
+              const href =
+                url.startsWith('blob:') || url.startsWith('http') ? url : `https://${url}`;
+              window.open(href, '_blank', 'noopener,noreferrer');
+            }
+          }}
+          aria-label={`${portfolio!.title} 보기`}
         >
           <span className={cn(S.iconWrapperBase, S.iconWrapperFilled)}>
             <PortfolioIcon className={S.portfolioIcon} aria-hidden="true" />
           </span>
           <div className={S.textContent}>
             <span className={S.textLabel}>포트폴리오 링크</span>
-            <span className={S.textMain}>{portfolio!.url}</span>
+            <span className={S.textMain}>{portfolio!.title}</span>
           </div>
           <ChevronRightIcon className={S.chevronIcon} aria-hidden="true" />
         </div>
