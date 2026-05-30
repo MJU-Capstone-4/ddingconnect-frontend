@@ -56,7 +56,7 @@ type GraduateProfile = {
   socialLinks: SocialLinkItem[];
   portfolio: { title: string; url: string } | null;
   jobPostingLinks: string[];
-  hasBusinessCard: boolean;
+  businessCardImageUrl: string;
 };
 
 const MOCK_PROFILE: GraduateProfile = {
@@ -77,7 +77,7 @@ const MOCK_PROFILE: GraduateProfile = {
     url: 'portfolio.honggildong.com',
   },
   jobPostingLinks: ['recruit.navercorp.com/rcrt/list.do'],
-  hasBusinessCard: true,
+  businessCardImageUrl: '',
 };
 
 const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
@@ -102,7 +102,7 @@ function mapApiToProfile(data: MyPageResponse): GraduateProfile {
     ],
     portfolio: p.portfolio ? { title: '포트폴리오', url: p.portfolio } : null,
     jobPostingLinks: (data.jobPosts ?? []).map((j) => j.detailUrl ?? '').filter(Boolean),
-    hasBusinessCard: Boolean(p.businessCardImage),
+    businessCardImageUrl: p.businessCardImage ?? '',
   };
 }
 
@@ -176,10 +176,18 @@ export function GraduateMyPage() {
           department: draftProfile.department || undefined,
           githubLink: github || undefined,
           linkedinLink: linkedin || undefined,
-          portfolio: draftProfile.portfolio?.url || undefined,
+          portfolio:
+            draftProfile.portfolio?.url && !draftProfile.portfolio.url.startsWith('blob:')
+              ? draftProfile.portfolio.url
+              : undefined,
           jobType: labelToJobType(draftProfile.jobType),
           company: draftProfile.company || undefined,
           careerYear: labelToCareerYear(draftProfile.experience),
+          businessCardImage:
+            draftProfile.businessCardImageUrl &&
+            !draftProfile.businessCardImageUrl.startsWith('blob:')
+              ? draftProfile.businessCardImageUrl
+              : undefined,
         },
         techStacks: labelsToTechStacks(draftProfile.skills),
         jobPostsToAdd,
@@ -224,9 +232,10 @@ export function GraduateMyPage() {
 
   const handlePortfolioUploadConfirm = () => {
     if (!pendingPortfolioFile) return;
+    const objectUrl = URL.createObjectURL(pendingPortfolioFile);
     setDraftProfile((p) => ({
       ...p,
-      portfolio: { title: pendingPortfolioFile.name, url: '' },
+      portfolio: { title: pendingPortfolioFile.name, url: objectUrl },
     }));
     setPendingPortfolioFile(null);
     setIsPortfolioModalOpen(false);
@@ -238,13 +247,14 @@ export function GraduateMyPage() {
 
   const handleCardUploadConfirm = () => {
     if (!pendingCardFile) return;
-    setDraftProfile((p) => ({ ...p, hasBusinessCard: true }));
+    const objectUrl = URL.createObjectURL(pendingCardFile);
+    setDraftProfile((p) => ({ ...p, businessCardImageUrl: objectUrl }));
     setPendingCardFile(null);
     setIsCardModalOpen(false);
   };
 
   const handleDeleteCard = () => {
-    setDraftProfile((p) => ({ ...p, hasBusinessCard: false }));
+    setDraftProfile((p) => ({ ...p, businessCardImageUrl: '' }));
   };
 
   const handleDeleteJobPosting = () => {
@@ -528,9 +538,22 @@ export function GraduateMyPage() {
               className={S.jobPostingCardRow}
               role="button"
               tabIndex={0}
-              onClick={() => {}}
+              onClick={() => {
+                const url = profile.jobPostingLinks[0];
+                if (url) {
+                  const href = url.startsWith('http') ? url : `https://${url}`;
+                  window.open(href, '_blank', 'noopener,noreferrer');
+                }
+              }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  const url = profile.jobPostingLinks[0];
+                  if (url) {
+                    const href = url.startsWith('http') ? url : `https://${url}`;
+                    window.open(href, '_blank', 'noopener,noreferrer');
+                  }
+                }
               }}
               aria-label={`${profile.nickname}의 채용공고 확인`}
             >
@@ -550,7 +573,7 @@ export function GraduateMyPage() {
         <section className={S.cardSection} aria-label="내 명함">
           <div className={S.cardSectionHeader}>
             <h2 className={S.cardSectionTitle}>내 명함</h2>
-            {isEditMode && currentData.hasBusinessCard && (
+            {isEditMode && !!currentData.businessCardImageUrl && (
               <Button
                 type="button"
                 size="tiny"
@@ -564,13 +587,17 @@ export function GraduateMyPage() {
           </div>
 
           <div className={S.cardPreviewArea}>
-            {currentData.hasBusinessCard ? (
+            {currentData.businessCardImageUrl ? (
               <>
                 <span className={S.cardRegisteredBadge}>
                   <CheckIcon className={S.cardBadgeCheck} aria-hidden="true" />
                   등록됨
                 </span>
-                <div className={S.cardPreviewPlaceholder} aria-label="명함 미리보기" />
+                <img
+                  src={currentData.businessCardImageUrl}
+                  alt="명함"
+                  className="w-full h-full object-contain p-3"
+                />
               </>
             ) : (
               <div className="flex flex-col items-center gap-2 text-text-secondary">
