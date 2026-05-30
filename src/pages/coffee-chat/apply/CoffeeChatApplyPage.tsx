@@ -1,3 +1,4 @@
+import { useNavigate, useParams } from 'react-router';
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import ClockIcon from '@/shared/assets/icons/clock.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
@@ -54,10 +55,6 @@ const MOCK_SENIOR: SeniorProfile = {
   ],
 };
 
-const handleApply = () => {
-  // TODO: 커피챗 신청 API 연동
-};
-
 const handlePortfolioClick = () => {
   // TODO: 포트폴리오 링크 이동
 };
@@ -71,6 +68,12 @@ const handleSaveBusinessCard = () => {
 };
 
 export function CoffeeChatApplyPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const handleApply = () => {
+    navigate('/coffee-chat/input', { state: { receiverId: Number(id) } });
+  };
   const careerFields = [
     {
       label: '직군',
