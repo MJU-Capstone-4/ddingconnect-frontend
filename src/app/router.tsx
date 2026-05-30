@@ -13,6 +13,7 @@ import { CoffeeChatMatchingPage } from '@/pages/coffee-chat/matching';
 import { MatchingResultPage } from '@/pages/coffee-chat/matching-result';
 import { SeniorProfilePage } from '@/pages/coffee-chat/senior-profile';
 import { CoffeeChatApplyPage } from '@/pages/coffee-chat/apply';
+import { ReceivedCoffeeChatPage } from '@/pages/coffee-chat/received';
 import { JobInfoPage } from '@/pages/job-info';
 import { StudentMyPage } from '@/pages/my-page/student';
 import { StudentProfileEditPage } from '@/pages/my-page/student/edit';
@@ -68,6 +69,7 @@ export const router = createBrowserRouter([
           { path: '/coffee-chat/matching-result', element: <MatchingResultPage /> },
           { path: '/coffee-chat/senior-profile/:id', element: <SeniorProfilePage /> },
           { path: '/coffee-chat/apply/:id', element: <CoffeeChatApplyPage /> },
+          { path: '/coffee-chat/received', element: <ReceivedCoffeeChatPage /> },
 
           // job-info
           { path: '/job-info', element: <JobInfoPage /> },
