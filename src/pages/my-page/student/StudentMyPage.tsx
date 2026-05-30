@@ -153,7 +153,10 @@ export function StudentMyPage() {
           grade: labelToGrade(draftProfile.grade),
           githubLink: github || undefined,
           linkedinLink: linkedin || undefined,
-          portfolio: draftProfile.portfolio?.url || undefined,
+          portfolio:
+            draftProfile.portfolio?.url && !draftProfile.portfolio.url.startsWith('blob:')
+              ? draftProfile.portfolio.url
+              : undefined,
         },
         techStacks: labelsToTechStacks(draftProfile.skills),
         targetJobs: labelsToTargetJobs(draftProfile.interests),
@@ -203,9 +206,10 @@ export function StudentMyPage() {
 
   const handlePortfolioUploadConfirm = () => {
     if (!pendingFile) return;
+    const objectUrl = URL.createObjectURL(pendingFile);
     setDraftProfile((p) => ({
       ...p,
-      portfolio: { title: pendingFile.name, url: '' },
+      portfolio: { title: pendingFile.name, url: objectUrl },
     }));
     setPendingFile(null);
     setIsPortfolioModalOpen(false);
