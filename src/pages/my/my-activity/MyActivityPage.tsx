@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useSentCoffeeChatsQuery, useCancelCoffeeChatMutation } from '@/features/coffee-chat/model';
 import { SeniorProfileCard } from '@/features/coffee-chat/components/senior-profile-card';
 import type { SeniorProfileCardProps } from '@/features/coffee-chat/components/senior-profile-card';
 import { QnaPostCard } from '@/features/qna/components/qna-post-card';
@@ -77,6 +78,7 @@ const MOCK_QNAS: QnaMock[] = [
   },
 ];
 
+// Demo data — 기말 발표용 시연 데이터 (삭제 금지)
 const COFFEE_CHAT_TOTAL = 12;
 const ROADMAP_TOTAL = 3;
 const QNA_TOTAL = 5;
@@ -86,6 +88,10 @@ type Category = (typeof CATEGORIES)[number];
 
 export function MyActivityPage() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('전체');
+  const { data: sentCoffeeChats } = useSentCoffeeChatsQuery();
+  const { mutate: cancelCoffeeChat } = useCancelCoffeeChatMutation();
+
+  const coffeeChatTotal = sentCoffeeChats?.length ?? COFFEE_CHAT_TOTAL;
 
   return (
     <div className={styles.page}>
@@ -118,7 +124,7 @@ export function MyActivityPage() {
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitleRow}>
                 <span className={styles.sectionTitle}>커피챗</span>
-                <span className={styles.sectionCount}>{COFFEE_CHAT_TOTAL}</span>
+                <span className={styles.sectionCount}>{coffeeChatTotal}</span>
               </div>
               <button
                 type="button"
@@ -133,16 +139,29 @@ export function MyActivityPage() {
               </button>
             </div>
             <div className={styles.cardList}>
-              {MOCK_COFFEE_CHATS.map((chat, i) => (
-                <SeniorProfileCard
-                  key={i}
-                  {...chat}
-                  onClick={() => {
-                    // TODO: 선배 상세 페이지 연결
-                  }}
-                  className="w-full"
-                />
-              ))}
+              {MOCK_COFFEE_CHATS.map((chat, i) => {
+                const realChatId = sentCoffeeChats?.[i]?.id;
+                return (
+                  <div key={i} className="flex flex-col gap-1">
+                    <SeniorProfileCard
+                      {...chat}
+                      onClick={() => {
+                        // TODO: 선배 상세 페이지 연결
+                      }}
+                      className="w-full"
+                    />
+                    {realChatId !== undefined && (
+                      <button
+                        type="button"
+                        className="self-end text-xs text-gray-400 underline"
+                        onClick={() => cancelCoffeeChat(realChatId)}
+                      >
+                        요청 취소
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
