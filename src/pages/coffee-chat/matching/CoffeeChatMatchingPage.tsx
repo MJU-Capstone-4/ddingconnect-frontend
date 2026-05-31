@@ -5,13 +5,9 @@ import type { CareerProfileFormValues } from '@/features/career';
 import { useMatchingMutation } from '@/features/coffee-chat/hooks';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
+import { getApiError } from '@/shared/utils/get-api-error';
 
 import * as styles from './coffee-chat-matching-page.styles';
-
-function getApiError(error: unknown, fallback: string): string {
-  const axiosError = error as { response?: { data?: { message?: string } } };
-  return axiosError?.response?.data?.message ?? fallback;
-}
 
 const INITIAL_DATA: CareerProfileFormValues = {
   grade: '',

@@ -15,16 +15,12 @@ import {
   SocialLinkSection,
 } from '@/features/mypage';
 import type { SocialLinkItem } from '@/features/mypage';
+import { getApiError } from '@/shared/utils/get-api-error';
 
 import * as S from './coffee-chat-apply-page.styles';
 
 // Mock data (기말 발표 데모용)
 // import { MOCK_SENIOR_DETAIL, MOCK_SENIOR_SOCIAL_LINKS } from '@/features/coffee-chat/mock/mock';
-
-function getApiError(error: unknown, fallback: string): string {
-  const axiosError = error as { response?: { data?: { message?: string } } };
-  return axiosError?.response?.data?.message ?? fallback;
-}
 
 function normalizeUrl(input: string): string {
   return /^https?:\/\//i.test(input) ? input : `https://${input}`;
