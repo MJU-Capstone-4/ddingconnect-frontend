@@ -36,7 +36,13 @@ export function useToggleAnswerLikeMutation(questionId: number) {
     onSuccess: (data, answerId) => {
       queryClient.setQueryData<AnswerResponse[]>(queryKeys.qna.answers(questionId), (prev) =>
         prev?.map((a) =>
-          a.id === answerId ? { ...a, likedByMe: data.liked, likeCount: data.likeCount } : a,
+          a.id === answerId
+            ? {
+                ...a,
+                likedByMe: data.liked ?? a.likedByMe,
+                likeCount: data.likeCount ?? a.likeCount,
+              }
+            : a,
         ),
       );
     },
