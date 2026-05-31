@@ -21,15 +21,7 @@ export function QnaCreatePage() {
   const [content, setContent] = useState('');
   const [validationError, setValidationError] = useState('');
 
-  const createMutation = useCreateQuestionMutation({
-    onSuccess: (data) => {
-      if (data.id) {
-        navigate(`/qna/${data.id}`);
-      } else {
-        navigate('/qna');
-      }
-    },
-  });
+  const createMutation = useCreateQuestionMutation();
 
   function handleSubmit() {
     if (!title.trim()) {
@@ -42,11 +34,10 @@ export function QnaCreatePage() {
     }
     setValidationError('');
 
-    createMutation.mutate({
-      category: UI_TO_API_CATEGORY[category],
-      title: title.trim(),
-      content: content.trim(),
-    });
+    createMutation.mutate(
+      { category: UI_TO_API_CATEGORY[category], title: title.trim(), content: content.trim() },
+      { onSuccess: (data) => navigate(data.id ? `/qna/${data.id}` : '/qna') },
+    );
   }
 
   function getSubmitError(): string {
