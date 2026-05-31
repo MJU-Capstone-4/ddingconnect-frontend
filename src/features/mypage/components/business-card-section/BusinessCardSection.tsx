@@ -27,13 +27,17 @@ export function BusinessCardSection({
       <h2 className={S.sectionTitle}>{title}</h2>
 
       <div className={S.previewArea} aria-label="명함 미리보기">
-        {businessCardImage && !hasImageError && (
+        {businessCardImage && !hasImageError ? (
           <img
             src={businessCardImage}
             alt="선배 명함"
             className="w-full h-full object-contain"
             onError={() => setHasImageError(true)}
           />
+        ) : (
+          <p className="text-sm text-text-secondary" aria-label="등록된 명함이 없습니다">
+            등록된 명함이 없습니다
+          </p>
         )}
       </div>
 
