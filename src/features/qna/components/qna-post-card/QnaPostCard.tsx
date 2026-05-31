@@ -26,7 +26,7 @@ import {
   viewIcon,
 } from './qna-post-card.styles';
 
-export type QnaPostCategory = '취업 준비' | '기술 질문' | '진로 고민' | '포트폴리오';
+export type QnaPostCategory = '취업 준비' | '기술 질문' | '진로 고민' | '포트폴리오' | '기타';
 
 export type QnaPostCardProps = {
   category: QnaPostCategory;
