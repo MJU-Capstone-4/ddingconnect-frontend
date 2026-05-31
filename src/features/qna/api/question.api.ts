@@ -38,7 +38,8 @@ export const toggleQuestionLike = async (questionId: number): Promise<LikeToggle
 };
 
 export const deleteQuestion = async (questionId: number): Promise<void> => {
-  await apiClient.delete<ApiResponseString>(`/api/v1/questions/${questionId}`);
+  const { data } = await apiClient.delete<ApiResponseString>(`/api/v1/questions/${questionId}`);
+  if (!data.isSuccess) throw new Error(data.message ?? '질문 삭제에 실패했습니다.');
 };
 
 export const updateQuestion = async (
