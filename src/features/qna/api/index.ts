@@ -6,3 +6,11 @@ export {
   deleteQuestion,
   updateQuestion,
 } from './question.api';
+
+export {
+  getAnswers,
+  createAnswer,
+  updateAnswer,
+  deleteAnswer,
+  toggleAnswerLike,
+} from './answer.api';
