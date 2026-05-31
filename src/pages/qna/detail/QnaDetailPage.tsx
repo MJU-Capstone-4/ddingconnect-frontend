@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 
@@ -6,8 +6,14 @@ import {
   useQuestionDetailQuery,
   useToggleQuestionLikeMutation,
   useDeleteQuestionMutation,
+  useAnswersQuery,
+  useCreateAnswerMutation,
+  useUpdateAnswerMutation,
+  useDeleteAnswerMutation,
+  useToggleAnswerLikeMutation,
 } from '@/features/qna/hooks';
 import { API_TO_UI_CATEGORY } from '@/features/qna/model/question.constants';
+import { getUserRole } from '@/features/auth/model/auth-state';
 import ArrowLeftIcon from '@/shared/assets/icons/arrow-left.svg?react';
 import CommentIcon from '@/shared/assets/icons/comment.svg?react';
 import EditIcon from '@/shared/assets/icons/edit.svg?react';
@@ -18,7 +24,7 @@ import { Button, Chip, HeroSection, Modal } from '@/shared/ui';
 
 import * as styles from './qna-detail-page.styles';
 
-// 기말 발표 시연용 mock 답변 — 답변 API 연동 전 placeholder
+// 기말 발표 시연용 mock 답변 — 답변 API 응답이 비어있을 때 fallback
 const MOCK_ANSWERS = [
   {
     id: 1,
@@ -53,41 +59,86 @@ export function QnaDetailPage() {
   const { id } = useParams<{ id: string }>();
   const questionId = id ? parseInt(id, 10) : undefined;
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [likedAnswerIds, setLikedAnswerIds] = useState<Set<number>>(new Set());
-  const [answerLikeCounts, setAnswerLikeCounts] = useState<Record<number, number>>(
-    Object.fromEntries(MOCK_ANSWERS.map((a) => [a.id, a.likeCount])),
-  );
+  const isGraduate = getUserRole() === 'GRADUATE';
+
+  const [isDeleteQuestionModalOpen, setIsDeleteQuestionModalOpen] = useState(false);
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
+  const [answerDraft, setAnswerDraft] = useState('');
+  const [editingAnswerId, setEditingAnswerId] = useState<number | null>(null);
+  const [editDraft, setEditDraft] = useState('');
+  const [deletingAnswerId, setDeletingAnswerId] = useState<number | null>(null);
+
+  const createFormRef = useRef<HTMLDivElement>(null);
 
   const { data: question, isLoading, isError, error } = useQuestionDetailQuery(questionId);
+  const { data: apiAnswers } = useAnswersQuery(questionId);
 
-  const toggleLikeMutation = useToggleQuestionLikeMutation();
-  const deleteMutation = useDeleteQuestionMutation({
+  const toggleQuestionLikeMutation = useToggleQuestionLikeMutation();
+  const deleteQuestionMutation = useDeleteQuestionMutation({
     onSuccess: () => navigate('/qna'),
   });
 
+  const createAnswerMutation = useCreateAnswerMutation(questionId!);
+  const updateAnswerMutation = useUpdateAnswerMutation(questionId!);
+  const deleteAnswerMutation = useDeleteAnswerMutation(questionId!, {
+    onSuccess: () => setDeletingAnswerId(null),
+  });
+  const toggleAnswerLikeMutation = useToggleAnswerLikeMutation(questionId!);
+
+  const hasApiAnswers = apiAnswers && apiAnswers.length > 0;
+  const useMockFallback = !hasApiAnswers;
+
   const handleQuestionLike = () => {
     if (!questionId) return;
-    toggleLikeMutation.mutate(questionId);
+    toggleQuestionLikeMutation.mutate(questionId);
   };
 
-  const handleDelete = () => {
+  const handleDeleteQuestion = () => {
     if (!questionId) return;
-    deleteMutation.mutate(questionId);
+    deleteQuestionMutation.mutate(questionId);
+  };
+
+  const handleOpenCreateForm = () => {
+    setIsCreateFormOpen(true);
+    setTimeout(() => {
+      createFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
+  };
+
+  const handleCreateAnswer = () => {
+    if (!answerDraft.trim()) return;
+    createAnswerMutation.mutate(
+      { content: answerDraft.trim() },
+      {
+        onSuccess: () => {
+          setAnswerDraft('');
+          setIsCreateFormOpen(false);
+        },
+      },
+    );
+  };
+
+  const handleStartEdit = (answerId: number, content: string) => {
+    setEditingAnswerId(answerId);
+    setEditDraft(content);
+  };
+
+  const handleUpdateAnswer = (answerId: number) => {
+    if (!editDraft.trim()) return;
+    updateAnswerMutation.mutate(
+      { answerId, body: { content: editDraft.trim() } },
+      { onSuccess: () => setEditingAnswerId(null) },
+    );
+  };
+
+  const handleDeleteAnswer = () => {
+    if (deletingAnswerId == null) return;
+    deleteAnswerMutation.mutate(deletingAnswerId);
   };
 
   const handleAnswerLike = (answerId: number) => {
-    setLikedAnswerIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(answerId)) {
-        next.delete(answerId);
-        setAnswerLikeCounts((counts) => ({ ...counts, [answerId]: counts[answerId] - 1 }));
-      } else {
-        next.add(answerId);
-        setAnswerLikeCounts((counts) => ({ ...counts, [answerId]: counts[answerId] + 1 }));
-      }
-      return next;
-    });
+    if (!questionId) return;
+    toggleAnswerLikeMutation.mutate(answerId);
   };
 
   if (isLoading) {
@@ -137,10 +188,10 @@ export function QnaDetailPage() {
 
   const isQuestionLiked = question.likedByMe ?? false;
   const questionLikeCount = question.likeCount ?? 0;
-  const answerCount = question.answerCount ?? 0;
+  const answerCount = hasApiAnswers ? apiAnswers.length : (question.answerCount ?? 0);
   const category = API_TO_UI_CATEGORY[question.category ?? 'ETC'];
-  const deleteError = deleteMutation.isError
-    ? getApiError(deleteMutation.error, '삭제에 실패했습니다.')
+  const deleteQuestionError = deleteQuestionMutation.isError
+    ? getApiError(deleteQuestionMutation.error, '삭제에 실패했습니다.')
     : '';
 
   return (
@@ -177,7 +228,7 @@ export function QnaDetailPage() {
           <button
             type="button"
             className={styles.questionDeleteTextButton}
-            onClick={() => setIsDeleteModalOpen(true)}
+            onClick={() => setIsDeleteQuestionModalOpen(true)}
             aria-label="질문 삭제"
           >
             삭제
@@ -207,7 +258,7 @@ export function QnaDetailPage() {
                 isQuestionLiked ? styles.questionActionPillLiked : styles.questionActionPill
               }
               onClick={handleQuestionLike}
-              disabled={toggleLikeMutation.isPending}
+              disabled={toggleQuestionLikeMutation.isPending}
               aria-pressed={isQuestionLiked}
               aria-label={`좋아요 ${questionLikeCount}개`}
             >
@@ -238,12 +289,103 @@ export function QnaDetailPage() {
           <span className={styles.answersCount}>{answerCount}</span>
         </div>
 
-        <ul className={styles.answersList}>
-          {MOCK_ANSWERS.map((answer) => {
-            const isLiked = likedAnswerIds.has(answer.id);
-            const likeCount = answerLikeCounts[answer.id] ?? answer.likeCount;
+        {hasApiAnswers ? (
+          <ul className={styles.answersList}>
+            {apiAnswers.map((answer) => {
+              const isLiked = answer.likedByMe ?? false;
+              const likeCount = answer.likeCount ?? 0;
+              const isEditing = editingAnswerId === answer.id;
 
-            return (
+              return (
+                <li key={answer.id}>
+                  <div className={styles.answerCard}>
+                    <div className={styles.answerCardHeader}>
+                      <div className={styles.answerAuthorRow}>
+                        <div className={styles.answerAvatar} aria-hidden="true">
+                          졸
+                        </div>
+                        <div className={styles.answerAuthorInfo}>
+                          <span className={styles.answerAuthorName}>졸업생</span>
+                        </div>
+                      </div>
+                      {isGraduate && !isEditing && (
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            className={styles.questionActionTextButton}
+                            onClick={() => handleStartEdit(answer.id!, answer.content ?? '')}
+                            aria-label="답변 수정"
+                          >
+                            <EditIcon className="w-3.5 h-3.5" aria-hidden="true" />
+                            <span>수정</span>
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.questionDeleteTextButton}
+                            onClick={() => setDeletingAnswerId(answer.id!)}
+                            aria-label="답변 삭제"
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {isEditing ? (
+                      <div className="flex flex-col gap-2">
+                        <textarea
+                          className="w-full text-[13px] text-text-primary leading-relaxed border border-border rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 min-h-[96px]"
+                          value={editDraft}
+                          onChange={(e) => setEditDraft(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            tone="gray"
+                            size="filter"
+                            className="w-auto"
+                            onClick={() => setEditingAnswerId(null)}
+                            disabled={updateAnswerMutation.isPending}
+                          >
+                            취소
+                          </Button>
+                          <Button
+                            variant="solid"
+                            tone="blue"
+                            size="filter"
+                            className="w-auto"
+                            onClick={() => handleUpdateAnswer(answer.id!)}
+                            disabled={updateAnswerMutation.isPending || !editDraft.trim()}
+                          >
+                            {updateAnswerMutation.isPending ? '저장 중...' : '저장'}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className={styles.answerBody}>{answer.content}</p>
+                    )}
+
+                    {!isEditing && (
+                      <button
+                        type="button"
+                        className={isLiked ? styles.answerLikeButtonLiked : styles.answerLikeButton}
+                        onClick={() => handleAnswerLike(answer.id!)}
+                        disabled={toggleAnswerLikeMutation.isPending}
+                        aria-pressed={isLiked}
+                        aria-label={`좋아요 ${likeCount}개`}
+                      >
+                        <LikeIcon className="w-3.5 h-3.5" aria-hidden="true" />
+                        <span>{likeCount}</span>
+                      </button>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : useMockFallback ? (
+          <ul className={styles.answersList}>
+            {MOCK_ANSWERS.map((answer) => (
               <li key={answer.id}>
                 <div className={styles.answerCard}>
                   <div className={styles.answerCardHeader}>
@@ -258,40 +400,81 @@ export function QnaDetailPage() {
                     </div>
                     <span className={styles.answerTime}>{answer.createdAt}</span>
                   </div>
-
                   <p className={styles.answerBody}>{answer.content}</p>
-
                   <button
                     type="button"
-                    className={isLiked ? styles.answerLikeButtonLiked : styles.answerLikeButton}
-                    onClick={() => handleAnswerLike(answer.id)}
-                    aria-pressed={isLiked}
-                    aria-label={`좋아요 ${likeCount}개`}
+                    className={styles.answerLikeButton}
+                    aria-label={`좋아요 ${answer.likeCount}개`}
                   >
                     <LikeIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>{likeCount}</span>
+                    <span>{answer.likeCount}</span>
                   </button>
                 </div>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm text-text-muted">아직 답변이 없습니다.</p>
+          </div>
+        )}
+
+        {isGraduate && isCreateFormOpen && (
+          <div ref={createFormRef} className="flex flex-col gap-2 mt-4">
+            <textarea
+              className="w-full text-[13px] text-text-primary leading-relaxed border border-border rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 min-h-[120px]"
+              placeholder="답변을 입력하세요..."
+              value={answerDraft}
+              onChange={(e) => setAnswerDraft(e.target.value)}
+            />
+            {createAnswerMutation.isError && (
+              <p className="text-xs text-red-500">
+                {getApiError(createAnswerMutation.error, '답변 등록에 실패했습니다.')}
+              </p>
+            )}
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                tone="gray"
+                size="filter"
+                className="w-auto"
+                onClick={() => {
+                  setIsCreateFormOpen(false);
+                  setAnswerDraft('');
+                }}
+                disabled={createAnswerMutation.isPending}
+              >
+                취소
+              </Button>
+              <Button
+                variant="solid"
+                tone="blue"
+                size="filter"
+                className="w-auto"
+                onClick={handleCreateAnswer}
+                disabled={createAnswerMutation.isPending || !answerDraft.trim()}
+              >
+                {createAnswerMutation.isPending ? '등록 중...' : '등록'}
+              </Button>
+            </div>
+          </div>
+        )}
       </section>
 
-      <Button
-        size="floating"
-        tone="blue"
-        className={styles.floatingButton}
-        leftIcon={<PlusIcon className="w-4 h-4 text-white" aria-hidden="true" />}
-        onClick={() => {
-          // TODO: 답변 등록 모달 또는 페이지 연결
-        }}
-        aria-label="답변 등록"
-      >
-        답변등록
-      </Button>
+      {isGraduate && (
+        <Button
+          size="floating"
+          tone="blue"
+          className={styles.floatingButton}
+          leftIcon={<PlusIcon className="w-4 h-4 text-white" aria-hidden="true" />}
+          onClick={handleOpenCreateForm}
+          aria-label="답변 등록"
+        >
+          답변등록
+        </Button>
+      )}
 
-      <Modal open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+      <Modal open={isDeleteQuestionModalOpen} onOpenChange={setIsDeleteQuestionModalOpen}>
         <Modal.Content size="sm">
           <Modal.Header tone="blue" layout="stacked">
             <Modal.Title>질문 삭제</Modal.Title>
@@ -301,7 +484,9 @@ export function QnaDetailPage() {
             <Modal.Description className="text-text-primary">
               이 질문을 삭제하시겠습니까? 삭제된 질문은 복구할 수 없습니다.
             </Modal.Description>
-            {deleteError && <p className="text-xs text-red-500 mt-2 text-center">{deleteError}</p>}
+            {deleteQuestionError && (
+              <p className="text-xs text-red-500 mt-2 text-center">{deleteQuestionError}</p>
+            )}
           </Modal.Body>
           <Modal.Footer layout="row">
             <Button
@@ -309,8 +494,8 @@ export function QnaDetailPage() {
               tone="gray"
               size="dialogAction"
               className="flex-1"
-              onClick={() => setIsDeleteModalOpen(false)}
-              disabled={deleteMutation.isPending}
+              onClick={() => setIsDeleteQuestionModalOpen(false)}
+              disabled={deleteQuestionMutation.isPending}
             >
               취소
             </Button>
@@ -319,10 +504,54 @@ export function QnaDetailPage() {
               tone="blue"
               size="dialogAction"
               className="flex-1"
-              onClick={handleDelete}
-              disabled={deleteMutation.isPending}
+              onClick={handleDeleteQuestion}
+              disabled={deleteQuestionMutation.isPending}
             >
-              {deleteMutation.isPending ? '삭제 중...' : '삭제'}
+              {deleteQuestionMutation.isPending ? '삭제 중...' : '삭제'}
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+
+      <Modal
+        open={deletingAnswerId !== null}
+        onOpenChange={(open) => !open && setDeletingAnswerId(null)}
+      >
+        <Modal.Content size="sm">
+          <Modal.Header tone="blue" layout="stacked">
+            <Modal.Title>답변 삭제</Modal.Title>
+            <Modal.Close />
+          </Modal.Header>
+          <Modal.Body>
+            <Modal.Description className="text-text-primary">
+              이 답변을 삭제하시겠습니까? 삭제된 답변은 복구할 수 없습니다.
+            </Modal.Description>
+            {deleteAnswerMutation.isError && (
+              <p className="text-xs text-red-500 mt-2 text-center">
+                {getApiError(deleteAnswerMutation.error, '삭제에 실패했습니다.')}
+              </p>
+            )}
+          </Modal.Body>
+          <Modal.Footer layout="row">
+            <Button
+              variant="outline"
+              tone="gray"
+              size="dialogAction"
+              className="flex-1"
+              onClick={() => setDeletingAnswerId(null)}
+              disabled={deleteAnswerMutation.isPending}
+            >
+              취소
+            </Button>
+            <Button
+              variant="solid"
+              tone="blue"
+              size="dialogAction"
+              className="flex-1"
+              onClick={handleDeleteAnswer}
+              disabled={deleteAnswerMutation.isPending}
+            >
+              {deleteAnswerMutation.isPending ? '삭제 중...' : '삭제'}
             </Button>
           </Modal.Footer>
         </Modal.Content>
