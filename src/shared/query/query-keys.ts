@@ -22,6 +22,7 @@ export const queryKeys = {
     lists: () => [...queryKeys.qna.all, 'list'] as const,
     list: (params?: Record<string, unknown>) => [...queryKeys.qna.lists(), params] as const,
     detail: (id: number) => [...queryKeys.qna.all, id] as const,
+    answers: (questionId: number) => [...queryKeys.qna.all, questionId, 'answers'] as const,
   },
 
   jobInfo: {
