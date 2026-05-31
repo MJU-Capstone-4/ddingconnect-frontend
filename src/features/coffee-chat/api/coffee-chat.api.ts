@@ -5,7 +5,7 @@ type ApiResponse<T> = {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: T;
+  result?: T | null;
 };
 
 export const requestMatching = async (body: MatchingRequest): Promise<MatchingCandidate[]> => {
