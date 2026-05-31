@@ -7,5 +7,6 @@ export function useQuestionsQuery() {
   return useQuery({
     queryKey: queryKeys.qna.lists(),
     queryFn: getQuestions,
+    refetchOnMount: true,
   });
 }
