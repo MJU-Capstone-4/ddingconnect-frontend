@@ -167,7 +167,10 @@ export function CoffeeChatApplyPage() {
           }
         />
 
-        <BusinessCardSection onButtonClick={handleSaveBusinessCard} />
+        <BusinessCardSection
+          onButtonClick={handleSaveBusinessCard}
+          businessCardImage={senior.businessCardImage || undefined}
+        />
 
         <SocialLinkSection links={socialLinks} />
       </div>
