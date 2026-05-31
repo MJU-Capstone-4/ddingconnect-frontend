@@ -43,25 +43,31 @@ export function PortfolioSection({
       <h2 className={S.sectionTitle}>{isEdit ? '나의 포트폴리오 올리기' : '포트폴리오'}</h2>
 
       {isEmpty ? (
-        <div
-          className={S.cardRowClickable}
-          {...(onClick && {
-            role: 'button' as const,
-            tabIndex: 0,
-            onClick,
-            onKeyDown: handleKeyDown,
-            'aria-label': '포트폴리오 업로드',
-          })}
-        >
-          <span className={cn(S.iconWrapperBase, S.iconWrapperEmpty)}>
-            <PlusIcon className={S.plusIcon} aria-hidden="true" />
-          </span>
-          <div className={S.textContent}>
-            <span className={S.textLabel}>{isEdit ? '포트폴리오 올리기' : '포트폴리오 링크'}</span>
-            <span className={S.textMain}>포트폴리오를 업로드해주세요</span>
+        isEdit ? (
+          <div
+            className={S.cardRowClickable}
+            {...(onClick && {
+              role: 'button' as const,
+              tabIndex: 0,
+              onClick,
+              onKeyDown: handleKeyDown,
+              'aria-label': '포트폴리오 업로드',
+            })}
+          >
+            <span className={cn(S.iconWrapperBase, S.iconWrapperEmpty)}>
+              <PlusIcon className={S.plusIcon} aria-hidden="true" />
+            </span>
+            <div className={S.textContent}>
+              <span className={S.textLabel}>포트폴리오 올리기</span>
+              <span className={S.textMain}>포트폴리오를 업로드해주세요</span>
+            </div>
+            <ChevronRightIcon className={S.chevronIcon} aria-hidden="true" />
           </div>
-          <ChevronRightIcon className={S.chevronIcon} aria-hidden="true" />
-        </div>
+        ) : (
+          <div className={S.emptyRow}>
+            <span className={S.emptyText}>포트폴리오 정보 없음</span>
+          </div>
+        )
       ) : isEdit ? (
         <div className={S.cardRow}>
           <span className={cn(S.iconWrapperBase, S.iconWrapperFilled)}>

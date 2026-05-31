@@ -7,13 +7,9 @@ import MailIcon from '@/shared/assets/icons/mail.svg?react';
 import { Button } from '@/shared/ui/button';
 import { Input, PasswordInput } from '@/shared/ui/input';
 import { useLoginMutation } from '@/features/auth/hooks';
+import { getApiError } from '@/shared/utils/get-api-error';
 
 import * as styles from './login-page.styles';
-
-function getApiError(error: unknown, fallback: string): string {
-  const axiosError = error as { response?: { data?: { message?: string } } };
-  return axiosError?.response?.data?.message ?? fallback;
-}
 
 export function LoginPage() {
   const [email, setEmail] = useState('');

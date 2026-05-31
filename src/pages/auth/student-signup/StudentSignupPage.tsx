@@ -15,15 +15,11 @@ import {
   useSignupMutation,
 } from '@/features/auth/hooks';
 import { setUserRole } from '@/features/auth/model/auth-state';
+import { getApiError } from '@/shared/utils/get-api-error';
 
 import * as styles from './student-signup-page.styles';
 
 const MJU_EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@mju\.ac\.kr$/;
-
-function getApiError(error: unknown, fallback: string): string {
-  const axiosError = error as { response?: { data?: { message?: string } } };
-  return axiosError?.response?.data?.message ?? fallback;
-}
 
 export function StudentSignupPage() {
   const navigate = useNavigate();

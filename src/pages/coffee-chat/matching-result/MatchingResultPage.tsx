@@ -1,7 +1,8 @@
 import { useId, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 import { SeniorProfileCard } from '@/features/coffee-chat/components';
+import type { MatchingCandidate } from '@/features/coffee-chat/types';
 import ArrowDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
@@ -9,43 +10,19 @@ import { cn } from '@/shared/utils/cn';
 
 import * as styles from './coffee-chat-matching-result-page.styles';
 
-const MOCK_MATCHED_SENIORS = [
-  {
-    id: 1,
-    name: '이선배',
-    department: "컴퓨터공학과 '18",
-    company: '네이버',
-    job: '백엔드 개발자',
-    career: '경력 3년',
-    techStacks: ['React', 'TypeScript'],
-  },
-  {
-    id: 2,
-    name: '이선배',
-    department: "컴퓨터공학과 '18",
-    company: '네이버',
-    job: '백엔드 개발자',
-    career: '경력 3년',
-    techStacks: ['React', 'TypeScript'],
-  },
-  {
-    id: 3,
-    name: '이선배',
-    department: "컴퓨터공학과 '18",
-    company: '네이버',
-    job: '백엔드 개발자',
-    career: '경력 3년',
-    techStacks: ['React', 'TypeScript'],
-  },
-];
+// Mock data (기말 발표 데모용)
+// import { MOCK_MATCHED_SENIORS } from '@/features/coffee-chat/mock/mock';
 
 export function MatchingResultPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const infoContentId = useId();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
-  function handleOpenSeniorPage(id: number) {
-    navigate(`/coffee-chat/apply/${id}`);
+  const candidates: MatchingCandidate[] = location.state?.candidates ?? [];
+
+  function handleOpenSeniorPage(memberId: number) {
+    navigate(`/coffee-chat/apply/${memberId}`);
   }
 
   return (
@@ -82,22 +59,31 @@ export function MatchingResultPage() {
 
       <section className={styles.seniorsSection}>
         <h2 className={styles.sectionTitle}>매칭된 선배</h2>
-        <ul className={styles.cardList}>
-          {MOCK_MATCHED_SENIORS.map((senior) => (
-            <li key={senior.id}>
-              <SeniorProfileCard
-                name={senior.name}
-                department={senior.department}
-                company={senior.company}
-                job={senior.job}
-                career={senior.career}
-                techStacks={senior.techStacks}
-                onClick={() => handleOpenSeniorPage(senior.id)}
-                className="w-full"
-              />
-            </li>
-          ))}
-        </ul>
+
+        {candidates.length === 0 ? (
+          <p className="text-sm text-center text-gray-400 py-8">매칭된 선배가 없습니다.</p>
+        ) : (
+          <ul className={styles.cardList}>
+            {candidates.map((candidate) => (
+              <li key={candidate.memberId}>
+                <SeniorProfileCard
+                  name={candidate.nickname}
+                  department={candidate.department}
+                  company={candidate.company}
+                  job={candidate.jobCategories[0] ?? ''}
+                  career={
+                    candidate.careerYear != null
+                      ? `경력 ${candidate.careerYear}년`
+                      : '경력 정보 없음'
+                  }
+                  techStacks={candidate.techStacks}
+                  onClick={() => handleOpenSeniorPage(candidate.memberId)}
+                  className="w-full"
+                />
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );

@@ -67,25 +67,29 @@ export function SocialLinkSection(props: SocialLinkSectionProps) {
 
       <div className={S.itemsWrapper}>
         {props.mode !== 'edit' ? (
-          links.map((link) => (
-            <div key={link.id} className={S.viewItemRow}>
-              <a
-                href={getSafeHref(link.href ?? link.url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={S.viewItemLink}
-              >
-                <span className={cn(S.iconWrapperBase, iconWrapperVariant[link.platform])}>
-                  <PlatformIcon platform={link.platform} />
-                </span>
-                <div className={S.linkContent}>
-                  <span className={S.linkLabel}>{link.label}</span>
-                  <span className={S.linkUrl}>{link.url}</span>
-                </div>
-                <ChevronRightIcon className={S.chevronIcon} aria-hidden="true" />
-              </a>
-            </div>
-          ))
+          links.length === 0 ? (
+            <p className="text-sm text-text-muted py-4">소셜 링크 정보 없음</p>
+          ) : (
+            links.map((link) => (
+              <div key={link.id} className={S.viewItemRow}>
+                <a
+                  href={getSafeHref(link.href ?? link.url)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={S.viewItemLink}
+                >
+                  <span className={cn(S.iconWrapperBase, iconWrapperVariant[link.platform])}>
+                    <PlatformIcon platform={link.platform} />
+                  </span>
+                  <div className={S.linkContent}>
+                    <span className={S.linkLabel}>{link.label}</span>
+                    <span className={S.linkUrl}>{link.url}</span>
+                  </div>
+                  <ChevronRightIcon className={S.chevronIcon} aria-hidden="true" />
+                </a>
+              </div>
+            ))
+          )
         ) : (
           <>
             {links.map((link) => (
