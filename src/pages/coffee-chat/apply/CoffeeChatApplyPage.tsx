@@ -26,6 +26,10 @@ function getApiError(error: unknown, fallback: string): string {
   return axiosError?.response?.data?.message ?? fallback;
 }
 
+function normalizeUrl(input: string): string {
+  return /^https?:\/\//i.test(input) ? input : `https://${input}`;
+}
+
 const handleApply = () => {
   // TODO: 커피챗 신청 API 연동
 };
@@ -157,13 +161,19 @@ export function CoffeeChatApplyPage() {
         <PortfolioSection
           mode="view"
           portfolio={portfolio}
-          onClick={portfolio ? () => window.open(`https://${portfolio.url}`, '_blank') : undefined}
+          onClick={
+            portfolio
+              ? () => window.open(normalizeUrl(portfolio.url), '_blank', 'noopener,noreferrer')
+              : undefined
+          }
         />
 
         <JobPostingSection
           link={jobPostingLink}
           onClick={
-            jobPostingLink ? () => window.open(`https://${jobPostingLink}`, '_blank') : undefined
+            jobPostingLink
+              ? () => window.open(normalizeUrl(jobPostingLink), '_blank', 'noopener,noreferrer')
+              : undefined
           }
         />
 
