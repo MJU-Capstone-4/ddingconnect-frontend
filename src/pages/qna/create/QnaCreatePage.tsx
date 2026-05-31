@@ -9,7 +9,7 @@ import SendIcon from '@/shared/assets/icons/send.svg?react';
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 
-import * as styles from './qna-create-page.styles';
+import * as styles from '../shared/qna-page.styles';
 
 const CATEGORIES = ['취업 준비', '기술 질문', '진로 고민', '포트폴리오', '기타'] as const;
 type Category = (typeof CATEGORIES)[number];
