@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 
+import { useCreateQuestionMutation } from '@/features/qna/hooks';
+import { UI_TO_API_CATEGORY } from '@/features/qna/model/question.constants';
 import AlertCircleIcon from '@/shared/assets/icons/alert-circle.svg?react';
 import SendIcon from '@/shared/assets/icons/send.svg?react';
 import { Button } from '@/shared/ui/button';
@@ -16,21 +19,56 @@ export function QnaCreatePage() {
   const [category, setCategory] = useState<Category>('취업 준비');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [validationError, setValidationError] = useState('');
+
+  const createMutation = useCreateQuestionMutation({
+    onSuccess: (data) => {
+      if (data.id) {
+        navigate(`/qna/${data.id}`);
+      } else {
+        navigate('/qna');
+      }
+    },
+  });
 
   function handleSubmit() {
-    // TODO: 질문 등록 API 연동
-    navigate('/qna');
+    if (!title.trim()) {
+      setValidationError('제목을 입력해주세요.');
+      return;
+    }
+    if (!content.trim()) {
+      setValidationError('본문 내용을 입력해주세요.');
+      return;
+    }
+    setValidationError('');
+
+    createMutation.mutate({
+      category: UI_TO_API_CATEGORY[category],
+      title: title.trim(),
+      content: content.trim(),
+    });
   }
+
+  function getSubmitError(): string {
+    if (!createMutation.isError) return '';
+    const err = createMutation.error;
+    if (axios.isAxiosError(err)) {
+      return err.response?.data?.message ?? '질문 등록에 실패했습니다.';
+    }
+    if (err instanceof Error) return err.message;
+    return '질문 등록에 실패했습니다.';
+  }
+
+  const isPending = createMutation.isPending;
+  const errorMessage = validationError || getSubmitError();
 
   return (
     <div className={styles.page}>
-      {/* 작성 안내 */}
       <div className={styles.writeHeader}>
         <span className={styles.writeTitle}>질문 작성</span>
         <span className={styles.writeDesc}>익명으로 질문을 작성해보세요</span>
       </div>
 
-      {/* 익명 질문 안내 박스 */}
       <div className={styles.noticeBox}>
         <div className={styles.noticeIconWrapper}>
           <AlertCircleIcon className="w-5 h-5 text-pink-500" aria-hidden="true" />
@@ -45,7 +83,6 @@ export function QnaCreatePage() {
         </div>
       </div>
 
-      {/* 카테고리 */}
       <div className={styles.section}>
         <p className={styles.sectionLabel}>카테고리</p>
         <div className={styles.categoryGrid}>
@@ -80,7 +117,6 @@ export function QnaCreatePage() {
         </div>
       </div>
 
-      {/* 제목 */}
       <div className={styles.section}>
         <label htmlFor="qna-title" className={styles.sectionLabel}>
           제목
@@ -91,10 +127,10 @@ export function QnaCreatePage() {
           placeholder="질문의 제목을 입력해주세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          disabled={isPending}
         />
       </div>
 
-      {/* 본문 내용 */}
       <div className={styles.section}>
         <label htmlFor="qna-content" className={styles.sectionLabel}>
           본문 내용
@@ -105,10 +141,12 @@ export function QnaCreatePage() {
           placeholder="질문 내용을 상세히 작성해주세요"
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          disabled={isPending}
         />
       </div>
 
-      {/* 하단 버튼 */}
+      {errorMessage && <p className="text-xs text-red-500 -mt-2">{errorMessage}</p>}
+
       <div className={styles.buttonRow}>
         <Button
           variant="outline"
@@ -116,6 +154,7 @@ export function QnaCreatePage() {
           size="qnaSubmit"
           className="flex-1"
           onClick={() => navigate('/qna')}
+          disabled={isPending}
         >
           취소
         </Button>
@@ -126,8 +165,9 @@ export function QnaCreatePage() {
           className="flex-1"
           leftIcon={<SendIcon className="w-4 h-4" aria-hidden="true" />}
           onClick={handleSubmit}
+          disabled={isPending}
         >
-          질문 등록
+          {isPending ? '등록 중...' : '질문 등록'}
         </Button>
       </div>
     </div>
