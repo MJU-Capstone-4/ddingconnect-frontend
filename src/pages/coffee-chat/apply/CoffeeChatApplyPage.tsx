@@ -55,7 +55,11 @@ export function CoffeeChatApplyPage() {
     },
     {
       label: '경력',
-      value: senior ? `경력 ${senior.careerYear}년` : '',
+      value: senior
+        ? senior.careerYear != null
+          ? `경력 ${senior.careerYear}년`
+          : '경력 정보 없음'
+        : '',
       icon: <ClockIcon className="w-5 h-5" aria-hidden="true" />,
       iconClassName: S.iconExperience,
     },
@@ -126,7 +130,7 @@ export function CoffeeChatApplyPage() {
           department={senior.department}
           company={senior.company}
           job={senior.jobCategories[0] ?? ''}
-          career={`경력 ${senior.careerYear}년`}
+          career={senior.careerYear != null ? `경력 ${senior.careerYear}년` : '경력 정보 없음'}
           region={senior.region}
           buttonLabel="커피챗 신청하기"
           onClick={handleApply}

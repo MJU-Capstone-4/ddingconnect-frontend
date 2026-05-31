@@ -71,7 +71,11 @@ export function MatchingResultPage() {
                   department={candidate.department}
                   company={candidate.company}
                   job={candidate.jobCategories[0] ?? ''}
-                  career={`경력 ${candidate.careerYear}년`}
+                  career={
+                    candidate.careerYear != null
+                      ? `경력 ${candidate.careerYear}년`
+                      : '경력 정보 없음'
+                  }
                   techStacks={candidate.techStacks}
                   onClick={() => handleOpenSeniorPage(candidate.memberId)}
                   className="w-full"

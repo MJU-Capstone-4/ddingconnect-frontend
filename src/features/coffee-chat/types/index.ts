@@ -30,7 +30,7 @@ export type MatchingCandidate = {
   enrollmentYear: string;
   grade: number;
   company: string;
-  careerYear: number;
+  careerYear: number | null;
   region: string;
 };
 
@@ -44,7 +44,7 @@ export type MatchingDetail = {
   enrollmentYear: string;
   grade: number;
   company: string;
-  careerYear: number;
+  careerYear: number | null;
   region: string;
   portfolio: string;
   githubLink: string;
