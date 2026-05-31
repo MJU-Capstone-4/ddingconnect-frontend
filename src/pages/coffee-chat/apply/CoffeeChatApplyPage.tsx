@@ -43,13 +43,13 @@ export function CoffeeChatApplyPage() {
   const careerFields = [
     {
       label: '직군',
-      value: senior?.jobCategories[0] ?? '',
+      value: senior?.jobCategories[0] ?? '직군 정보 없음',
       icon: <BagIcon className="w-5 h-5" aria-hidden="true" />,
       iconClassName: S.iconJobType,
     },
     {
       label: '회사',
-      value: senior?.company ?? '',
+      value: senior?.company || '회사 정보 없음',
       icon: <LocationIcon className="w-5 h-5" aria-hidden="true" />,
       iconClassName: S.iconCompany,
     },
@@ -141,13 +141,17 @@ export function CoffeeChatApplyPage() {
 
         <section className={S.techStackSection} aria-label="기술 스택">
           <h2 className={S.techStackTitle}>기술 스택</h2>
-          <div className={S.techStackList}>
-            {senior.techStacks.map((stack) => (
-              <Chip key={stack} tone="gray" size="sm" className="pointer-events-none">
-                {stack}
-              </Chip>
-            ))}
-          </div>
+          {senior.techStacks.length === 0 ? (
+            <p className="text-sm text-text-muted">기술 스택 정보 없음</p>
+          ) : (
+            <div className={S.techStackList}>
+              {senior.techStacks.map((stack) => (
+                <Chip key={stack} tone="gray" size="sm" className="pointer-events-none">
+                  {stack}
+                </Chip>
+              ))}
+            </div>
+          )}
         </section>
 
         <PortfolioSection
