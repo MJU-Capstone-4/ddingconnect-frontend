@@ -370,7 +370,10 @@ export function QnaDetailPage() {
                         type="button"
                         className={isLiked ? styles.answerLikeButtonLiked : styles.answerLikeButton}
                         onClick={() => handleAnswerLike(answer.id!)}
-                        disabled={toggleAnswerLikeMutation.isPending}
+                        disabled={
+                          toggleAnswerLikeMutation.isPending &&
+                          toggleAnswerLikeMutation.variables === answer.id
+                        }
                         aria-pressed={isLiked}
                         aria-label={`좋아요 ${likeCount}개`}
                       >
