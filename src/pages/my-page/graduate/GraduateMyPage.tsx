@@ -168,6 +168,7 @@ export function GraduateMyPage() {
       {
         profile: {
           nickname: draftProfile.nickname || undefined,
+          studentNumber: draftProfile.studentId || undefined,
           department: draftProfile.department || undefined,
           githubLink: github || undefined,
           linkedinLink: linkedin || undefined,
@@ -349,6 +350,7 @@ export function GraduateMyPage() {
       value: currentData.studentId,
       icon: <ProfileIcon className="w-5 h-5" aria-hidden="true" />,
       iconWrapperClassName: S.iconStudentId,
+      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, studentId: v })) : undefined,
     },
     {
       label: '졸업 학과',
