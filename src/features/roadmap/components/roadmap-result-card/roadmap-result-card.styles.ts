@@ -13,3 +13,10 @@ export const downloadButton =
 export const downloadIconSize = 'w-[18px] h-[18px]';
 
 export const downloadButtonLoading = 'opacity-50 cursor-not-allowed';
+
+export const deleteButton =
+  'shrink-0 w-[35px] h-[35px] flex items-center justify-center rounded-xl bg-white/20 text-white transition-colors hover:bg-white/30 active:bg-white/40';
+
+export const deleteIconSize = 'w-[16px] h-[16px]';
+
+export const clickableArea = 'flex flex-col gap-1 flex-1 min-w-0 cursor-pointer';
