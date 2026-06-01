@@ -1,4 +1,11 @@
-export { useMyPageQuery, useUpdateMyPageMutation } from './hooks';
+export {
+  useMyPageQuery,
+  useUpdateStudentMyPageMutation,
+  useUpdateGraduateMyPageMutation,
+  useProfileImageUploadMutation,
+  usePortfolioUploadMutation,
+  useBusinessCardUploadMutation,
+} from './hooks';
 export {
   techStacksToLabels,
   targetJobsToLabels,
