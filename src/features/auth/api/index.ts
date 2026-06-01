@@ -1,1 +1,1 @@
-export { login, sendCode, verifyCode, signup, deleteAccount } from './auth.api';
+export { login, sendCode, verifyCode, signup, deleteAccount, getMyRole } from './auth.api';
