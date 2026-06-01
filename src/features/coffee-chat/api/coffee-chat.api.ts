@@ -7,7 +7,13 @@ import type {
   ApiResponseString,
   UpdateCoffeeChatStatusRequest,
 } from '@/shared/api/generated/api';
-import type { MatchingRequest, MatchingCandidate, MatchingDetail, MyActivityItem } from '../types';
+import type {
+  MatchingRequest,
+  MatchingCandidate,
+  MatchingDetail,
+  MyActivityItem,
+  ReceivedCoffeeChatItem,
+} from '../types';
 
 type ApiResponse<T> = {
   isSuccess: boolean;
@@ -30,8 +36,8 @@ export const getSentCoffeeChats = async (): Promise<CoffeeChatResponse[]> => {
   return data.result ?? [];
 };
 
-export const getReceivedCoffeeChats = async (): Promise<CoffeeChatResponse[]> => {
-  const { data } = await apiClient.get<ApiResponseListCoffeeChatResponse>(
+export const getReceivedCoffeeChats = async (): Promise<ReceivedCoffeeChatItem[]> => {
+  const { data } = await apiClient.get<ApiResponse<ReceivedCoffeeChatItem[]>>(
     '/api/v1/coffeechat/received',
   );
   return data.result ?? [];
