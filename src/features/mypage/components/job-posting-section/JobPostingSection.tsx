@@ -50,7 +50,7 @@ export function JobPostingSection({
         </div>
       ) : (
         <div className={S.emptyRow}>
-          <span className={S.emptyText}>등록된 공고가 없습니다</span>
+          <span className={S.emptyText}>공고 정보 없음</span>
         </div>
       )}
     </section>

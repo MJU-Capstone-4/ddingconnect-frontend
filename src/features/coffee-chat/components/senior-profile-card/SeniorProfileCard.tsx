@@ -64,7 +64,7 @@ export function SeniorProfileCard({
         <div className={infoRow}>
           <BagIcon className={infoIcon} aria-hidden="true" />
           <span className={infoText}>
-            {company} • {job}
+            {company && job ? `${company} • ${job}` : company || job || '회사 정보 없음'}
           </span>
         </div>
         <div className={infoRow}>

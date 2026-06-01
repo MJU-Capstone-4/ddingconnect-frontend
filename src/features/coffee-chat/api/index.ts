@@ -4,4 +4,7 @@ export {
   getReceivedCoffeeChats,
   updateCoffeeChatStatus,
   cancelCoffeeChatRequest,
+  requestMatching,
+  getMatchingDetail,
+  getMyActivity,
 } from './coffee-chat.api';

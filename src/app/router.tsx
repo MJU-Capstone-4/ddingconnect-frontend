@@ -27,6 +27,7 @@ import { RoadmapResultPage } from '@/pages/roadmap/result';
 import { QnaListPage } from '@/pages/qna/list';
 import { QnaCreatePage } from '@/pages/qna/create';
 import { QnaDetailPage } from '@/pages/qna/detail';
+import { QnaEditPage } from '@/pages/qna/edit';
 
 function MyPageRedirect() {
   const role = getUserRole();
@@ -93,6 +94,7 @@ export const router = createBrowserRouter([
           { path: '/qna', element: <QnaListPage /> },
           { path: '/qna/create', element: <QnaCreatePage /> },
           { path: '/qna/:id', element: <QnaDetailPage /> },
+          { path: '/qna/:id/edit', element: <QnaEditPage /> },
         ],
       },
     ],

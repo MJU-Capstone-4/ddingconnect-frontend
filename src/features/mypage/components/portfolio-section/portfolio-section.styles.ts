@@ -28,3 +28,8 @@ export const textContent = 'flex flex-col gap-0.5 flex-1 min-w-0';
 export const textLabel = 'text-xs text-text-secondary';
 
 export const textMain = 'text-xs font-semibold text-text-primary truncate';
+
+// empty state
+export const emptyRow = 'py-4';
+
+export const emptyText = 'text-sm text-text-muted';

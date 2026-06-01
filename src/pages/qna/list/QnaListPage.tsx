@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 
 import { QnaPostCard } from '@/features/qna/components';
 import type { QnaPostCategory } from '@/features/qna/components';
+import { useQuestionsQuery, useToggleQuestionLikeMutation } from '@/features/qna/hooks';
+import { API_TO_UI_CATEGORY } from '@/features/qna/model/question.constants';
+import type { QuestionResponse } from '@/shared/api/generated/api';
 import ArrowDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
 import CommentIcon from '@/shared/assets/icons/comment.svg?react';
 import FilterIcon from '@/shared/assets/icons/filter.svg?react';
@@ -23,6 +27,7 @@ type QnaPost = {
   commentCount: number;
   viewCount: number;
   createdAt: string;
+  likedByMe: boolean;
 };
 
 const CATEGORIES: CategoryFilter[] = ['전체', '진로고민', '취업준비', '포트폴리오', '기술질문'];
@@ -34,6 +39,8 @@ const CATEGORY_MAP: Record<Exclude<CategoryFilter, '전체'>, QnaPostCategory> =
   기술질문: '기술 질문',
 };
 
+// 기말 발표 시연용 mock fallback — API 실패 또는 빈 데이터 시 사용
+// .env에서 VITE_USE_MOCK_FALLBACK=true 로 활성화 가능
 const MOCK_POSTS: QnaPost[] = [
   {
     id: 1,
@@ -45,6 +52,7 @@ const MOCK_POSTS: QnaPost[] = [
     commentCount: 12,
     viewCount: 156,
     createdAt: '2시간 전',
+    likedByMe: false,
   },
   {
     id: 2,
@@ -56,6 +64,7 @@ const MOCK_POSTS: QnaPost[] = [
     commentCount: 12,
     viewCount: 156,
     createdAt: '2시간 전',
+    likedByMe: false,
   },
   {
     id: 3,
@@ -67,6 +76,7 @@ const MOCK_POSTS: QnaPost[] = [
     commentCount: 12,
     viewCount: 156,
     createdAt: '2시간 전',
+    likedByMe: false,
   },
   {
     id: 4,
@@ -77,6 +87,7 @@ const MOCK_POSTS: QnaPost[] = [
     commentCount: 12,
     viewCount: 156,
     createdAt: '2시간 전',
+    likedByMe: false,
   },
   {
     id: 5,
@@ -88,6 +99,7 @@ const MOCK_POSTS: QnaPost[] = [
     commentCount: 12,
     viewCount: 156,
     createdAt: '2시간 전',
+    likedByMe: false,
   },
   {
     id: 6,
@@ -99,6 +111,7 @@ const MOCK_POSTS: QnaPost[] = [
     commentCount: 20,
     viewCount: 412,
     createdAt: '4시간 전',
+    likedByMe: false,
   },
   {
     id: 7,
@@ -110,8 +123,32 @@ const MOCK_POSTS: QnaPost[] = [
     commentCount: 28,
     viewCount: 534,
     createdAt: '5시간 전',
+    likedByMe: false,
   },
 ];
+
+const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
+
+function toUiPost(q: QuestionResponse): QnaPost {
+  return {
+    id: q.id ?? 0,
+    category: API_TO_UI_CATEGORY[q.category ?? 'ETC'],
+    title: q.title ?? '',
+    content: q.content ?? '',
+    likeCount: q.likeCount ?? 0,
+    commentCount: q.answerCount ?? 0,
+    viewCount: q.viewCount ?? 0,
+    createdAt: '',
+    likedByMe: q.likedByMe ?? false,
+  };
+}
+
+function getErrorMessage(error: unknown): string {
+  if (axios.isAxiosError(error)) {
+    return error.response?.data?.message ?? '질문 목록을 불러오지 못했습니다.';
+  }
+  return '질문 목록을 불러오지 못했습니다.';
+}
 
 export function QnaListPage() {
   const navigate = useNavigate();
@@ -119,12 +156,23 @@ export function QnaListPage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('전체');
   const [sortType, setSortType] = useState<SortType>('기본');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
+
+  const { data: apiQuestions, isLoading, isError, error } = useQuestionsQuery();
+  const toggleLikeMutation = useToggleQuestionLikeMutation();
 
   const isFilterActive = sortType !== '기본';
 
+  // API 성공 + 데이터 있으면 API 데이터 사용, 실패 또는 빈 데이터면 mock fallback
+  const rawPosts: QnaPost[] = useMemo(() => {
+    if (apiQuestions && apiQuestions.length > 0) {
+      return apiQuestions.map(toUiPost);
+    }
+    // fallback: API 실패 또는 빈 데이터 시 mock 사용 (VITE_USE_MOCK_FALLBACK=true 인 경우)
+    return USE_MOCK_FALLBACK ? MOCK_POSTS : [];
+  }, [apiQuestions]);
+
   const filteredPosts = useMemo(() => {
-    let result = MOCK_POSTS;
+    let result = rawPosts;
 
     if (selectedCategory !== '전체') {
       const mappedCategory = CATEGORY_MAP[selectedCategory];
@@ -146,7 +194,7 @@ export function QnaListPage() {
     }
 
     return result;
-  }, [searchQuery, selectedCategory, sortType]);
+  }, [rawPosts, searchQuery, selectedCategory, sortType]);
 
   function handleSortSelect(sort: '조회순' | '추천순') {
     setSortType(sort);
@@ -154,15 +202,7 @@ export function QnaListPage() {
   }
 
   function handleLikeClick(id: number) {
-    setLikedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+    toggleLikeMutation.mutate(id);
   }
 
   return (
@@ -236,7 +276,11 @@ export function QnaListPage() {
       </div>
 
       <div className={styles.postList}>
-        {filteredPosts.length > 0 ? (
+        {isLoading ? (
+          <p className={styles.emptyState}>질문 목록을 불러오는 중입니다...</p>
+        ) : isError && !USE_MOCK_FALLBACK ? (
+          <p className={styles.emptyState}>{getErrorMessage(error)}</p>
+        ) : filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
             <QnaPostCard
               key={post.id}
@@ -245,17 +289,17 @@ export function QnaListPage() {
               createdAt={post.createdAt}
               title={post.title}
               preview={post.content}
-              likeCount={post.likeCount + (likedIds.has(post.id) ? 1 : 0)}
+              likeCount={post.likeCount}
               commentCount={post.commentCount}
               viewCount={post.viewCount}
-              isLiked={likedIds.has(post.id)}
+              isLiked={post.likedByMe}
               onClick={() => navigate(`/qna/${post.id}`)}
               onLikeClick={() => handleLikeClick(post.id)}
               className="w-full"
             />
           ))
         ) : (
-          <p className={styles.emptyState}>검색 결과가 없습니다.</p>
+          <p className={styles.emptyState}>등록된 질문이 없습니다.</p>
         )}
       </div>
 
