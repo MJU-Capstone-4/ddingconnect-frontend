@@ -16,11 +16,32 @@ export type ActivitySummaryItemData = {
   count: number;
   label: string;
   tone: ActivitySummaryTone;
+  onClick?: () => void;
 };
 
-export function ActivitySummaryItem({ icon: Icon, count, label, tone }: ActivitySummaryItemData) {
+export function ActivitySummaryItem({
+  icon: Icon,
+  count,
+  label,
+  tone,
+  onClick,
+}: ActivitySummaryItemData) {
   return (
-    <li className={activitySummaryItem} aria-label={`${label} ${count}개`}>
+    <li
+      className={cn(activitySummaryItem, onClick && 'cursor-pointer')}
+      aria-label={`${label} ${count}개`}
+      {...(onClick && {
+        role: 'button',
+        tabIndex: 0,
+        onClick,
+        onKeyDown: (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick();
+          }
+        },
+      })}
+    >
       <div className={cn(activitySummaryIconVariants({ tone }))} aria-hidden="true">
         <Icon className={activitySummaryIconSize} />
       </div>
