@@ -22,6 +22,7 @@ import { NotificationPage } from '@/pages/notification';
 import { PointChargePage } from '@/pages/point/charge';
 import { MyActivityPage } from '@/pages/my/my-activity';
 import { RoadmapPage } from '@/pages/roadmap';
+import { RoadmapDetailPage } from '@/pages/roadmap/detail';
 import { RoadmapResultPage } from '@/pages/roadmap/result';
 import { QnaListPage } from '@/pages/qna/list';
 import { QnaCreatePage } from '@/pages/qna/create';
@@ -58,6 +59,7 @@ export const router = createBrowserRouter([
           // roadmap
           { path: '/roadmap', element: <RoadmapPage /> },
           { path: '/roadmap/result', element: <RoadmapResultPage /> },
+          { path: '/roadmap/:id', element: <RoadmapDetailPage /> },
 
           // career-map
           { path: '/career-map/input', element: <CareerMapInputPage /> },
