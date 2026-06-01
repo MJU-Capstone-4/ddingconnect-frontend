@@ -1,19 +1,24 @@
 import { cn } from '@/shared/utils/cn';
+import CloseIcon from '@/shared/assets/icons/close.svg?react';
 import DownloadIcon from '@/shared/assets/icons/download.svg?react';
 import {
   card,
-  textGroup,
+  clickableArea,
   title as titleStyle,
   createdAt as createdAtStyle,
   downloadButton,
   downloadButtonLoading,
   downloadIconSize,
+  deleteButton,
+  deleteIconSize,
 } from './roadmap-result-card.styles';
 
 export type RoadmapResultCardProps = {
   title: string;
   createdAt: string;
+  onCardClick?: () => void;
   onDownload?: () => void;
+  onDelete?: () => void;
   isDownloading?: boolean;
   className?: string;
 };
@@ -21,13 +26,19 @@ export type RoadmapResultCardProps = {
 export function RoadmapResultCard({
   title,
   createdAt,
+  onCardClick,
   onDownload,
+  onDelete,
   isDownloading = false,
   className,
 }: RoadmapResultCardProps) {
   return (
     <div className={cn(card, className)}>
-      <div className={textGroup}>
+      <div
+        className={clickableArea}
+        onClick={onCardClick}
+        role={onCardClick ? 'button' : undefined}
+      >
         <p className={titleStyle}>{title}</p>
         <p className={createdAtStyle}>{createdAt}</p>
       </div>
@@ -40,6 +51,11 @@ export function RoadmapResultCard({
       >
         <DownloadIcon className={downloadIconSize} aria-hidden="true" />
       </button>
+      {onDelete && (
+        <button type="button" aria-label="로드맵 삭제" className={deleteButton} onClick={onDelete}>
+          <CloseIcon className={deleteIconSize} aria-hidden="true" />
+        </button>
+      )}
     </div>
   );
 }
