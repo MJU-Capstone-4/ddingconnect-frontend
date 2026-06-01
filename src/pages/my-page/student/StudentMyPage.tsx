@@ -61,15 +61,21 @@ const MOCK_PROFILE: Profile = {
   },
 };
 
-const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
-  { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
-  { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
-  { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
-];
-
 export function StudentMyPage() {
   const navigate = useNavigate();
   const [isEditMode, setIsEditMode] = useState(false);
+
+  const activityItems: ActivitySummaryItemData[] = [
+    {
+      icon: CoffeeIcon,
+      count: 12,
+      label: '커피챗',
+      tone: 'blue',
+      onClick: () => navigate('/coffee-chat/sent'),
+    },
+    { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
+    { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
+  ];
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
   const [profile, setProfile] = useState<Profile>(MOCK_PROFILE);
@@ -256,7 +262,7 @@ export function StudentMyPage() {
             <span className={S.verifiedBadge}>재학생 인증완료</span>
             <div className={S.activityWrapper}>
               <ActivitySummary
-                items={MOCK_ACTIVITY}
+                items={activityItems}
                 onTitleClick={() => navigate('/my/activity')}
               />
             </div>

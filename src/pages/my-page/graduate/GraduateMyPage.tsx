@@ -71,8 +71,8 @@ const MOCK_PROFILE: GraduateProfile = {
   hasBusinessCard: true,
 };
 
-const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
-  { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
+const MOCK_ACTIVITY = (onCoffeeChatClick: () => void): ActivitySummaryItemData[] => [
+  { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue', onClick: onCoffeeChatClick },
   { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
 ];
 
@@ -320,7 +320,7 @@ export function GraduateMyPage() {
             <span className={S.verifiedBadge}>졸업생 인증완료</span>
             <div className={S.activityWrapper}>
               <ActivitySummary
-                items={MOCK_ACTIVITY}
+                items={MOCK_ACTIVITY(() => navigate('/coffee-chat/received'))}
                 onTitleClick={() => navigate('/my/activity')}
               />
             </div>
