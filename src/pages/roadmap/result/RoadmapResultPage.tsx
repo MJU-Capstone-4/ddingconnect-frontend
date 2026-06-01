@@ -1,26 +1,41 @@
-import { useId, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { RoadmapResultCard } from '@/features/roadmap/components';
-import ArrowDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
+import {
+  useDeleteRoadmapMutation,
+  useRoadmapDownloadMutation,
+  useRoadmapsQuery,
+} from '@/features/roadmap/hooks';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
-import { cn } from '@/shared/utils/cn';
 
 import * as styles from './roadmap-result-page.styles';
 
-const MOCK_ROADMAPS = [
-  { id: 1, title: '백엔드 개발자 로드맵', date: '2026. 04. 09', time: '오전 10:00' },
-  { id: 2, title: '백엔드 개발자 로드맵', date: '2026. 04. 08', time: '오전 10:00' },
-  { id: 3, title: '백엔드 개발자 로드맵', date: '2026. 04. 07', time: '오전 10:00' },
-];
+function formatDate(isoString: string): string {
+  const d = new Date(isoString);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hour = d.getHours();
+  const minute = String(d.getMinutes()).padStart(2, '0');
+  const period = hour < 12 ? '오전' : '오후';
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${year}. ${month}. ${day}  •  ${period} ${displayHour}:${minute}`;
+}
 
 export function RoadmapResultPage() {
-  const infoContentId = useId();
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const navigate = useNavigate();
+  const { data: roadmaps = [], isLoading, isError } = useRoadmapsQuery();
+  const {
+    mutate: download,
+    isPending: isDownloading,
+    variables: downloadingId,
+  } = useRoadmapDownloadMutation();
+  const { mutate: deleteRoadmap } = useDeleteRoadmapMutation();
 
-  function handleDownload(id: number) {
-    // TODO: 로드맵 다운로드 API 연동
-    console.log(id);
+  function handleDelete(id: number) {
+    if (!window.confirm('로드맵을 삭제하시겠습니까?')) return;
+    deleteRoadmap(id);
   }
 
   return (
@@ -33,42 +48,40 @@ export function RoadmapResultPage() {
         className={styles.heroBreakout}
       />
 
-      <div className={styles.infoCard}>
-        <button
-          type="button"
-          className={styles.infoToggleButton}
-          onClick={() => setIsInfoOpen((prev) => !prev)}
-          aria-expanded={isInfoOpen}
-          aria-controls={infoContentId}
-        >
-          <span className={styles.infoToggleTitle}>정보 입력</span>
-          <ArrowDownIcon
-            className={cn(styles.chevronIcon, isInfoOpen && styles.chevronIconOpen)}
-            aria-hidden="true"
-          />
-        </button>
-
-        {isInfoOpen && (
-          <div id={infoContentId} className={styles.infoContent}>
-            {/* TODO: 정보 입력 폼 */}
-          </div>
-        )}
-      </div>
-
       <section className={styles.roadmapSection}>
         <h2 className={styles.sectionTitle}>생성된 로드맵</h2>
-        <ul className={styles.cardList}>
-          {MOCK_ROADMAPS.map((roadmap) => (
-            <li key={roadmap.id}>
-              <RoadmapResultCard
-                title={roadmap.title}
-                createdAt={`${roadmap.date}  •  ${roadmap.time}`}
-                onDownload={() => handleDownload(roadmap.id)}
-                className="w-full"
-              />
-            </li>
-          ))}
-        </ul>
+
+        {isLoading && (
+          <p className="text-sm text-text-muted text-center py-8">로드맵을 불러오는 중...</p>
+        )}
+
+        {isError && (
+          <p className="text-sm text-text-muted text-center py-8">
+            로드맵을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+          </p>
+        )}
+
+        {!isLoading && !isError && roadmaps.length === 0 && (
+          <p className="text-sm text-text-muted text-center py-8">아직 생성된 로드맵이 없습니다.</p>
+        )}
+
+        {roadmaps.length > 0 && (
+          <ul className={styles.cardList}>
+            {roadmaps.map((roadmap) => (
+              <li key={roadmap.id}>
+                <RoadmapResultCard
+                  title={roadmap.title}
+                  createdAt={formatDate(roadmap.createdAt)}
+                  onCardClick={() => navigate(`/roadmap/${roadmap.id}`)}
+                  onDownload={() => download(roadmap.id)}
+                  onDelete={() => handleDelete(roadmap.id)}
+                  isDownloading={isDownloading && downloadingId === roadmap.id}
+                  className="w-full"
+                />
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );
