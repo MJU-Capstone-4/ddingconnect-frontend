@@ -16,15 +16,12 @@ import {
 } from '@/features/mypage';
 import type { SocialLinkItem } from '@/features/mypage';
 import { getApiError } from '@/shared/utils/get-api-error';
+import { normalizeUrl } from '@/shared/utils/normalize-url';
 
 import * as S from './coffee-chat-apply-page.styles';
 
 // Mock data (기말 발표 데모용)
 // import { MOCK_SENIOR_DETAIL, MOCK_SENIOR_SOCIAL_LINKS } from '@/features/coffee-chat/mock/mock';
-
-function normalizeUrl(input: string): string {
-  return /^https?:\/\//i.test(input) ? input : `https://${input}`;
-}
 
 const handleSaveBusinessCard = () => {
   // TODO: 명함 저장 기능 구현

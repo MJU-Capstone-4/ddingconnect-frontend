@@ -5,6 +5,7 @@ import {
   useUpdateCoffeeChatStatusMutation,
 } from '@/features/coffee-chat/model';
 import { Button, Chip, HeroSection } from '@/shared/ui';
+import { normalizeUrl } from '@/shared/utils/normalize-url';
 
 import * as S from './received-coffee-chat-page.styles';
 
@@ -86,7 +87,7 @@ export function ReceivedCoffeeChatPage() {
                   <div className={S.kakaoRow}>
                     <span className={S.kakaoLabel}>카카오 오픈채팅</span>
                     <a
-                      href={chat.kakaoOpenChatLink}
+                      href={normalizeUrl(chat.kakaoOpenChatLink)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={S.kakaoLink}

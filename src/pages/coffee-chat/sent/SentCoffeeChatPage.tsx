@@ -2,6 +2,7 @@ import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import UserIcon from '@/shared/assets/icons/user.svg?react';
 import { useSentCoffeeChatsQuery, useCancelCoffeeChatMutation } from '@/features/coffee-chat/model';
 import { Button, Chip, HeroSection } from '@/shared/ui';
+import { normalizeUrl } from '@/shared/utils/normalize-url';
 
 import * as S from './sent-coffee-chat-page.styles';
 
@@ -67,7 +68,7 @@ export function SentCoffeeChatPage() {
                     <div className={S.kakaoRow}>
                       <span className={S.kakaoLabel}>카카오 오픈채팅</span>
                       <a
-                        href={chat.kakaoOpenChatLink}
+                        href={normalizeUrl(chat.kakaoOpenChatLink)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={S.kakaoLink}
