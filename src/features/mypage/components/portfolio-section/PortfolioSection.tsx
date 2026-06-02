@@ -31,6 +31,13 @@ export function PortfolioSection({
   const isEdit = mode === 'edit';
   const isEmpty = !portfolio;
 
+  const openPortfolioUrl = () => {
+    const url = portfolio?.url;
+    if (!url) return;
+    const href = url.startsWith('blob:') || url.startsWith('http') ? url : `https://${url}`;
+    window.open(href, '_blank', 'noopener,noreferrer');
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -87,20 +94,11 @@ export function PortfolioSection({
           className={S.cardRowClickable}
           role="button"
           tabIndex={0}
-          onClick={() => {
-            const url = portfolio!.url;
-            if (!url) return;
-            const href = url.startsWith('blob:') || url.startsWith('http') ? url : `https://${url}`;
-            window.open(href, '_blank', 'noopener,noreferrer');
-          }}
+          onClick={openPortfolioUrl}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              const url = portfolio!.url;
-              if (!url) return;
-              const href =
-                url.startsWith('blob:') || url.startsWith('http') ? url : `https://${url}`;
-              window.open(href, '_blank', 'noopener,noreferrer');
+              openPortfolioUrl();
             }
           }}
           aria-label={`${portfolio!.title} 보기`}
