@@ -23,7 +23,7 @@ import UserIcon from '@/shared/assets/icons/user.svg?react';
 
 import { ActivitySummary } from '@/shared/ui/activity-summary';
 import type { ActivitySummaryItemData } from '@/shared/ui/activity-summary';
-import { Button, FileUpload, Input, Modal } from '@/shared/ui';
+import { Button, FileUpload, Input, Modal, Select } from '@/shared/ui';
 import { cn } from '@/shared/utils/cn';
 import {
   AccountSettingSection,
@@ -504,21 +504,13 @@ export function GraduateMyPage() {
                   <span className={S.careerItemLabel}>{field.label}</span>
                   {isEditMode ? (
                     field.options ? (
-                      <select
+                      <Select
+                        fullWidth
+                        options={field.options.map((opt) => ({ label: opt, value: opt }))}
                         value={field.value}
-                        onChange={
-                          field.onChange ? (e) => field.onChange!(e.target.value) : undefined
-                        }
-                        aria-label={field.label}
-                        className="w-full text-[15px] font-semibold text-text-primary bg-transparent focus:outline-none cursor-pointer"
-                      >
-                        <option value="">직군 선택</option>
-                        {field.options.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
+                        onChange={field.onChange ?? undefined}
+                        placeholder="직군 선택"
+                      />
                     ) : (
                       <Input
                         value={field.value}
