@@ -6,6 +6,7 @@ import type { CareerProfileFormValues } from '@/features/career';
 import { useCreateRoadmapMutation } from '@/features/roadmap/hooks';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
+import { getApiError } from '@/shared/utils/get-api-error';
 
 import * as styles from './roadmap-page.styles';
 
@@ -36,11 +37,19 @@ export function RoadmapPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<CareerProfileFormValues>(INITIAL_DATA);
 
-  const { mutate: createRoadmap, isPending } = useCreateRoadmapMutation({
+  const {
+    mutate: createRoadmap,
+    isPending,
+    error,
+  } = useCreateRoadmapMutation({
     onSuccess: () => {
       navigate('/roadmap/result');
     },
   });
+
+  const errorMessage = error
+    ? getApiError(error, '로드맵 생성에 실패했습니다. 다시 시도해 주세요.')
+    : '';
 
   function handleChange(field: keyof CareerProfileFormValues, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -67,6 +76,8 @@ export function RoadmapPage() {
         onChange={handleChange}
         onSubmit={handleGenerateRoadmap}
       />
+
+      {errorMessage && <p className="text-sm text-red-500 text-center mt-2">{errorMessage}</p>}
     </div>
   );
 }
