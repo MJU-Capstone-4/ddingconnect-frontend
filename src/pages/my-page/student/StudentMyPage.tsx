@@ -38,6 +38,8 @@ import {
   labelsToTargetJobs,
   gradeToLabel,
   labelToGrade,
+  TECH_STACK_OPTIONS,
+  TARGET_JOB_OPTIONS,
 } from '@/features/mypage';
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
 import type { MyPageResponse } from '@/shared/api/generated/api';
@@ -142,6 +144,9 @@ export function StudentMyPage() {
     const github = draftProfile.socialLinks.find((l) => l.id === 'github')?.url;
     const linkedin = draftProfile.socialLinks.find((l) => l.id === 'linkedin')?.url;
 
+    const techStackValues = labelsToTechStacks(draftProfile.skills);
+    const targetJobValues = labelsToTargetJobs(draftProfile.interests);
+
     updateStudentMyPage(
       {
         profile: {
@@ -154,8 +159,8 @@ export function StudentMyPage() {
           portfolio: draftProfile.portfolio?.url || undefined,
           profileImage: draftProfile.profileImage || undefined,
         },
-        techStacks: labelsToTechStacks(draftProfile.skills),
-        targetJobs: labelsToTargetJobs(draftProfile.interests),
+        techStacks: techStackValues.length > 0 ? techStackValues : undefined,
+        targetJobs: targetJobValues.length > 0 ? targetJobValues : undefined,
       },
       {
         onSuccess: () => setIsEditMode(false),
@@ -271,12 +276,14 @@ export function StudentMyPage() {
       items: currentData.interests,
       tone: 'blue' as const,
       placeholder: '관심직군 입력하기',
+      options: TARGET_JOB_OPTIONS,
     },
     {
       label: '기술 스택',
       items: currentData.skills,
       tone: 'gray' as const,
       placeholder: '기술 스택 입력하기',
+      options: TECH_STACK_OPTIONS,
     },
   ];
 

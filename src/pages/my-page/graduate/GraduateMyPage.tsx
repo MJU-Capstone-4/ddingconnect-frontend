@@ -42,6 +42,8 @@ import {
   labelToJobType,
   careerYearToLabel,
   labelToCareerYear,
+  TECH_STACK_OPTIONS,
+  JOB_TYPE_OPTIONS,
 } from '@/features/mypage';
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
 import type { MyPageResponse } from '@/shared/api/generated/api';
@@ -164,6 +166,8 @@ export function GraduateMyPage() {
       addedUrls.length > 0 ? addedUrls.map((url) => ({ detailUrl: url })) : undefined;
     const jobPostIdsToDelete = removedIds.length > 0 ? removedIds : undefined;
 
+    const techStackValues = labelsToTechStacks(draftProfile.skills);
+
     updateGraduateMyPage(
       {
         profile: {
@@ -179,7 +183,7 @@ export function GraduateMyPage() {
           careerYear: labelToCareerYear(draftProfile.experience),
           businessCardImage: draftProfile.businessCardImageUrl || undefined,
         },
-        techStacks: labelsToTechStacks(draftProfile.skills),
+        techStacks: techStackValues.length > 0 ? techStackValues : undefined,
         jobPostsToAdd,
         jobPostIdsToDelete,
       },
@@ -307,6 +311,7 @@ export function GraduateMyPage() {
       value: currentData.jobType,
       icon: <BagIcon className="w-5 h-5" aria-hidden="true" />,
       iconClassName: S.iconJobType,
+      options: JOB_TYPE_OPTIONS,
       onChange: isEditMode
         ? (v: string) => setDraftProfile((p) => ({ ...p, jobType: v }))
         : undefined,
@@ -367,6 +372,7 @@ export function GraduateMyPage() {
       items: currentData.skills,
       tone: 'gray' as const,
       placeholder: '기술 스택 입력하기',
+      options: TECH_STACK_OPTIONS,
     },
   ];
 
@@ -497,12 +503,32 @@ export function GraduateMyPage() {
                 <div className={S.careerItemContent}>
                   <span className={S.careerItemLabel}>{field.label}</span>
                   {isEditMode ? (
-                    <Input
-                      value={field.value}
-                      onChange={field.onChange ? (e) => field.onChange!(e.target.value) : undefined}
-                      readOnly={!field.onChange}
-                      aria-label={field.label}
-                    />
+                    field.options ? (
+                      <select
+                        value={field.value}
+                        onChange={
+                          field.onChange ? (e) => field.onChange!(e.target.value) : undefined
+                        }
+                        aria-label={field.label}
+                        className="w-full text-[15px] font-semibold text-text-primary bg-transparent focus:outline-none cursor-pointer"
+                      >
+                        <option value="">직군 선택</option>
+                        {field.options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <Input
+                        value={field.value}
+                        onChange={
+                          field.onChange ? (e) => field.onChange!(e.target.value) : undefined
+                        }
+                        readOnly={!field.onChange}
+                        aria-label={field.label}
+                      />
+                    )
                   ) : (
                     <p className={S.careerItemValue}>{field.value}</p>
                   )}
