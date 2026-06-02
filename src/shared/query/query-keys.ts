@@ -64,7 +64,5 @@ export const queryKeys = {
     all: ['point'] as const,
     me: () => [...queryKeys.point.all, 'me'] as const,
     products: () => [...queryKeys.point.all, 'products'] as const,
-    balance: () => [...queryKeys.point.all, 'balance'] as const,
-    history: () => [...queryKeys.point.all, 'history'] as const,
   },
 };
