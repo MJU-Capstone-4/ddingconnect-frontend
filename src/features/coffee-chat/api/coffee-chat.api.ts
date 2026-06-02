@@ -88,5 +88,9 @@ export const getMyCoffeeChats = async (): Promise<CoffeeChatActivityItem[]> => {
   const { data } = await apiClient.get<ApiResponse<CoffeeChatActivityItem[]>>(
     '/api/v1/members/me/activity/coffeechats',
   );
-  return data.result ?? [];
+  return (data.result ?? []).map((item) => ({
+    ...item,
+    partnerJobs: item.partnerJobs ?? [],
+    partnerTechStacks: item.partnerTechStacks ?? [],
+  }));
 };
