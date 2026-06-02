@@ -54,3 +54,13 @@ export type MatchingDetail = {
 };
 
 export type MyActivityItem = MatchingDetail;
+
+export type ReceivedCoffeeChatItem = {
+  coffeeChatId: number;
+  name: string;
+  department: string;
+  studentNumberPrefix: string;
+  kakaoOpenChatLink: string;
+  profileImage: string;
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+};

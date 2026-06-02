@@ -34,7 +34,13 @@ export function HeroSection({
         </div>
       )}
 
-      <div className={cn('relative flex items-center gap-4', contentClassName)}>
+      <div
+        className={cn(
+          'relative flex',
+          collapsed ? 'items-center gap-4' : 'flex-col gap-7',
+          contentClassName,
+        )}
+      >
         {icon && (
           <div
             className={cn(
@@ -46,7 +52,7 @@ export function HeroSection({
           </div>
         )}
 
-        <div className="min-w-0 flex-1">
+        <div className={collapsed ? 'min-w-0 flex-1' : undefined}>
           <h2 className={cn('font-bold text-text-on-primary', collapsed ? 'text-base' : 'text-xl')}>
             {title}
           </h2>

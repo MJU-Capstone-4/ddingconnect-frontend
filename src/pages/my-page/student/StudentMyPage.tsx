@@ -93,6 +93,7 @@ export function StudentMyPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isEditMode, setIsEditMode] = useState(false);
+
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
   const [draftProfile, setDraftProfile] = useState<Profile>(MOCK_PROFILE);

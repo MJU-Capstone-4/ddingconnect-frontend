@@ -14,7 +14,13 @@ export const queryKeys = {
     all: ['coffeeChat'] as const,
     lists: () => [...queryKeys.coffeeChat.all, 'list'] as const,
     list: (params?: Record<string, unknown>) => [...queryKeys.coffeeChat.lists(), params] as const,
+    sent: () => [...queryKeys.coffeeChat.all, 'sent'] as const,
+    received: () => [...queryKeys.coffeeChat.all, 'received'] as const,
     detail: (id: number) => [...queryKeys.coffeeChat.all, id] as const,
+  },
+
+  myActivity: {
+    all: ['myActivity'] as const,
   },
 
   qna: {
