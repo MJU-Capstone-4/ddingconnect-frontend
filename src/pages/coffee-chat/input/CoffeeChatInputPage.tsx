@@ -31,7 +31,7 @@ export function CoffeeChatInputPage() {
         title="커피챗 신청"
         description="카카오 오픈채팅 링크를 입력해주세요"
         icon={<CoffeeIcon className="w-7 h-7 text-white" aria-hidden="true" />}
-        className="-mx-4"
+        className="-mx-page-x w-auto"
       />
 
       <form className="flex flex-col gap-4 px-1" onSubmit={handleSubmit}>
