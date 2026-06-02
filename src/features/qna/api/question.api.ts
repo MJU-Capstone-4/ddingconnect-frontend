@@ -10,6 +10,11 @@ import type {
   UpdateQuestionRequest,
 } from '@/shared/api/generated/api';
 
+export const getMyQuestions = async (): Promise<QuestionResponse[]> => {
+  const { data } = await apiClient.get<ApiResponseListQuestionResponse>('/api/v1/questions/me');
+  return data.result ?? [];
+};
+
 export const getQuestions = async (): Promise<QuestionResponse[]> => {
   const { data } = await apiClient.get<ApiResponseListQuestionResponse>('/api/v1/questions');
   return data.result ?? [];

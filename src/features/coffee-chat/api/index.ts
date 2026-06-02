@@ -7,4 +7,5 @@ export {
   requestMatching,
   getMatchingDetail,
   getMyActivity,
+  getMyCoffeeChats,
 } from './coffee-chat.api';
