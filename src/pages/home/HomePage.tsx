@@ -21,8 +21,10 @@ import { Modal } from '@/shared/ui/modal';
 import * as styles from './home-page.styles';
 
 // Demo fallback: 기말 발표 시연 안정성을 위해 유지
+const MOCK_POINT = 1250;
+
 const MOCK_HOME_DATA = {
-  point: 1250,
+  point: MOCK_POINT,
   nickname: '띵지대',
   department: '컴퓨터공학과',
   company: '',
@@ -54,7 +56,10 @@ export function HomePage() {
 
   const homeData =
     homeQuery.data ?? (homeQuery.isError && USE_MOCK_FALLBACK ? MOCK_HOME_DATA : null);
-  const point = pointQuery.data?.point ?? (pointQuery.isError && USE_MOCK_FALLBACK ? 1250 : 0);
+  const point =
+    homeData?.point ??
+    pointQuery.data?.point ??
+    (pointQuery.isError && USE_MOCK_FALLBACK ? MOCK_POINT : 0);
 
   const activityItems: ActivitySummaryItemData[] = homeData
     ? homeData.role === 'GRADUATE'
