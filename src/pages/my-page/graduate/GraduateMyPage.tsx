@@ -520,7 +520,7 @@ export function GraduateMyPage() {
                         options={field.options.map((opt) => ({ label: opt, value: opt }))}
                         value={field.value}
                         onChange={field.onChange ?? undefined}
-                        placeholder="직군 선택"
+                        placeholder={`${field.label} 선택`}
                       />
                     ) : (
                       <Input
