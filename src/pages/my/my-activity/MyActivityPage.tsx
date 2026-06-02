@@ -176,7 +176,7 @@ export function MyActivityPage() {
       <div className={styles.sections}>
         {allEmpty && <EmptyState message="아직 활동 내역이 없습니다." />}
 
-        {showCoffeeChat && (
+        {!allEmpty && showCoffeeChat && (
           <section className={styles.section} aria-label="커피챗 활동">
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitleRow}>
@@ -216,7 +216,7 @@ export function MyActivityPage() {
           </section>
         )}
 
-        {showRoadmap && (
+        {!allEmpty && showRoadmap && (
           <section className={styles.section} aria-label="로드맵 활동">
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitleRow}>
@@ -256,7 +256,7 @@ export function MyActivityPage() {
           </section>
         )}
 
-        {showQna && (
+        {!allEmpty && showQna && (
           <section className={styles.section} aria-label="Q&A 활동">
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitleRow}>
