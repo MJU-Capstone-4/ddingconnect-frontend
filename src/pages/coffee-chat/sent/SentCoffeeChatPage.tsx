@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import UserIcon from '@/shared/assets/icons/user.svg?react';
 import { useSentCoffeeChatsQuery, useCancelCoffeeChatMutation } from '@/features/coffee-chat/model';
@@ -20,7 +21,8 @@ const STATUS_TONE: Record<string, 'gray' | 'blue' | 'pink'> = {
 
 export function SentCoffeeChatPage() {
   const { data: sentCoffeeChats, isLoading, isError } = useSentCoffeeChatsQuery();
-  const { mutate: cancelChat, isPending } = useCancelCoffeeChatMutation();
+  const { mutate: cancelChat } = useCancelCoffeeChatMutation();
+  const [cancelingId, setCancelingId] = useState<number | null>(null);
 
   const chats = sentCoffeeChats ?? [];
 
@@ -84,8 +86,11 @@ export function SentCoffeeChatPage() {
                       tone="gray"
                       variant="outline"
                       fullWidth
-                      disabled={isPending}
-                      onClick={() => cancelChat(chat.id!)}
+                      disabled={cancelingId === chat.id}
+                      onClick={() => {
+                        setCancelingId(chat.id!);
+                        cancelChat(chat.id!, { onSettled: () => setCancelingId(null) });
+                      }}
                     >
                       요청 취소
                     </Button>
