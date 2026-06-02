@@ -1,4 +1,4 @@
-import { apiClient } from '@/shared/api';
+import { apiClient, type ApiResponse } from '@/shared/api';
 
 export interface PointBalanceResponse {
   point: number;
@@ -14,13 +14,6 @@ export interface PointProduct {
 export interface PointProductsResponse {
   point: number;
   products: PointProduct[];
-}
-
-interface ApiResponse<T> {
-  isSuccess?: boolean;
-  code?: string;
-  message?: string;
-  result?: T;
 }
 
 export const getPoint = async (): Promise<PointBalanceResponse> => {

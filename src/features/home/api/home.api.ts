@@ -1,4 +1,4 @@
-import { apiClient } from '@/shared/api';
+import { apiClient, type ApiResponse } from '@/shared/api';
 
 export type MemberRole = 'STUDENT' | 'GRADUATE' | 'UNKNOWN';
 
@@ -17,13 +17,6 @@ export interface HomeResponse {
   grade: number;
   careerYear: number;
   activity: HomeActivity;
-}
-
-interface ApiResponse<T> {
-  isSuccess?: boolean;
-  code?: string;
-  message?: string;
-  result?: T;
 }
 
 export const getHome = async (): Promise<HomeResponse> => {
