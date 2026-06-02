@@ -82,9 +82,11 @@ export function HomePage() {
           { icon: MapIcon, count: homeData.activity.roadmapCount, label: '로드맵', tone: 'purple' },
           { icon: CommentIcon, count: homeData.activity.questionCount, label: 'QnA', tone: 'pink' },
         ]
-    : homeQuery.isError && !USE_MOCK_FALLBACK
+    : homeQuery.isLoading
       ? MOCK_ACTIVITY_ITEMS.map((item) => ({ ...item, count: 0 }))
-      : MOCK_ACTIVITY_ITEMS;
+      : homeQuery.isError && USE_MOCK_FALLBACK
+        ? MOCK_ACTIVITY_ITEMS
+        : MOCK_ACTIVITY_ITEMS.map((item) => ({ ...item, count: 0 }));
 
   const subLabel = homeData?.role === 'GRADUATE' ? homeData.company : (homeData?.department ?? '');
   const gradeLabel =
