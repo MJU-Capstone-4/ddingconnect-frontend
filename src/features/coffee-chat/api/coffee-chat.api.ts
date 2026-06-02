@@ -1,4 +1,4 @@
-import { apiClient } from '@/shared/api';
+import { apiClient, type ApiResponse } from '@/shared/api';
 import type {
   CreateCoffeeChatRequest,
   CoffeeChatResponse,
@@ -15,13 +15,6 @@ import type {
   ReceivedCoffeeChatItem,
   CoffeeChatActivityItem,
 } from '../types';
-
-type ApiResponse<T> = {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result?: T | null;
-};
 
 export const createCoffeeChatRequest = async (
   body: CreateCoffeeChatRequest,

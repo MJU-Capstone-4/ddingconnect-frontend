@@ -1,4 +1,9 @@
 export const queryKeys = {
+  home: {
+    all: ['home'] as const,
+    me: () => [...queryKeys.home.all, 'me'] as const,
+  },
+
   auth: {
     all: ['auth'] as const,
     me: () => [...queryKeys.auth.all, 'me'] as const,
@@ -60,7 +65,7 @@ export const queryKeys = {
 
   point: {
     all: ['point'] as const,
-    balance: () => [...queryKeys.point.all, 'balance'] as const,
-    history: () => [...queryKeys.point.all, 'history'] as const,
+    me: () => [...queryKeys.point.all, 'me'] as const,
+    products: () => [...queryKeys.point.all, 'products'] as const,
   },
 };

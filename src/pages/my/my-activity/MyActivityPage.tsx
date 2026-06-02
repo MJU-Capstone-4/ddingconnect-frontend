@@ -1,4 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router';
+import { QNA_TAB } from '@/shared/constants/activity-tabs';
 
 import { getUserRole } from '@/features/auth/model/auth-state';
 import { CoffeeChatActivityCard } from '@/features/coffee-chat/components/coffee-chat-activity-card';
@@ -78,9 +79,9 @@ const MOCK_QNAS = [
 ];
 // ---------------------------------------------------------------------------
 
-type Category = '전체' | '커피챗' | '로드맵' | 'Q&A';
-const ALL_CATEGORIES: Category[] = ['전체', '커피챗', '로드맵', 'Q&A'];
-const GRADUATE_CATEGORIES: Category[] = ['전체', '커피챗', 'Q&A'];
+type Category = '전체' | '커피챗' | '로드맵' | typeof QNA_TAB;
+const ALL_CATEGORIES: Category[] = ['전체', '커피챗', '로드맵', QNA_TAB];
+const GRADUATE_CATEGORIES: Category[] = ['전체', '커피챗', QNA_TAB];
 
 function EmptyState({ message }: { message: string }) {
   return <p className="py-4 text-center text-sm text-text-secondary">{message}</p>;
@@ -137,7 +138,7 @@ export function MyActivityPage() {
 
   const showCoffeeChat = selectedCategory === '전체' || selectedCategory === '커피챗';
   const showRoadmap = !isGraduate && (selectedCategory === '전체' || selectedCategory === '로드맵');
-  const showQna = selectedCategory === '전체' || selectedCategory === 'Q&A';
+  const showQna = selectedCategory === '전체' || selectedCategory === QNA_TAB;
 
   const allEmpty =
     selectedCategory === '전체' &&

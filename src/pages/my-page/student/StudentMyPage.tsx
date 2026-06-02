@@ -1,5 +1,6 @@
 import { useRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { QNA_TAB } from '@/shared/constants/activity-tabs';
 import { useQueryClient } from '@tanstack/react-query';
 import { clearAccessToken, clearUserRole } from '@/features/auth/model/auth-state';
 import { useDeleteAccountMutation } from '@/features/auth/hooks';
@@ -392,7 +393,8 @@ export function StudentMyPage() {
                 items={activityItems}
                 onTitleClick={() => navigate('/my/activity')}
                 onItemClick={(label) => {
-                  navigate(`/my/activity?tab=${encodeURIComponent(label)}`);
+                  const tab = label === 'QnA' ? QNA_TAB : label;
+                  navigate(`/my/activity?tab=${encodeURIComponent(tab)}`);
                 }}
               />
             </div>
