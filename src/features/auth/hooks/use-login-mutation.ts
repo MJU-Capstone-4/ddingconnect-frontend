@@ -12,9 +12,14 @@ export function useLoginMutation() {
     onSuccess: async (data) => {
       if (data.accessToken) {
         setAccessToken(data.accessToken);
-        const role = await getMyRole();
-        if (role) setUserRole(role);
-        navigate('/');
+        try {
+          const role = await getMyRole();
+          if (role) setUserRole(role);
+        } catch (err) {
+          console.error('역할 조회 실패:', err);
+        } finally {
+          navigate('/');
+        }
       }
     },
   });
