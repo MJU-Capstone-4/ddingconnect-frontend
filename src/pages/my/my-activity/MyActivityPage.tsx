@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
+import { QNA_TAB } from '@/shared/constants/activity-tabs';
 
 import { SeniorProfileCard } from '@/features/coffee-chat/components/senior-profile-card';
 import type { SeniorProfileCardProps } from '@/features/coffee-chat/components/senior-profile-card';
@@ -87,7 +88,7 @@ const MOCK_QNAS: QnaMock[] = [
   },
 ];
 
-const CATEGORIES = ['전체', '커피챗', '로드맵', 'Q&A'] as const;
+const CATEGORIES = ['전체', '커피챗', '로드맵', QNA_TAB] as const;
 type Category = (typeof CATEGORIES)[number];
 
 export function MyActivityPage() {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { QNA_TAB } from '@/shared/constants/activity-tabs';
 import { useHomeQuery } from '@/features/home/hooks';
 import { usePointQuery } from '@/features/point/hooks';
 import AlarmIcon from '@/shared/assets/icons/alarm.svg?react';
@@ -165,7 +166,7 @@ export function HomePage() {
             items={activityItems}
             onTitleClick={() => navigate('/my/activity')}
             onItemClick={(label) => {
-              const tab = label === 'QnA' ? 'Q&A' : label;
+              const tab = label === 'QnA' ? QNA_TAB : label;
               navigate(`/my/activity?tab=${encodeURIComponent(tab)}`);
             }}
           />
