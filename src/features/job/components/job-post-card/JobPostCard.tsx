@@ -139,10 +139,10 @@ export function JobPostCard({
         variant="solid"
         type="button"
         disabled={isDisabled}
-        aria-label={isExpired ? '마감된 공고' : `${companyName} 지원하기`}
+        aria-label={isDisabled ? '마감된 공고' : `${companyName} 지원하기`}
         onClick={handleApply}
       >
-        {isExpired ? '마감' : '지원하기'}
+        {isDisabled ? '마감' : '지원하기'}
       </Button>
     </div>
   );
