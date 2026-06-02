@@ -13,6 +13,7 @@ import type {
   MatchingDetail,
   MyActivityItem,
   ReceivedCoffeeChatItem,
+  CoffeeChatActivityItem,
 } from '../types';
 
 type ApiResponse<T> = {
@@ -79,6 +80,13 @@ export const getMatchingDetail = async (memberId: number): Promise<MatchingDetai
 export const getMyActivity = async (): Promise<MyActivityItem[]> => {
   const { data } = await apiClient.get<ApiResponse<MyActivityItem[]>>(
     '/api/v1/coffeechat/my-activity',
+  );
+  return data.result ?? [];
+};
+
+export const getMyCoffeeChats = async (): Promise<CoffeeChatActivityItem[]> => {
+  const { data } = await apiClient.get<ApiResponse<CoffeeChatActivityItem[]>>(
+    '/api/v1/members/me/activity/coffeechats',
   );
   return data.result ?? [];
 };

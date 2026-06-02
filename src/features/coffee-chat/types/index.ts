@@ -64,3 +64,13 @@ export type ReceivedCoffeeChatItem = {
   profileImage: string;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
 };
+
+export type CoffeeChatActivityItem = {
+  coffeeChatId: number;
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+  partnerId: number;
+  partnerNickname: string;
+  partnerDepartment: string;
+  partnerJobs: string[];
+  partnerTechStacks: string[];
+};

@@ -1,4 +1,5 @@
 export { useQuestionsQuery } from './use-questions-query';
+export { useMyQuestionsQuery } from './use-my-questions-query';
 export { useQuestionDetailQuery } from './use-question-detail-query';
 export { useCreateQuestionMutation } from './use-create-question-mutation';
 export { useToggleQuestionLikeMutation } from './use-toggle-question-like-mutation';
