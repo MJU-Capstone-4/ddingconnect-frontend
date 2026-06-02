@@ -18,7 +18,7 @@ const STATUS_TONE: Record<string, 'gray' | 'blue' | 'pink'> = {
 };
 
 export function SentCoffeeChatPage() {
-  const { data: sentCoffeeChats } = useSentCoffeeChatsQuery();
+  const { data: sentCoffeeChats, isLoading, isError } = useSentCoffeeChatsQuery();
   const { mutate: cancelChat, isPending } = useCancelCoffeeChatMutation();
 
   const chats = sentCoffeeChats ?? [];
@@ -38,7 +38,11 @@ export function SentCoffeeChatPage() {
           요청 목록 <span className="text-primary">{chats.length}</span>
         </h2>
 
-        {chats.length === 0 ? (
+        {isLoading ? (
+          <p className={S.emptyText}>불러오는 중...</p>
+        ) : isError ? (
+          <p className={S.emptyText}>요청 목록을 불러오지 못했어요</p>
+        ) : chats.length === 0 ? (
           <div className={S.emptyState}>
             <UserIcon className="w-10 h-10 text-gray-300" aria-hidden="true" />
             <p className={S.emptyText}>아직 보낸 요청이 없어요</p>
