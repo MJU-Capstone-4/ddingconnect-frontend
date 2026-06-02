@@ -77,7 +77,11 @@ export function RoadmapPage() {
         onSubmit={handleGenerateRoadmap}
       />
 
-      {errorMessage && <p className="text-sm text-red-500 text-center mt-2">{errorMessage}</p>}
+      {errorMessage && (
+        <p role="alert" className="text-sm text-red-500 text-center mt-2">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }
