@@ -16,11 +16,18 @@ export type ActivitySummaryItemData = {
   count: number;
   label: string;
   tone: ActivitySummaryTone;
+  onClick?: () => void;
 };
 
-export function ActivitySummaryItem({ icon: Icon, count, label, tone }: ActivitySummaryItemData) {
-  return (
-    <li className={activitySummaryItem} aria-label={`${label} ${count}개`}>
+export function ActivitySummaryItem({
+  icon: Icon,
+  count,
+  label,
+  tone,
+  onClick,
+}: ActivitySummaryItemData) {
+  const content = (
+    <>
       <div className={cn(activitySummaryIconVariants({ tone }))} aria-hidden="true">
         <Icon className={activitySummaryIconSize} />
       </div>
@@ -30,6 +37,27 @@ export function ActivitySummaryItem({ icon: Icon, count, label, tone }: Activity
       <span className={activitySummaryLabel} aria-hidden="true">
         {label}
       </span>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <li>
+        <button
+          type="button"
+          onClick={onClick}
+          aria-label={`${label} ${count}개`}
+          className={activitySummaryItem}
+        >
+          {content}
+        </button>
+      </li>
+    );
+  }
+
+  return (
+    <li className={activitySummaryItem} aria-label={`${label} ${count}개`}>
+      {content}
     </li>
   );
 }

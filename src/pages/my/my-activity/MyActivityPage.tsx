@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import { SeniorProfileCard } from '@/features/coffee-chat/components/senior-profile-card';
 import type { SeniorProfileCardProps } from '@/features/coffee-chat/components/senior-profile-card';
+import { useMyPageQuery } from '@/features/mypage';
 import { QnaPostCard } from '@/features/qna/components/qna-post-card';
 import type { QnaPostCardProps } from '@/features/qna/components/qna-post-card';
 import { RoadmapResultCard } from '@/features/roadmap/components/roadmap-result-card';
@@ -13,12 +15,16 @@ import { HeroSection } from '@/shared/ui/hero-section';
 
 import * as styles from './my-activity-page.styles';
 
-type CoffeeChatMock = Omit<SeniorProfileCardProps, 'onClick' | 'className'>;
-type RoadmapMock = Omit<RoadmapResultCardProps, 'onDownload' | 'className'>;
-type QnaMock = Omit<QnaPostCardProps, 'onClick' | 'onLikeClick' | 'onCommentClick' | 'className'>;
+type CoffeeChatMock = Omit<SeniorProfileCardProps, 'onClick' | 'className'> & { id: number };
+type RoadmapMock = Omit<RoadmapResultCardProps, 'onDownload' | 'className'> & { id: number };
+type QnaMock = Omit<
+  QnaPostCardProps,
+  'onClick' | 'onLikeClick' | 'onCommentClick' | 'className'
+> & { id: number };
 
 const MOCK_COFFEE_CHATS: CoffeeChatMock[] = [
   {
+    id: 1,
     name: '이선배',
     department: "컴퓨터공학과 '18",
     company: '네이버',
@@ -27,6 +33,7 @@ const MOCK_COFFEE_CHATS: CoffeeChatMock[] = [
     techStacks: ['React', 'TypeScript'],
   },
   {
+    id: 2,
     name: '이선배',
     department: "컴퓨터공학과 '18",
     company: '네이버',
@@ -37,13 +44,14 @@ const MOCK_COFFEE_CHATS: CoffeeChatMock[] = [
 ];
 
 const MOCK_ROADMAPS: RoadmapMock[] = [
-  { title: '백엔드 개발자 로드맵', createdAt: '2026. 04. 09 • 오전 10:00' },
-  { title: '디자이너 로드맵', createdAt: '2026. 04. 08 • 오전 10:00' },
-  { title: '프론트엔드 개발자 로드맵', createdAt: '2026. 04. 07 • 오전 10:00' },
+  { id: 1, title: '백엔드 개발자 로드맵', createdAt: '2026. 04. 09 • 오전 10:00' },
+  { id: 2, title: '디자이너 로드맵', createdAt: '2026. 04. 08 • 오전 10:00' },
+  { id: 3, title: '프론트엔드 개발자 로드맵', createdAt: '2026. 04. 07 • 오전 10:00' },
 ];
 
 const MOCK_QNAS: QnaMock[] = [
   {
+    id: 1,
     category: '취업 준비',
     author: '익명',
     createdAt: '2시간 전',
@@ -55,6 +63,7 @@ const MOCK_QNAS: QnaMock[] = [
     viewCount: 156,
   },
   {
+    id: 2,
     category: '기술 질문',
     author: '익명',
     createdAt: '2시간 전',
@@ -66,6 +75,7 @@ const MOCK_QNAS: QnaMock[] = [
     viewCount: 156,
   },
   {
+    id: 3,
     category: '진로 고민',
     author: '익명',
     createdAt: '2시간 전',
@@ -77,15 +87,22 @@ const MOCK_QNAS: QnaMock[] = [
   },
 ];
 
-const COFFEE_CHAT_TOTAL = 12;
-const ROADMAP_TOTAL = 3;
-const QNA_TOTAL = 5;
-
 const CATEGORIES = ['전체', '커피챗', '로드맵', 'Q&A'] as const;
 type Category = (typeof CATEGORIES)[number];
 
 export function MyActivityPage() {
-  const [selectedCategory, setSelectedCategory] = useState<Category>('전체');
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { data: mypageData } = useMyPageQuery();
+
+  const tabParam = searchParams.get('tab') as Category | null;
+  const [selectedCategory, setSelectedCategory] = useState<Category>(
+    tabParam && (CATEGORIES as readonly string[]).includes(tabParam) ? tabParam : '전체',
+  );
+
+  const coffeeChatTotal = mypageData?.activity?.coffeeChatCount ?? 0;
+  const roadmapTotal = mypageData?.activity?.roadmapCount ?? 0;
+  const qnaTotal = mypageData?.activity?.questionCount ?? 0;
 
   return (
     <div className={styles.page}>
@@ -118,14 +135,12 @@ export function MyActivityPage() {
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitleRow}>
                 <span className={styles.sectionTitle}>커피챗</span>
-                <span className={styles.sectionCount}>{COFFEE_CHAT_TOTAL}</span>
+                <span className={styles.sectionCount}>{coffeeChatTotal}</span>
               </div>
               <button
                 type="button"
                 className={styles.viewAllBtn}
-                onClick={() => {
-                  // TODO: 커피챗 전체보기 연결
-                }}
+                onClick={() => navigate('/coffee-chat/matching')}
                 aria-label="커피챗 전체보기"
               >
                 전체보기
@@ -133,13 +148,11 @@ export function MyActivityPage() {
               </button>
             </div>
             <div className={styles.cardList}>
-              {MOCK_COFFEE_CHATS.map((chat, i) => (
+              {MOCK_COFFEE_CHATS.map((chat) => (
                 <SeniorProfileCard
-                  key={i}
+                  key={chat.id}
                   {...chat}
-                  onClick={() => {
-                    // TODO: 선배 상세 페이지 연결
-                  }}
+                  onClick={() => navigate(`/coffee-chat/senior-profile/${chat.id}`)}
                   className="w-full"
                 />
               ))}
@@ -152,14 +165,12 @@ export function MyActivityPage() {
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitleRow}>
                 <span className={styles.sectionTitle}>로드맵</span>
-                <span className={styles.sectionCount}>{ROADMAP_TOTAL}</span>
+                <span className={styles.sectionCount}>{roadmapTotal}</span>
               </div>
               <button
                 type="button"
                 className={styles.viewAllBtn}
-                onClick={() => {
-                  // TODO: 로드맵 전체보기 연결
-                }}
+                onClick={() => navigate('/roadmap/result')}
                 aria-label="로드맵 전체보기"
               >
                 전체보기
@@ -169,11 +180,9 @@ export function MyActivityPage() {
             <div className={styles.cardList}>
               {MOCK_ROADMAPS.map((roadmap) => (
                 <RoadmapResultCard
-                  key={roadmap.title}
+                  key={roadmap.id}
                   {...roadmap}
-                  onDownload={() => {
-                    // TODO: 로드맵 다운로드
-                  }}
+                  onDownload={() => navigate(`/roadmap/result`)}
                   className="w-full"
                 />
               ))}
@@ -186,14 +195,12 @@ export function MyActivityPage() {
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitleRow}>
                 <span className={styles.sectionTitle}>Q&A</span>
-                <span className={styles.sectionCount}>{QNA_TOTAL}</span>
+                <span className={styles.sectionCount}>{qnaTotal}</span>
               </div>
               <button
                 type="button"
                 className={styles.viewAllBtn}
-                onClick={() => {
-                  // TODO: Q&A 전체보기 연결
-                }}
+                onClick={() => navigate('/qna')}
                 aria-label="Q&A 전체보기"
               >
                 전체보기
@@ -203,11 +210,9 @@ export function MyActivityPage() {
             <div className={styles.cardList}>
               {MOCK_QNAS.map((qna) => (
                 <QnaPostCard
-                  key={qna.title}
+                  key={qna.id}
                   {...qna}
-                  onClick={() => {
-                    // TODO: Q&A 상세 페이지 연결
-                  }}
+                  onClick={() => navigate(`/qna/${qna.id}`)}
                   className="w-full"
                 />
               ))}

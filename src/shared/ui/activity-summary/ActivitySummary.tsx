@@ -14,6 +14,7 @@ export type ActivitySummaryProps = {
   items: ActivitySummaryItemData[];
   className?: string;
   onTitleClick?: () => void;
+  onItemClick?: (label: string) => void;
 };
 
 export function ActivitySummary({
@@ -21,6 +22,7 @@ export function ActivitySummary({
   items,
   className,
   onTitleClick,
+  onItemClick,
 }: ActivitySummaryProps) {
   return (
     <section className={cn(activitySummaryContainer, className)} aria-label={title}>
@@ -35,7 +37,11 @@ export function ActivitySummary({
       </h2>
       <ul className={activitySummaryGrid}>
         {items.map((item) => (
-          <ActivitySummaryItem key={item.label} {...item} />
+          <ActivitySummaryItem
+            key={item.label}
+            {...item}
+            onClick={onItemClick ? () => onItemClick(item.label) : undefined}
+          />
         ))}
       </ul>
     </section>

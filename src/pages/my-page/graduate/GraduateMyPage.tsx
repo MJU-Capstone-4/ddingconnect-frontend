@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { clearAccessToken, clearUserRole } from '@/features/auth/model/auth-state';
 import { useDeleteAccountMutation } from '@/features/auth/hooks';
 
@@ -22,7 +23,7 @@ import UserIcon from '@/shared/assets/icons/user.svg?react';
 
 import { ActivitySummary } from '@/shared/ui/activity-summary';
 import type { ActivitySummaryItemData } from '@/shared/ui/activity-summary';
-import { Button, FileUpload, Input, Modal } from '@/shared/ui';
+import { Button, FileUpload, Input, Modal, Select } from '@/shared/ui';
 import { cn } from '@/shared/utils/cn';
 import {
   AccountSettingSection,
@@ -30,10 +31,27 @@ import {
   CareerInfoSection,
   PortfolioSection,
   SocialLinkSection,
+  useMyPageQuery,
+  useUpdateGraduateMyPageMutation,
+  useProfileImageUploadMutation,
+  usePortfolioUploadMutation,
+  useBusinessCardUploadMutation,
+  techStacksToLabels,
+  labelsToTechStacks,
+  jobTypeToLabel,
+  labelToJobType,
+  careerYearToLabel,
+  labelToCareerYear,
+  TECH_STACK_OPTIONS,
+  JOB_TYPE_OPTIONS,
 } from '@/features/mypage';
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
+import type { MyPageResponse } from '@/shared/api/generated/api';
 
+import { MOCK_GRADUATE_PROFILE } from './graduate-my-page.mock';
 import * as S from './graduate-my-page.styles';
+
+const IS_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK === 'true' && import.meta.env.DEV;
 
 type GraduateProfile = {
   nickname: string;
@@ -47,42 +65,82 @@ type GraduateProfile = {
   socialLinks: SocialLinkItem[];
   portfolio: { title: string; url: string } | null;
   jobPostingLinks: string[];
-  hasBusinessCard: boolean;
+  businessCardImageUrl: string;
+  profileImage: string | null;
 };
 
-const MOCK_PROFILE: GraduateProfile = {
-  nickname: '이선배',
-  email: 'dding_connect@mju.ac.kr',
-  studentId: '60211234',
-  department: '응용소프트웨어',
-  jobType: '백엔드 개발자',
-  company: '네이버',
-  experience: '3년차',
-  skills: ['Java', 'Spring Boot', 'MySQL', 'AWS', 'Docker'],
-  socialLinks: [
-    { id: 'github', platform: 'github', label: 'GitHub', url: 'github.com/honggildong' },
-    { id: 'linkedin', platform: 'linkedin', label: 'LinkedIn', url: 'linkodin.com/in/honggildong' },
-  ],
-  portfolio: {
-    title: '이선배의 포트폴리오',
-    url: 'portfolio.honggildong.com',
-  },
-  jobPostingLinks: ['recruit.navercorp.com/rcrt/list.do'],
-  hasBusinessCard: true,
-};
+const MOCK_PROFILE: GraduateProfile = MOCK_GRADUATE_PROFILE;
 
 const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
   { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
   { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
 ];
 
+function mapApiToProfile(data: MyPageResponse): GraduateProfile {
+  const p = data.profile ?? {};
+  return {
+    nickname: p.nickname ?? '',
+    email: p.email ?? '',
+    studentId: p.studentNumber ?? '',
+    department: p.department ?? '',
+    jobType: jobTypeToLabel(p.jobType),
+    company: p.company ?? '',
+    experience: careerYearToLabel(p.careerYear),
+    skills: techStacksToLabels(data.techStacks),
+    socialLinks: [
+      { id: 'github', platform: 'github', label: 'GitHub', url: p.githubLink ?? '' },
+      { id: 'linkedin', platform: 'linkedin', label: 'LinkedIn', url: p.linkedinLink ?? '' },
+    ],
+    portfolio: p.portfolio ? { title: '포트폴리오', url: p.portfolio } : null,
+    jobPostingLinks: (data.jobPosts ?? []).map((j) => j.detailUrl ?? '').filter(Boolean),
+    businessCardImageUrl: p.businessCardImage ?? '',
+    profileImage: p.profileImage ?? null,
+  };
+}
+
 export function GraduateMyPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
-  const [profile, setProfile] = useState<GraduateProfile>(MOCK_PROFILE);
   const [draftProfile, setDraftProfile] = useState<GraduateProfile>(MOCK_PROFILE);
+
+  const { data: mypageData } = useMyPageQuery();
+  const { mutate: updateGraduateMyPage, isPending: isSaving } = useUpdateGraduateMyPageMutation();
+  const profileImageUploadMutation = useProfileImageUploadMutation();
+  const portfolioUploadMutation = usePortfolioUploadMutation();
+  const businessCardUploadMutation = useBusinessCardUploadMutation();
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
+
+  const profile = useMemo(() => {
+    if (mypageData) return mapApiToProfile(mypageData);
+    return IS_MOCK_FALLBACK ? MOCK_PROFILE : MOCK_PROFILE;
+  }, [mypageData]);
+
+  const originalJobPosts = useMemo(() => mypageData?.jobPosts ?? [], [mypageData]);
+
+  const originalJobPostUrls = useMemo(
+    () => originalJobPosts.map((j) => j.detailUrl ?? '').filter(Boolean),
+    [originalJobPosts],
+  );
+
+  const activityItems: ActivitySummaryItemData[] = mypageData?.activity
+    ? [
+        {
+          icon: CoffeeIcon,
+          count: mypageData.activity.coffeeChatCount ?? 0,
+          label: '커피챗',
+          tone: 'blue',
+        },
+        {
+          icon: CommentIcon,
+          count: mypageData.activity.questionCount ?? 0,
+          label: 'QnA',
+          tone: 'pink',
+        },
+      ]
+    : MOCK_ACTIVITY;
 
   const enterEditMode = () => {
     setDraftProfile(profile);
@@ -90,14 +148,68 @@ export function GraduateMyPage() {
   };
 
   const handleCancel = () => {
-    setDraftProfile(profile);
     setIsEditMode(false);
   };
 
   const handleSave = () => {
-    // TODO: 프로필 수정 API 연동
-    setProfile(draftProfile);
-    setIsEditMode(false);
+    const github = draftProfile.socialLinks.find((l) => l.id === 'github')?.url;
+    const linkedin = draftProfile.socialLinks.find((l) => l.id === 'linkedin')?.url;
+
+    const currentUrls = draftProfile.jobPostingLinks;
+    const addedUrls = currentUrls.filter((url) => !originalJobPostUrls.includes(url));
+    const removedIds = originalJobPosts
+      .filter((j) => j.detailUrl && !currentUrls.includes(j.detailUrl))
+      .map((j) => j.id)
+      .filter((id): id is number => id != null);
+
+    const jobPostsToAdd =
+      addedUrls.length > 0 ? addedUrls.map((url) => ({ detailUrl: url })) : undefined;
+    const jobPostIdsToDelete = removedIds.length > 0 ? removedIds : undefined;
+
+    const techStackValues = labelsToTechStacks(draftProfile.skills);
+
+    updateGraduateMyPage(
+      {
+        profile: {
+          nickname: draftProfile.nickname || undefined,
+          studentNumber: draftProfile.studentId || undefined,
+          department: draftProfile.department || undefined,
+          githubLink: github || undefined,
+          linkedinLink: linkedin || undefined,
+          portfolio: draftProfile.portfolio?.url || undefined,
+          profileImage: draftProfile.profileImage || undefined,
+          jobType: labelToJobType(draftProfile.jobType),
+          company: draftProfile.company || undefined,
+          careerYear: labelToCareerYear(draftProfile.experience),
+          businessCardImage: draftProfile.businessCardImageUrl || undefined,
+        },
+        techStacks: techStackValues.length > 0 ? techStackValues : undefined,
+        jobPostsToAdd,
+        jobPostIdsToDelete,
+      },
+      {
+        onSuccess: () => setIsEditMode(false),
+      },
+    );
+  };
+
+  const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const fileUrl = await profileImageUploadMutation.mutateAsync(file);
+      setDraftProfile((p) => ({ ...p, profileImage: fileUrl }));
+    } catch {
+      // error accessible via profileImageUploadMutation.error
+    }
+    e.target.value = '';
+  };
+
+  const openJobPosting = () => {
+    const url = profile.jobPostingLinks[0];
+    if (!url) return;
+    const href = url.startsWith('http') ? url : `https://${url}`;
+    window.open(href, '_blank', 'noopener,noreferrer');
   };
 
   const handleAddSkill = (_groupLabel: string, value: string) => {
@@ -130,29 +242,39 @@ export function GraduateMyPage() {
   const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
   const [pendingPortfolioFile, setPendingPortfolioFile] = useState<File | null>(null);
 
-  const handlePortfolioUploadConfirm = () => {
+  const handlePortfolioUploadConfirm = async () => {
     if (!pendingPortfolioFile) return;
-    setDraftProfile((p) => ({
-      ...p,
-      portfolio: { title: pendingPortfolioFile.name, url: '' },
-    }));
-    setPendingPortfolioFile(null);
-    setIsPortfolioModalOpen(false);
+    try {
+      const fileUrl = await portfolioUploadMutation.mutateAsync(pendingPortfolioFile);
+      setDraftProfile((p) => ({
+        ...p,
+        portfolio: { title: pendingPortfolioFile.name, url: fileUrl },
+      }));
+      setPendingPortfolioFile(null);
+      setIsPortfolioModalOpen(false);
+    } catch {
+      // error accessible via portfolioUploadMutation.error — keep modal open
+    }
   };
 
   // Business card modal
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
   const [pendingCardFile, setPendingCardFile] = useState<File | null>(null);
 
-  const handleCardUploadConfirm = () => {
+  const handleCardUploadConfirm = async () => {
     if (!pendingCardFile) return;
-    setDraftProfile((p) => ({ ...p, hasBusinessCard: true }));
-    setPendingCardFile(null);
-    setIsCardModalOpen(false);
+    try {
+      const fileUrl = await businessCardUploadMutation.mutateAsync(pendingCardFile);
+      setDraftProfile((p) => ({ ...p, businessCardImageUrl: fileUrl }));
+      setPendingCardFile(null);
+      setIsCardModalOpen(false);
+    } catch {
+      // error accessible via businessCardUploadMutation.error — keep modal open
+    }
   };
 
   const handleDeleteCard = () => {
-    setDraftProfile((p) => ({ ...p, hasBusinessCard: false }));
+    setDraftProfile((p) => ({ ...p, businessCardImageUrl: '' }));
   };
 
   const handleDeleteJobPosting = () => {
@@ -196,6 +318,7 @@ export function GraduateMyPage() {
       value: currentData.jobType,
       icon: <BagIcon className="w-5 h-5" aria-hidden="true" />,
       iconClassName: S.iconJobType,
+      options: JOB_TYPE_OPTIONS,
       onChange: isEditMode
         ? (v: string) => setDraftProfile((p) => ({ ...p, jobType: v }))
         : undefined,
@@ -239,6 +362,7 @@ export function GraduateMyPage() {
       value: currentData.studentId,
       icon: <ProfileIcon className="w-5 h-5" aria-hidden="true" />,
       iconWrapperClassName: S.iconStudentId,
+      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, studentId: v })) : undefined,
     },
     {
       label: '졸업 학과',
@@ -255,20 +379,58 @@ export function GraduateMyPage() {
       items: currentData.skills,
       tone: 'gray' as const,
       placeholder: '기술 스택 입력하기',
+      options: TECH_STACK_OPTIONS,
     },
   ];
 
   const hasJobPosting = currentData.jobPostingLinks.length > 0;
+
+  const isUploading =
+    profileImageUploadMutation.isPending ||
+    portfolioUploadMutation.isPending ||
+    businessCardUploadMutation.isPending ||
+    isSaving;
 
   return (
     <div className={S.page}>
       {/* Hero */}
       <section className={S.heroSection} aria-label="프로필">
         <div className={S.avatarWrapper}>
-          <div className={S.avatarCircle} aria-hidden="true">
-            {currentData.nickname.charAt(0)}
+          <div
+            className={cn(S.avatarCircle, currentData.profileImage && 'overflow-hidden')}
+            aria-hidden="true"
+          >
+            {currentData.profileImage ? (
+              <img
+                src={currentData.profileImage}
+                alt="프로필"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              currentData.nickname.charAt(0)
+            )}
           </div>
-          {!isEditMode && (
+          {isEditMode ? (
+            <>
+              <input
+                ref={profileImageInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={handleProfileImageChange}
+                aria-label="프로필 이미지 선택"
+              />
+              <button
+                type="button"
+                className={S.avatarEditButton}
+                onClick={() => profileImageInputRef.current?.click()}
+                disabled={profileImageUploadMutation.isPending}
+                aria-label="프로필 이미지 변경"
+              >
+                <EditIcon className="w-3 h-3" aria-hidden="true" />
+              </button>
+            </>
+          ) : (
             <button
               type="button"
               className={S.avatarEditButton}
@@ -290,6 +452,11 @@ export function GraduateMyPage() {
               aria-label="닉네임"
               className={S.nicknameInput}
             />
+            {profileImageUploadMutation.error && (
+              <p className="text-xs text-red-500 mb-2">
+                {profileImageUploadMutation.error.message}
+              </p>
+            )}
             <div className={S.editActionRow}>
               <Button
                 type="button"
@@ -297,9 +464,10 @@ export function GraduateMyPage() {
                 size="compact"
                 leftIcon={<CheckIcon className="w-3.5 h-3.5" />}
                 onClick={handleSave}
+                disabled={isUploading}
                 className={S.editSaveButton}
               >
-                수정 완료
+                {isSaving ? '저장 중...' : '수정 완료'}
               </Button>
               <Button
                 type="button"
@@ -308,6 +476,7 @@ export function GraduateMyPage() {
                 size="compact"
                 leftIcon={<CloseIcon className="w-3.5 h-3.5" />}
                 onClick={handleCancel}
+                disabled={isUploading}
                 className={S.editCancelButton}
               >
                 취소
@@ -320,8 +489,12 @@ export function GraduateMyPage() {
             <span className={S.verifiedBadge}>졸업생 인증완료</span>
             <div className={S.activityWrapper}>
               <ActivitySummary
-                items={MOCK_ACTIVITY}
+                items={activityItems}
                 onTitleClick={() => navigate('/my/activity')}
+                onItemClick={(label) => {
+                  const tab = label === 'QnA' ? 'Q&A' : label;
+                  navigate(`/my/activity?tab=${encodeURIComponent(tab)}`);
+                }}
               />
             </div>
           </>
@@ -341,12 +514,24 @@ export function GraduateMyPage() {
                 <div className={S.careerItemContent}>
                   <span className={S.careerItemLabel}>{field.label}</span>
                   {isEditMode ? (
-                    <Input
-                      value={field.value}
-                      onChange={field.onChange ? (e) => field.onChange!(e.target.value) : undefined}
-                      readOnly={!field.onChange}
-                      aria-label={field.label}
-                    />
+                    field.options ? (
+                      <Select
+                        fullWidth
+                        options={field.options.map((opt) => ({ label: opt, value: opt }))}
+                        value={field.value}
+                        onChange={field.onChange ?? undefined}
+                        placeholder={`${field.label} 선택`}
+                      />
+                    ) : (
+                      <Input
+                        value={field.value}
+                        onChange={
+                          field.onChange ? (e) => field.onChange!(e.target.value) : undefined
+                        }
+                        readOnly={!field.onChange}
+                        aria-label={field.label}
+                      />
+                    )
                   ) : (
                     <p className={S.careerItemValue}>{field.value}</p>
                   )}
@@ -434,9 +619,12 @@ export function GraduateMyPage() {
               className={S.jobPostingCardRow}
               role="button"
               tabIndex={0}
-              onClick={() => {}}
+              onClick={openJobPosting}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  openJobPosting();
+                }
               }}
               aria-label={`${profile.nickname}의 채용공고 확인`}
             >
@@ -456,7 +644,7 @@ export function GraduateMyPage() {
         <section className={S.cardSection} aria-label="내 명함">
           <div className={S.cardSectionHeader}>
             <h2 className={S.cardSectionTitle}>내 명함</h2>
-            {isEditMode && currentData.hasBusinessCard && (
+            {isEditMode && !!currentData.businessCardImageUrl && (
               <Button
                 type="button"
                 size="tiny"
@@ -470,13 +658,17 @@ export function GraduateMyPage() {
           </div>
 
           <div className={S.cardPreviewArea}>
-            {currentData.hasBusinessCard ? (
+            {currentData.businessCardImageUrl ? (
               <>
                 <span className={S.cardRegisteredBadge}>
                   <CheckIcon className={S.cardBadgeCheck} aria-hidden="true" />
                   등록됨
                 </span>
-                <div className={S.cardPreviewPlaceholder} aria-label="명함 미리보기" />
+                <img
+                  src={currentData.businessCardImageUrl}
+                  alt="명함"
+                  className="w-full h-full object-contain p-3"
+                />
               </>
             ) : (
               <div className="flex flex-col items-center gap-2 text-text-secondary">
@@ -513,12 +705,11 @@ export function GraduateMyPage() {
 
         {/* 계정 설정 */}
         <AccountSettingSection
-          onResetPassword={() => {
-            // TODO: 비밀번호 재설정 API 연동
-          }}
+          onResetPassword={() => {}}
           onLogout={() => {
             clearAccessToken();
             clearUserRole();
+            queryClient.clear();
             navigate('/auth/login', { replace: true });
           }}
           onWithdraw={() => setIsWithdrawModalOpen(true)}
@@ -558,7 +749,10 @@ export function GraduateMyPage() {
         open={isPortfolioModalOpen}
         onOpenChange={(open) => {
           setIsPortfolioModalOpen(open);
-          if (!open) setPendingPortfolioFile(null);
+          if (!open) {
+            setPendingPortfolioFile(null);
+            portfolioUploadMutation.reset();
+          }
         }}
       >
         <Modal.Content size="lg">
@@ -569,12 +763,17 @@ export function GraduateMyPage() {
             <Modal.Title>포트폴리오 업로드하기</Modal.Title>
             <Modal.Close />
           </Modal.Header>
-          <Modal.Body className="flex items-center justify-center">
+          <Modal.Body className="flex flex-col items-center gap-3">
             <FileUpload
               file={pendingPortfolioFile}
               onFileChange={setPendingPortfolioFile}
               variant="modal"
+              accept="application/pdf"
+              description="PDF 형식의 파일만 가능합니다"
             />
+            {portfolioUploadMutation.error && (
+              <p className="text-xs text-red-500">{portfolioUploadMutation.error.message}</p>
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -582,9 +781,9 @@ export function GraduateMyPage() {
               tone="blue"
               size="upload"
               onClick={handlePortfolioUploadConfirm}
-              disabled={!pendingPortfolioFile}
+              disabled={!pendingPortfolioFile || portfolioUploadMutation.isPending}
             >
-              업로드 완료
+              {portfolioUploadMutation.isPending ? '업로드 중...' : '업로드 완료'}
             </Button>
           </Modal.Footer>
         </Modal.Content>
@@ -595,7 +794,10 @@ export function GraduateMyPage() {
         open={isCardModalOpen}
         onOpenChange={(open) => {
           setIsCardModalOpen(open);
-          if (!open) setPendingCardFile(null);
+          if (!open) {
+            setPendingCardFile(null);
+            businessCardUploadMutation.reset();
+          }
         }}
       >
         <Modal.Content size="lg">
@@ -606,8 +808,17 @@ export function GraduateMyPage() {
             <Modal.Title>명함 업로드하기</Modal.Title>
             <Modal.Close />
           </Modal.Header>
-          <Modal.Body className="flex items-center justify-center">
-            <FileUpload file={pendingCardFile} onFileChange={setPendingCardFile} variant="modal" />
+          <Modal.Body className="flex flex-col items-center gap-3">
+            <FileUpload
+              file={pendingCardFile}
+              onFileChange={setPendingCardFile}
+              variant="modal"
+              accept="image/png,image/jpeg,image/webp"
+              description="PNG, JPEG, WebP 형식의 파일만 가능합니다"
+            />
+            {businessCardUploadMutation.error && (
+              <p className="text-xs text-red-500">{businessCardUploadMutation.error.message}</p>
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -615,9 +826,9 @@ export function GraduateMyPage() {
               tone="blue"
               size="upload"
               onClick={handleCardUploadConfirm}
-              disabled={!pendingCardFile}
+              disabled={!pendingCardFile || businessCardUploadMutation.isPending}
             >
-              업로드 완료
+              {businessCardUploadMutation.isPending ? '업로드 중...' : '업로드 완료'}
             </Button>
           </Modal.Footer>
         </Modal.Content>
