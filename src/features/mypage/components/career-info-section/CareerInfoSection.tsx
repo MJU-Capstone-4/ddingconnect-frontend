@@ -11,6 +11,7 @@ export type CareerInfoGroup = {
   items: string[];
   tone: 'blue' | 'gray';
   placeholder?: string;
+  options?: readonly string[];
 };
 
 export type CareerInfoSectionProps = {
@@ -32,34 +33,97 @@ type GroupInputProps = {
   placeholder: string;
   items: string[];
   onAdd: (groupLabel: string, value: string) => void;
+  options?: readonly string[];
 };
 
-function GroupInput({ groupLabel, placeholder, items, onAdd }: GroupInputProps) {
+function GroupInput({ groupLabel, placeholder, items, onAdd, options }: GroupInputProps) {
   const [value, setValue] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
-  const commit = () => {
-    const trimmed = value.trim();
-    if (trimmed && !items.includes(trimmed)) {
-      onAdd(groupLabel, trimmed);
-      setValue('');
-    }
+  const filtered = options
+    ? options
+        .filter((opt) => !items.includes(opt) && opt.toLowerCase().includes(value.toLowerCase()))
+        .slice(0, 8)
+    : [];
+
+  const commit = (selected?: string) => {
+    const trimmed = (selected ?? value).trim();
+    if (!trimmed || items.includes(trimmed)) return;
+    if (options && !options.includes(trimmed)) return;
+    onAdd(groupLabel, trimmed);
+    setValue('');
+    setIsOpen(false);
   };
 
+  if (!options) {
+    return (
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            commit();
+          }
+        }}
+        onBlur={() => commit()}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className={S.groupInput}
+      />
+    );
+  }
+
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-          e.preventDefault();
-          commit();
+    <div className={S.groupInputWrapper}>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          setIsOpen(true);
+        }}
+        onFocus={() => setIsOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            commit();
+          }
+          if (e.key === 'Escape') {
+            setIsOpen(false);
+            setValue('');
+          }
+        }}
+        onBlur={() =>
+          setTimeout(() => {
+            setIsOpen(false);
+            if (value.trim() && !options.includes(value.trim())) setValue('');
+          }, 150)
         }
-      }}
-      placeholder={placeholder}
-      aria-label={placeholder}
-      className={S.groupInput}
-    />
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className={S.groupInput}
+      />
+      {isOpen && filtered.length > 0 && (
+        <ul role="listbox" className={S.groupDropdown}>
+          {filtered.map((opt) => (
+            <li
+              key={opt}
+              role="option"
+              aria-selected={false}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                commit(opt);
+              }}
+              className={S.groupDropdownOption}
+            >
+              {opt}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -111,6 +175,7 @@ export function CareerInfoSection({
                     placeholder={group.placeholder ?? `${group.label} 입력하기`}
                     items={group.items}
                     onAdd={onAddItem}
+                    options={group.options}
                   />
                 )}
               </div>

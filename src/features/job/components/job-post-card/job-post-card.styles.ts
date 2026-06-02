@@ -28,3 +28,7 @@ export const metaText = 'text-2xs text-text-secondary';
 export const dDayText = 'text-2xs font-semibold text-error';
 
 export const chipRow = 'mt-3 flex flex-wrap gap-1.5';
+
+export const graduateSeparator = 'mt-3 pt-3 border-t border-border-light';
+
+export const graduateInfo = 'text-xs text-text-secondary';

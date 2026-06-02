@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
-  CAREER_OPTIONS,
-  MOCK_JOBS,
-  MOCK_SENIOR_JOB,
-  POSITION_OPTIONS,
-  REGION_OPTIONS,
-  getFilteredJobs,
-} from '@/features/job-info/model';
-import type { CareerType, PositionType, RegionType } from '@/features/job-info/types';
+  filterJobPosts,
+  toGraduateJobPostCardViewModel,
+  toJobPostCardViewModel,
+} from '@/features/job/model/job-post.mapper';
+import { useGraduateJobPostsQuery, useCrawledJobPostsQuery } from '@/features/job/hooks';
 import { JobPostCard } from '@/features/job/components/job-post-card';
+import { CAREER_OPTIONS, POSITION_OPTIONS, REGION_OPTIONS } from '@/features/job-info/model';
+import type { CareerType, PositionType, RegionType } from '@/features/job-info/types';
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import CloseIcon from '@/shared/assets/icons/close.svg?react';
 import FilterIcon from '@/shared/assets/icons/filter.svg?react';
@@ -33,6 +32,35 @@ export function JobInfoPage() {
   const filterTriggerRef = useRef<HTMLButtonElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: graduateJobPosts = [],
+    isLoading: isGraduateLoading,
+    isError: isGraduateError,
+    refetch: refetchGraduate,
+  } = useGraduateJobPostsQuery();
+
+  const {
+    data: crawledJobPosts = [],
+    isLoading: isCrawledLoading,
+    isError: isCrawledError,
+    refetch: refetchCrawled,
+  } = useCrawledJobPostsQuery();
+
+  const graduateViewModels = useMemo(
+    () => graduateJobPosts.map(toGraduateJobPostCardViewModel),
+    [graduateJobPosts],
+  );
+
+  const filteredCrawledViewModels = useMemo(() => {
+    const filtered = filterJobPosts(crawledJobPosts, {
+      searchKeyword,
+      position: selectedPosition,
+      career: selectedCareer,
+      region: selectedRegion,
+    });
+    return filtered.map(toJobPostCardViewModel);
+  }, [crawledJobPosts, searchKeyword, selectedPosition, selectedCareer, selectedRegion]);
 
   useEffect(() => {
     if (isFilterOpen) {
@@ -82,13 +110,6 @@ export function JobInfoPage() {
     setIsFilterOpen(false);
   }
 
-  const filteredJobs = getFilteredJobs(MOCK_JOBS, {
-    searchKeyword,
-    position: selectedPosition,
-    career: selectedCareer,
-    region: selectedRegion,
-  });
-
   return (
     <div className={styles.page}>
       <HeroSection
@@ -123,40 +144,86 @@ export function JobInfoPage() {
 
       <section className={styles.section} aria-label="선배가 올린 공고">
         <h2 className={styles.sectionTitle}>선배가 올린 공고</h2>
-        <JobPostCard
-          {...MOCK_SENIOR_JOB}
-          buttonTone="blue"
-          className={styles.cardFullWidth}
-          onApply={() => {
-            // TODO: 공고 지원 API 연동
-          }}
-        />
+        {isGraduateLoading && <p className={styles.emptyText}>공고를 불러오는 중...</p>}
+        {isGraduateError && !isGraduateLoading && (
+          <div className="py-6 text-center">
+            <p className="text-sm text-text-muted mb-2">공고를 불러오지 못했습니다.</p>
+            <button
+              type="button"
+              className="text-sm text-primary underline"
+              onClick={() => refetchGraduate()}
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+        {!isGraduateLoading && !isGraduateError && graduateViewModels.length === 0 && (
+          <p className={styles.emptyText}>등록된 선배 공고가 없습니다.</p>
+        )}
+        {!isGraduateLoading && !isGraduateError && graduateViewModels.length > 0 && (
+          <div className={styles.jobList}>
+            {graduateViewModels.map((vm) => (
+              <JobPostCard
+                key={vm.id}
+                companyName={vm.companyName}
+                companyImage={vm.companyImage}
+                position={vm.position}
+                location={vm.location}
+                careerType={vm.careerType}
+                deadlineDisplay={vm.deadlineDisplay}
+                dDay={vm.dDay}
+                isExpired={vm.isExpired}
+                isNew={vm.isNew}
+                techStacks={vm.techStacks}
+                detailUrl={vm.detailUrl}
+                graduate={vm.graduate}
+                buttonTone="blue"
+                className={styles.cardFullWidth}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className={styles.section} aria-label="공고 목록">
         <h2 className={styles.sectionTitle}>공고 목록</h2>
-        <div className={styles.jobList}>
-          {filteredJobs.map((job) => (
-            <JobPostCard
-              key={job.id}
-              companyName={job.companyName}
-              position={job.position}
-              location={job.location}
-              experience={job.experience}
-              salary={job.salary}
-              dDay={job.dDay}
-              techStacks={job.techStacks}
-              isNew={job.isNew}
-              className={styles.cardFullWidth}
-              onApply={() => {
-                // TODO: 공고 지원 API 연동
-              }}
-            />
-          ))}
-          {filteredJobs.length === 0 && (
-            <p className={styles.emptyText}>조건에 맞는 공고가 없습니다.</p>
-          )}
-        </div>
+        {isCrawledLoading && <p className={styles.emptyText}>공고를 불러오는 중...</p>}
+        {isCrawledError && !isCrawledLoading && (
+          <div className="py-6 text-center">
+            <p className="text-sm text-text-muted mb-2">공고를 불러오지 못했습니다.</p>
+            <button
+              type="button"
+              className="text-sm text-primary underline"
+              onClick={() => refetchCrawled()}
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+        {!isCrawledLoading && !isCrawledError && (
+          <div className={styles.jobList}>
+            {filteredCrawledViewModels.map((vm) => (
+              <JobPostCard
+                key={vm.id}
+                companyName={vm.companyName}
+                companyImage={vm.companyImage}
+                position={vm.position}
+                location={vm.location}
+                careerType={vm.careerType}
+                deadlineDisplay={vm.deadlineDisplay}
+                dDay={vm.dDay}
+                isExpired={vm.isExpired}
+                isNew={vm.isNew}
+                techStacks={vm.techStacks}
+                detailUrl={vm.detailUrl}
+                className={styles.cardFullWidth}
+              />
+            ))}
+            {filteredCrawledViewModels.length === 0 && (
+              <p className={styles.emptyText}>조건에 맞는 공고가 없습니다.</p>
+            )}
+          </div>
+        )}
       </section>
 
       {isFilterOpen && (

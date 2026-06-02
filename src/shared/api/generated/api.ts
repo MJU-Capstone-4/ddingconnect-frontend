@@ -738,3 +738,60 @@ export interface ApiResponseAlarmResponse {
   message?: string;
   result?: AlarmResponse;
 }
+
+export interface RoadmapCreateBody {
+  /** @format int32 */
+  grade: number;
+  /** @format float */
+  gpa: number;
+  major: string;
+  targetJob: string;
+  currentSkills: string[];
+  targetCompany: string;
+}
+
+export interface RoadmapListItem {
+  /** @format int64 */
+  id: number;
+  title: string;
+  /** @format date-time */
+  createdAt: string;
+}
+
+export interface ApiResponseRoadmapListResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: RoadmapListItem[];
+}
+
+export interface RoadmapDetailResponse {
+  /** @format int64 */
+  id: number;
+  /** @format int64 */
+  memberId: number;
+  content: string;
+  /** @format date-time */
+  createdAt: string;
+}
+
+export interface ApiResponseRoadmapDetailResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: RoadmapDetailResponse;
+}
+
+export interface RoadmapDownloadUrlResult {
+  fileUrl: string;
+  fileName: string;
+  /** @format date-time */
+  expiresAt: string;
+}
+
+export interface ApiResponseRoadmapDownloadUrl {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: RoadmapDownloadUrlResult;
+}

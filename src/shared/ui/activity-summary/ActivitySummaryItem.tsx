@@ -26,22 +26,8 @@ export function ActivitySummaryItem({
   tone,
   onClick,
 }: ActivitySummaryItemData) {
-  return (
-    <li
-      className={cn(activitySummaryItem, onClick && 'cursor-pointer')}
-      aria-label={`${label} ${count}개`}
-      {...(onClick && {
-        role: 'button',
-        tabIndex: 0,
-        onClick,
-        onKeyDown: (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onClick();
-          }
-        },
-      })}
-    >
+  const content = (
+    <>
       <div className={cn(activitySummaryIconVariants({ tone }))} aria-hidden="true">
         <Icon className={activitySummaryIconSize} />
       </div>
@@ -51,6 +37,27 @@ export function ActivitySummaryItem({
       <span className={activitySummaryLabel} aria-hidden="true">
         {label}
       </span>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <li>
+        <button
+          type="button"
+          onClick={onClick}
+          aria-label={`${label} ${count}개`}
+          className={activitySummaryItem}
+        >
+          {content}
+        </button>
+      </li>
+    );
+  }
+
+  return (
+    <li className={activitySummaryItem} aria-label={`${label} ${count}개`}>
+      {content}
     </li>
   );
 }

@@ -1,6 +1,7 @@
+import { useState } from 'react';
+
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import ClockIcon from '@/shared/assets/icons/clock.svg?react';
-import DollarIcon from '@/shared/assets/icons/dollar.svg?react';
 import LocationIcon from '@/shared/assets/icons/location.svg?react';
 import { Button, Chip } from '@/shared/ui';
 import { cn } from '@/shared/utils/cn';
@@ -10,6 +11,8 @@ import {
   chipRow,
   companyNameStyle,
   dDayText,
+  graduateInfo,
+  graduateSeparator,
   iconBox,
   iconBoxIcon,
   metaGrid,
@@ -24,46 +27,71 @@ import {
 
 export type JobPostCardProps = {
   companyName: string;
+  companyImage?: string;
   position: string;
   location: string;
-  experience: string;
-  salary: string;
+  careerType: string;
+  deadlineDisplay: string;
   dDay: string;
+  isExpired?: boolean;
   techStacks?: string[];
+  detailUrl?: string;
+  graduate?: {
+    nickname: string;
+    department: string;
+    jobType: string;
+    careerYear: number;
+  };
   isNew?: boolean;
   buttonTone?: 'blue' | 'green';
-  onApply?: () => void;
   className?: string;
 };
 
 export function JobPostCard({
   companyName,
+  companyImage,
   position,
   location,
-  experience,
-  salary,
+  careerType,
+  deadlineDisplay,
   dDay,
+  isExpired = false,
   techStacks,
-  isNew,
+  detailUrl,
+  graduate,
+  isNew = false,
   buttonTone = 'green',
-  onApply,
   className,
 }: JobPostCardProps) {
+  const [imgError, setImgError] = useState(false);
+  const hasLink = Boolean(detailUrl);
+  const isDisabled = !hasLink || isExpired;
+
+  function handleApply() {
+    if (!detailUrl) return;
+    window.open(detailUrl, '_blank', 'noopener,noreferrer');
+  }
+
   return (
     <div className={cn(card, className)}>
       <div className={topRow}>
         <div className={iconBox}>
-          <BagIcon className={iconBoxIcon} aria-hidden="true" />
+          {companyImage && !imgError ? (
+            <img
+              src={companyImage}
+              alt={companyName}
+              className="w-full h-full object-contain rounded-2xl"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <BagIcon className={iconBoxIcon} aria-hidden="true" />
+          )}
         </div>
         <div className={nameGroup}>
           <p className={companyNameStyle}>{companyName}</p>
           <p className={positionStyle}>{position}</p>
         </div>
-        {isNew && (
-          <span className={newBadge} aria-label="신규 공고">
-            NEW
-          </span>
-        )}
+        {isNew && <span className={newBadge}>NEW</span>}
       </div>
 
       <div className={metaGrid}>
@@ -73,14 +101,13 @@ export function JobPostCard({
         </div>
         <div className={metaRow}>
           <BagIcon className={metaIcon} aria-hidden="true" />
-          <span className={metaText}>{experience}</span>
-        </div>
-        <div className={metaRow}>
-          <DollarIcon className={metaIcon} aria-hidden="true" />
-          <span className={metaText}>{salary}</span>
+          <span className={metaText}>{careerType}</span>
         </div>
         <div className={metaRow}>
           <ClockIcon className={metaIcon} aria-hidden="true" />
+          <span className={metaText}>{deadlineDisplay}</span>
+        </div>
+        <div className={metaRow}>
           <span className={dDayText}>{dDay}</span>
         </div>
       </div>
@@ -95,6 +122,15 @@ export function JobPostCard({
         </div>
       )}
 
+      {graduate && (
+        <div className={graduateSeparator}>
+          <p className={graduateInfo}>
+            선배: {graduate.nickname} · {graduate.department} · {graduate.jobType} ·{' '}
+            {graduate.careerYear}년차
+          </p>
+        </div>
+      )}
+
       <Button
         className="mt-3"
         fullWidth
@@ -102,10 +138,11 @@ export function JobPostCard({
         tone={buttonTone}
         variant="solid"
         type="button"
-        aria-label={`${companyName} 지원하기`}
-        onClick={onApply}
+        disabled={isDisabled}
+        aria-label={isDisabled ? '마감된 공고' : `${companyName} 지원하기`}
+        onClick={handleApply}
       >
-        지원하기
+        {isDisabled ? '마감' : '지원하기'}
       </Button>
     </div>
   );
