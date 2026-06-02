@@ -17,6 +17,9 @@ export {
   labelToGrade,
   careerYearToLabel,
   labelToCareerYear,
+  TECH_STACK_OPTIONS,
+  TARGET_JOB_OPTIONS,
+  JOB_TYPE_OPTIONS,
 } from './model/mypage.model';
 export { BasicInfoSection } from './components/basic-info-section';
 export type {
