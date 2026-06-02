@@ -286,7 +286,6 @@ export function MyActivityPage() {
                     key={qna.id}
                     category={API_TO_UI_CATEGORY[qna.category ?? 'ETC']}
                     author="나"
-                    createdAt=""
                     title={qna.title ?? ''}
                     preview={qna.content ?? ''}
                     likeCount={Number(qna.likeCount ?? 0)}
