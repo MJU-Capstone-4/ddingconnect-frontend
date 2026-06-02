@@ -21,6 +21,9 @@ export const queryKeys = {
 
   myActivity: {
     all: ['myActivity'] as const,
+    roadmaps: () => [...queryKeys.myActivity.all, 'roadmaps'] as const,
+    questions: () => [...queryKeys.myActivity.all, 'questions'] as const,
+    coffeeChats: () => [...queryKeys.myActivity.all, 'coffeeChats'] as const,
   },
 
   qna: {
