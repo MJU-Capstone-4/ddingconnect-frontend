@@ -38,6 +38,18 @@ export function RoadmapResultCard({
         className={clickableArea}
         onClick={onCardClick}
         role={onCardClick ? 'button' : undefined}
+        tabIndex={onCardClick ? 0 : undefined}
+        onKeyDown={
+          onCardClick
+            ? (e) => {
+                if (e.key === 'Enter') onCardClick();
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                  e.preventDefault();
+                  onCardClick();
+                }
+              }
+            : undefined
+        }
       >
         <p className={titleStyle}>{title}</p>
         <p className={createdAtStyle}>{createdAt}</p>
