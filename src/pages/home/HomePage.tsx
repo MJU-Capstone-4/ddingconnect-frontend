@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useHomeQuery } from '@/features/home/hooks';
+import { usePointQuery } from '@/features/point/hooks';
 import AlarmIcon from '@/shared/assets/icons/alarm.svg?react';
 import BagIcon from '@/shared/assets/icons/bag.svg?react';
 import CardIcon from '@/shared/assets/icons/card.svg?react';
@@ -18,22 +20,77 @@ import { Modal } from '@/shared/ui/modal';
 
 import * as styles from './home-page.styles';
 
-const MOCK_USER = {
-  name: '띵지대',
-  major: '컴퓨터공학과',
-  grade: '3학년',
+// Demo fallback: 기말 발표 시연 안정성을 위해 유지
+const MOCK_HOME_DATA = {
   point: 1250,
+  nickname: '띵지대',
+  department: '컴퓨터공학과',
+  company: '',
+  role: 'STUDENT' as const,
+  grade: 3,
+  careerYear: 0,
+  activity: {
+    coffeeChatCount: 12,
+    roadmapCount: 3,
+    questionCount: 5,
+  },
 };
 
-const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
+// Demo fallback: 기말 발표 시연 안정성을 위해 유지
+const MOCK_ACTIVITY_ITEMS: ActivitySummaryItemData[] = [
   { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
   { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
   { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
 ];
 
+const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
+
 export function HomePage() {
   const navigate = useNavigate();
   const [isPointModalOpen, setIsPointModalOpen] = useState(false);
+
+  const homeQuery = useHomeQuery();
+  const pointQuery = usePointQuery();
+
+  const homeData =
+    homeQuery.data ?? (homeQuery.isError && USE_MOCK_FALLBACK ? MOCK_HOME_DATA : null);
+  const point = pointQuery.data?.point ?? (pointQuery.isError && USE_MOCK_FALLBACK ? 1250 : 0);
+
+  const activityItems: ActivitySummaryItemData[] = homeData
+    ? homeData.role === 'GRADUATE'
+      ? [
+          {
+            icon: CoffeeIcon,
+            count: homeData.activity.coffeeChatCount,
+            label: '커피챗',
+            tone: 'blue',
+          },
+          { icon: CommentIcon, count: homeData.activity.questionCount, label: 'QnA', tone: 'pink' },
+        ]
+      : [
+          {
+            icon: CoffeeIcon,
+            count: homeData.activity.coffeeChatCount,
+            label: '커피챗',
+            tone: 'blue',
+          },
+          { icon: MapIcon, count: homeData.activity.roadmapCount, label: '로드맵', tone: 'purple' },
+          { icon: CommentIcon, count: homeData.activity.questionCount, label: 'QnA', tone: 'pink' },
+        ]
+    : homeQuery.isError && !USE_MOCK_FALLBACK
+      ? MOCK_ACTIVITY_ITEMS.map((item) => ({ ...item, count: 0 }))
+      : MOCK_ACTIVITY_ITEMS;
+
+  const subLabel = homeData?.role === 'GRADUATE' ? homeData.company : (homeData?.department ?? '');
+  const gradeLabel =
+    homeData?.role === 'GRADUATE'
+      ? `${homeData.careerYear}년차`
+      : homeData?.grade
+        ? `${homeData.grade}학년`
+        : '';
+
+  const isHeroLoading = homeQuery.isLoading;
+  const isPointLoading = pointQuery.isLoading;
 
   return (
     <div className={styles.page}>
@@ -51,7 +108,7 @@ export function HomePage() {
               className={styles.pointChip}
               onClick={() => setIsPointModalOpen(true)}
             >
-              {MOCK_USER.point.toLocaleString()}P
+              {isPointLoading ? '...' : `${point.toLocaleString()}P`}
             </Chip>
             <button
               type="button"
@@ -67,13 +124,29 @@ export function HomePage() {
 
         <div className={styles.heroBody}>
           <div className={styles.heroText}>
-            <p className={styles.heroName}>{MOCK_USER.name}님,</p>
-            <p className={styles.heroGreeting}>안녕하세요</p>
-            <p className={styles.heroMajor}>{MOCK_USER.major}</p>
-            <div className={styles.heroGradeRow}>
-              <span className={styles.heroGradeDot} aria-hidden="true" />
-              <span className={styles.heroGradeText}>{MOCK_USER.grade}</span>
-            </div>
+            {isHeroLoading ? (
+              <>
+                <p className={styles.heroName}>불러오는 중...</p>
+                <p className={styles.heroGreeting}>안녕하세요</p>
+              </>
+            ) : homeData ? (
+              <>
+                <p className={styles.heroName}>{homeData.nickname}님,</p>
+                <p className={styles.heroGreeting}>안녕하세요</p>
+                <p className={styles.heroMajor}>{subLabel}</p>
+                {gradeLabel && (
+                  <div className={styles.heroGradeRow}>
+                    <span className={styles.heroGradeDot} aria-hidden="true" />
+                    <span className={styles.heroGradeText}>{gradeLabel}</span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <p className={styles.heroName}>홈 정보를</p>
+                <p className={styles.heroGreeting}>불러오지 못했습니다</p>
+              </>
+            )}
           </div>
           <div className={styles.heroMascotWrap} aria-hidden="true">
             <MaruIcon className={styles.heroMascot} />
@@ -81,7 +154,14 @@ export function HomePage() {
         </div>
 
         <div className={styles.activityWrap}>
-          <ActivitySummary items={MOCK_ACTIVITY} onTitleClick={() => navigate('/my/activity')} />
+          <ActivitySummary
+            items={activityItems}
+            onTitleClick={() => navigate('/my/activity')}
+            onItemClick={(label) => {
+              const tab = label === 'QnA' ? 'Q&A' : label;
+              navigate(`/my/activity?tab=${encodeURIComponent(tab)}`);
+            }}
+          />
         </div>
       </section>
 
@@ -165,6 +245,7 @@ export function HomePage() {
           </button>
         </div>
       </section>
+
       <Modal open={isPointModalOpen} onOpenChange={setIsPointModalOpen}>
         <Modal.Content size="md" withDecoration decorationTone="yellow">
           <Modal.Body className="flex flex-col items-center justify-center gap-1">
@@ -173,7 +254,7 @@ export function HomePage() {
             </div>
             <p className="text-sm text-text-secondary">내 포인트</p>
             <p className="text-2xl font-bold text-yellow-500">
-              {MOCK_USER.point.toLocaleString()}P
+              {isPointLoading ? '...' : `${point.toLocaleString()}P`}
             </p>
           </Modal.Body>
           <Modal.Footer>
