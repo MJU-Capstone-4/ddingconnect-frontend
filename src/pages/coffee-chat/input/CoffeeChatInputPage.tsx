@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import { useCreateCoffeeChatMutation } from '@/features/coffee-chat/model';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { Button, HeroSection } from '@/shared/ui';
@@ -14,6 +14,8 @@ export function CoffeeChatInputPage() {
   const [kakaoOpenChatLink, setKakaoOpenChatLink] = useState('');
 
   const { mutate, isPending } = useCreateCoffeeChatMutation();
+
+  if (!receiverId) return <Navigate to="/coffee-chat/matching" replace />;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
