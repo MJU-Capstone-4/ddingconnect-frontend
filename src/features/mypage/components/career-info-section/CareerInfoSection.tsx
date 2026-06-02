@@ -11,6 +11,7 @@ export type CareerInfoGroup = {
   items: string[];
   tone: 'blue' | 'gray';
   placeholder?: string;
+  options?: string[];
 };
 
 export type CareerInfoSectionProps = {
@@ -32,34 +33,50 @@ type GroupInputProps = {
   placeholder: string;
   items: string[];
   onAdd: (groupLabel: string, value: string) => void;
+  options?: string[];
 };
 
-function GroupInput({ groupLabel, placeholder, items, onAdd }: GroupInputProps) {
+function GroupInput({ groupLabel, placeholder, items, onAdd, options }: GroupInputProps) {
   const [value, setValue] = useState('');
+  const listId = options ? `datalist-${groupLabel.replace(/\s+/g, '-')}` : undefined;
 
   const commit = () => {
     const trimmed = value.trim();
     if (trimmed && !items.includes(trimmed)) {
+      if (options && !options.includes(trimmed)) return;
       onAdd(groupLabel, trimmed);
       setValue('');
     }
   };
 
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-          e.preventDefault();
-          commit();
-        }
-      }}
-      placeholder={placeholder}
-      aria-label={placeholder}
-      className={S.groupInput}
-    />
+    <>
+      {options && (
+        <datalist id={listId}>
+          {options
+            .filter((opt) => !items.includes(opt))
+            .map((opt) => (
+              <option key={opt} value={opt} />
+            ))}
+        </datalist>
+      )}
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            commit();
+          }
+        }}
+        onBlur={commit}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        list={listId}
+        className={S.groupInput}
+      />
+    </>
   );
 }
 
@@ -111,6 +128,7 @@ export function CareerInfoSection({
                     placeholder={group.placeholder ?? `${group.label} 입력하기`}
                     items={group.items}
                     onAdd={onAddItem}
+                    options={group.options}
                   />
                 )}
               </div>
