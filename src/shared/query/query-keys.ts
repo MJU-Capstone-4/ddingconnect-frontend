@@ -32,6 +32,12 @@ export const queryKeys = {
     detail: (id: number) => [...queryKeys.jobInfo.all, id] as const,
   },
 
+  job: {
+    all: ['job'] as const,
+    graduates: () => [...queryKeys.job.all, 'graduates'] as const,
+    crawled: () => [...queryKeys.job.all, 'crawled'] as const,
+  },
+
   roadmap: {
     all: ['roadmap'] as const,
     lists: () => [...queryKeys.roadmap.all, 'list'] as const,
