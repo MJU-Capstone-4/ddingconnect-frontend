@@ -11,7 +11,7 @@ export type CareerInfoGroup = {
   items: string[];
   tone: 'blue' | 'gray';
   placeholder?: string;
-  options?: string[];
+  options?: readonly string[];
 };
 
 export type CareerInfoSectionProps = {
@@ -33,7 +33,7 @@ type GroupInputProps = {
   placeholder: string;
   items: string[];
   onAdd: (groupLabel: string, value: string) => void;
-  options?: string[];
+  options?: readonly string[];
 };
 
 function GroupInput({ groupLabel, placeholder, items, onAdd, options }: GroupInputProps) {

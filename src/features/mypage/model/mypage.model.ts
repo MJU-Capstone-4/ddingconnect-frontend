@@ -75,9 +75,9 @@ const JOB_TYPE_ENUM = Object.fromEntries(
   Object.entries(JOB_TYPE_LABEL).map(([k, v]) => [v, k]),
 ) as Record<string, JobTypeEnum>;
 
-export const TECH_STACK_OPTIONS = Object.values(TECH_STACK_LABEL);
-export const TARGET_JOB_OPTIONS = Object.values(TARGET_JOB_LABEL);
-export const JOB_TYPE_OPTIONS = Object.values(JOB_TYPE_LABEL);
+export const TECH_STACK_OPTIONS: readonly string[] = Object.values(TECH_STACK_LABEL);
+export const TARGET_JOB_OPTIONS: readonly string[] = Object.values(TARGET_JOB_LABEL);
+export const JOB_TYPE_OPTIONS: readonly string[] = Object.values(JOB_TYPE_LABEL);
 
 export function techStacksToLabels(techStacks: MyPageResponse['techStacks'] = []): string[] {
   return techStacks
