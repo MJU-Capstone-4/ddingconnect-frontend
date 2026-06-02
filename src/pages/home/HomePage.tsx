@@ -98,7 +98,7 @@ export function HomePage() {
         : '';
 
   const isHeroLoading = homeQuery.isLoading;
-  const isPointLoading = pointQuery.isLoading;
+  const isPointLoading = homeData?.point == null && pointQuery.isLoading;
 
   return (
     <div className={styles.page}>
