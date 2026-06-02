@@ -68,7 +68,7 @@ const MOCK_PROFILE: Profile = MOCK_STUDENT_PROFILE;
 const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
   { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
   { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
-  { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
+  { icon: CommentIcon, count: 5, label: 'Q&A', tone: 'pink' },
 ];
 
 function mapApiToProfile(data: MyPageResponse): Profile {
@@ -127,7 +127,7 @@ export function StudentMyPage() {
         {
           icon: CommentIcon,
           count: mypageData.activity.questionCount ?? 0,
-          label: 'QnA',
+          label: 'Q&A',
           tone: 'pink',
         },
       ]

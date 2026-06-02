@@ -31,7 +31,7 @@ export type QnaPostCategory = '취업 준비' | '기술 질문' | '진로 고민
 export type QnaPostCardProps = {
   category: QnaPostCategory;
   author: string;
-  createdAt: string;
+  createdAt?: string;
   title: string;
   preview: string;
   likeCount: number;
@@ -85,10 +85,14 @@ export function QnaPostCard({
         </Chip>
         <div className={metaGroup}>
           <span className={metaText}>{author}</span>
-          <span className={dot} aria-hidden="true">
-            ·
-          </span>
-          <span className={metaText}>{createdAt}</span>
+          {createdAt && (
+            <>
+              <span className={dot} aria-hidden="true">
+                ·
+              </span>
+              <span className={metaText}>{createdAt}</span>
+            </>
+          )}
         </div>
       </div>
 

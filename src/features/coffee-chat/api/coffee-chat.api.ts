@@ -13,6 +13,7 @@ import type {
   MatchingDetail,
   MyActivityItem,
   ReceivedCoffeeChatItem,
+  CoffeeChatActivityItem,
 } from '../types';
 
 export const createCoffeeChatRequest = async (
@@ -74,4 +75,15 @@ export const getMyActivity = async (): Promise<MyActivityItem[]> => {
     '/api/v1/coffeechat/my-activity',
   );
   return data.result ?? [];
+};
+
+export const getMyCoffeeChats = async (): Promise<CoffeeChatActivityItem[]> => {
+  const { data } = await apiClient.get<ApiResponse<CoffeeChatActivityItem[]>>(
+    '/api/v1/members/me/activity/coffeechats',
+  );
+  return (data.result ?? []).map((item) => ({
+    ...item,
+    partnerJobs: item.partnerJobs ?? [],
+    partnerTechStacks: item.partnerTechStacks ?? [],
+  }));
 };
