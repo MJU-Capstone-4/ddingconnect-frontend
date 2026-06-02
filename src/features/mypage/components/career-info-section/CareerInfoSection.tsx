@@ -38,28 +38,25 @@ type GroupInputProps = {
 
 function GroupInput({ groupLabel, placeholder, items, onAdd, options }: GroupInputProps) {
   const [value, setValue] = useState('');
-  const listId = options ? `datalist-${groupLabel.replace(/\s+/g, '-')}` : undefined;
+  const [isOpen, setIsOpen] = useState(false);
 
-  const commit = () => {
-    const trimmed = value.trim();
-    if (trimmed && !items.includes(trimmed)) {
-      if (options && !options.includes(trimmed)) return;
-      onAdd(groupLabel, trimmed);
-      setValue('');
-    }
+  const filtered = options
+    ? options
+        .filter((opt) => !items.includes(opt) && opt.toLowerCase().includes(value.toLowerCase()))
+        .slice(0, 8)
+    : [];
+
+  const commit = (selected?: string) => {
+    const trimmed = (selected ?? value).trim();
+    if (!trimmed || items.includes(trimmed)) return;
+    if (options && !options.includes(trimmed)) return;
+    onAdd(groupLabel, trimmed);
+    setValue('');
+    setIsOpen(false);
   };
 
-  return (
-    <>
-      {options && (
-        <datalist id={listId}>
-          {options
-            .filter((opt) => !items.includes(opt))
-            .map((opt) => (
-              <option key={opt} value={opt} />
-            ))}
-        </datalist>
-      )}
+  if (!options) {
+    return (
       <input
         type="text"
         value={value}
@@ -70,13 +67,63 @@ function GroupInput({ groupLabel, placeholder, items, onAdd, options }: GroupInp
             commit();
           }
         }}
-        onBlur={commit}
+        onBlur={() => commit()}
         placeholder={placeholder}
         aria-label={placeholder}
-        list={listId}
         className={S.groupInput}
       />
-    </>
+    );
+  }
+
+  return (
+    <div className={S.groupInputWrapper}>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          setIsOpen(true);
+        }}
+        onFocus={() => setIsOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            commit();
+          }
+          if (e.key === 'Escape') {
+            setIsOpen(false);
+            setValue('');
+          }
+        }}
+        onBlur={() =>
+          setTimeout(() => {
+            setIsOpen(false);
+            if (value.trim() && !options.includes(value.trim())) setValue('');
+          }, 150)
+        }
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className={S.groupInput}
+      />
+      {isOpen && filtered.length > 0 && (
+        <ul role="listbox" className={S.groupDropdown}>
+          {filtered.map((opt) => (
+            <li
+              key={opt}
+              role="option"
+              aria-selected={false}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                commit(opt);
+              }}
+              className={S.groupDropdownOption}
+            >
+              {opt}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
