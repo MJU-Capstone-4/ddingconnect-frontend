@@ -120,7 +120,16 @@ export const uploadFileToPresignedUrl = async (
   file: File,
   contentType: string,
 ): Promise<void> => {
-  await axios.put(uploadUrl, file, {
-    headers: { 'Content-Type': contentType },
-  });
+  try {
+    await axios.put(uploadUrl, file, {
+      headers: { 'Content-Type': contentType },
+    });
+  } catch (err) {
+    const status = axios.isAxiosError(err) ? err.response?.status : undefined;
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(
+      `파일 업로드에 실패했습니다${status ? ` (status: ${status})` : ''}: ${message}`,
+      { cause: err },
+    );
+  }
 };
