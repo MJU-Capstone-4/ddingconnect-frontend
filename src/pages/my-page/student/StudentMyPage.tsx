@@ -390,6 +390,10 @@ export function StudentMyPage() {
               <ActivitySummary
                 items={activityItems}
                 onTitleClick={() => navigate('/my/activity')}
+                onItemClick={(label) => {
+                  const tab = label === 'QnA' ? 'Q&A' : label;
+                  navigate(`/my/activity?tab=${encodeURIComponent(tab)}`);
+                }}
               />
             </div>
           </>
