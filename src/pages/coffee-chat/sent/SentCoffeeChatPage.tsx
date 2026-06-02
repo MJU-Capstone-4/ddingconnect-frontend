@@ -53,7 +53,7 @@ export function SentCoffeeChatPage() {
         ) : (
           <ul className={S.cardList}>
             {chats.map((chat, index) => (
-              <li key={chat.id}>
+              <li key={chat.id ?? index}>
                 <div className={S.card}>
                   <div className={S.cardHeader}>
                     <p className={S.indexLabel}>커피챗 요청 {index + 1}</p>
@@ -86,10 +86,11 @@ export function SentCoffeeChatPage() {
                       tone="gray"
                       variant="outline"
                       fullWidth
-                      disabled={cancelingId === chat.id}
+                      disabled={chat.id == null || cancelingId === chat.id}
                       onClick={() => {
-                        setCancelingId(chat.id!);
-                        cancelChat(chat.id!, { onSettled: () => setCancelingId(null) });
+                        if (chat.id == null) return;
+                        setCancelingId(chat.id);
+                        cancelChat(chat.id, { onSettled: () => setCancelingId(null) });
                       }}
                     >
                       요청 취소
