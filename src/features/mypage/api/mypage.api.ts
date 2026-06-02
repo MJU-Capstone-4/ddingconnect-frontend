@@ -4,46 +4,11 @@ import type {
   ApiResponseMyPageResponse,
   MyPageResponse,
   UpdateMemberRequest,
+  UpdateMyPageRequest,
 } from '@/shared/api/generated/api';
 
-export type TechStackName =
-  | 'JAVA'
-  | 'PYTHON'
-  | 'JAVASCRIPT'
-  | 'TYPESCRIPT'
-  | 'KOTLIN'
-  | 'SWIFT'
-  | 'C'
-  | 'CPP'
-  | 'GO'
-  | 'RUST'
-  | 'RUBY'
-  | 'PHP'
-  | 'SCALA'
-  | 'REACT'
-  | 'VUE'
-  | 'ANGULAR'
-  | 'SPRING'
-  | 'DJANGO'
-  | 'NODE_JS'
-  | 'DOCKER'
-  | 'KUBERNETES'
-  | 'AWS'
-  | 'GCP'
-  | 'AZURE';
-
-export type TargetJobCategory =
-  | 'BACKEND'
-  | 'FRONTEND'
-  | 'FULLSTACK'
-  | 'MOBILE'
-  | 'AI_ML'
-  | 'DATA'
-  | 'DEVOPS'
-  | 'SECURITY'
-  | 'GAME'
-  | 'EMBEDDED'
-  | 'ETC';
+export type TechStackName = NonNullable<UpdateMyPageRequest['techStacks']>[number];
+export type TargetJobCategory = NonNullable<UpdateMyPageRequest['targetJobs']>[number];
 
 export interface UpdateStudentMyPageRequest {
   profile?: UpdateMemberRequest;
