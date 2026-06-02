@@ -154,7 +154,11 @@ export function MyActivityPage() {
                       <button
                         type="button"
                         className="self-end text-xs text-gray-400 underline"
-                        onClick={() => cancelCoffeeChat(realChatId)}
+                        onClick={() => {
+                          if (window.confirm('커피챗 요청을 취소하시겠습니까?')) {
+                            cancelCoffeeChat(realChatId);
+                          }
+                        }}
                       >
                         요청 취소
                       </button>
