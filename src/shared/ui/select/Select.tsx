@@ -33,6 +33,7 @@ export type SelectProps = {
   onChange?: (value: string) => void;
   required?: boolean;
   disabled?: boolean;
+  fullWidth?: boolean;
   className?: string;
   selectClassName?: string;
 };
@@ -48,6 +49,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     onChange,
     required,
     disabled,
+    fullWidth,
     className,
     selectClassName,
   },
@@ -94,7 +96,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         </label>
       )}
 
-      <div className="relative w-[147px]">
+      <div className={cn('relative', fullWidth ? 'w-full' : 'w-[147px]')}>
         <button
           ref={ref}
           type="button"
