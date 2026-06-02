@@ -205,6 +205,13 @@ export function GraduateMyPage() {
     e.target.value = '';
   };
 
+  const openJobPosting = () => {
+    const url = profile.jobPostingLinks[0];
+    if (!url) return;
+    const href = url.startsWith('http') ? url : `https://${url}`;
+    window.open(href, '_blank', 'noopener,noreferrer');
+  };
+
   const handleAddSkill = (_groupLabel: string, value: string) => {
     setDraftProfile((p) => ({ ...p, skills: [...p.skills, value] }));
   };
@@ -612,21 +619,11 @@ export function GraduateMyPage() {
               className={S.jobPostingCardRow}
               role="button"
               tabIndex={0}
-              onClick={() => {
-                const url = profile.jobPostingLinks[0];
-                if (url) {
-                  const href = url.startsWith('http') ? url : `https://${url}`;
-                  window.open(href, '_blank', 'noopener,noreferrer');
-                }
-              }}
+              onClick={openJobPosting}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  const url = profile.jobPostingLinks[0];
-                  if (url) {
-                    const href = url.startsWith('http') ? url : `https://${url}`;
-                    window.open(href, '_blank', 'noopener,noreferrer');
-                  }
+                  openJobPosting();
                 }
               }}
               aria-label={`${profile.nickname}의 채용공고 확인`}
