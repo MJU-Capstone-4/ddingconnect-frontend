@@ -142,6 +142,7 @@ jobs:
       - name: Assign author
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const login = context.payload.pull_request?.user.login
               || context.payload.issue?.user.login;
@@ -166,21 +167,22 @@ jobs:
       - name: Add label from title prefix
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const title = context.payload.pull_request?.title
               || context.payload.issue?.title;
             const prefixMap = {
-              'feat': 'Feature',
-              'fix': 'Fix',
-              'init': 'Init',
-              'design': 'Design',
-              'chore': 'Chore',
-              'refactor': 'Refactor',
-              'docs': 'Docs',
-              'infra': 'Infra',
-              'api': 'API',
-              'hotfix': 'Hotfix',
-              'deploy': 'Deploy'
+              'feat':     '🎀 Feature',
+              'fix':      '🐞 Fix',
+              'init':     '🌱 Init',
+              'design':   '🎨 Design',
+              'chore':    '🧹 Chore',
+              'refactor': '🛠️ Refactor',
+              'docs':     '📄 Docs',
+              'infra':    '🌐 Infra',
+              'api':      '🔗 Api',
+              'hotfix':   '🔥 Hotfix',
+              'deploy':   '🚀 Deploy',
             };
 
             const match = title.match(/^(?:\[(\w+)\]|(\w+)[\s(:])/);

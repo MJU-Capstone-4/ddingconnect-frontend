@@ -1,0 +1,179 @@
+@theme {
+  /* Typography */
+  --font-sans: 'Pretendard', system-ui, sans-serif;
+
+  --text-2xs: 10px;
+  --text-2xs--line-height: 14px;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  --text-base: 16px;
+  --text-base--line-height: 24px;
+  --text-lg: 18px;
+  --text-lg--line-height: 28px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px;
+
+  /* Colors */
+
+  /* Gray */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #f1f5f9;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #99a1af;
+  --color-gray-500: #94a3b8;
+  --color-gray-600: #64748b;
+  --color-gray-700: #4a5565;
+  --color-gray-800: #364153;
+  --color-gray-900: #1e293b;
+  --color-gray-950: #101828;
+
+  /* Blue */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #c8e0ff;
+  --color-blue-300: #66a8ff;
+  --color-blue-400: #539dff;
+  --color-blue-500: #4092ff;
+  --color-blue-600: #2784ff;
+  --color-blue-700: #155dfc;
+  --color-blue-800: #1447e6;
+  --color-blue-900: #036cf8;
+
+  /* Purple */
+  --color-purple-50: #ede9fe;
+  --color-purple-100: #e6e0ff;
+  --color-purple-300: #ab8eff;
+  --color-purple-400: #a080ff;
+  --color-purple-500: #9673ff;
+  --color-purple-600: #9672ff;
+  --color-purple-700: #bc5eff;
+
+  /* Green */
+  --color-green-50: #d1fae5;
+  --color-green-100: #dcfce7;
+  --color-green-300: #76e9b2;
+  --color-green-400: #48d8a3;
+  --color-green-500: #34d399;
+  --color-green-600: #00a63e;
+  --color-green-700: #065f46;
+
+  /* Pink */
+  --color-pink-50: #fce7f3;
+  --color-pink-100: #fbd5ea;
+  --color-pink-300: #ffaadb;
+  --color-pink-400: #f472b6;
+  --color-pink-500: #ed73b3;
+  --color-pink-700: #831843;
+
+  /* Yellow */
+  --color-yellow-100: #fef3c7;
+  --color-yellow-300: #fcd34d;
+  --color-yellow-400: #ffc506;
+  --color-yellow-500: #ffe890;
+
+  /* Red */
+  --color-red-50: #fee2e2;
+  --color-red-100: #fecaca;
+  --color-red-300: #f87171;
+  --color-red-500: #fb2c36;
+  --color-red-600: #e7000b;
+  --color-red-700: #dc2626;
+  --color-red-800: #c10007;
+
+  /* Semantic: Brand */
+  --color-primary: var(--color-blue-500);
+  --color-primary-hover: var(--color-blue-600);
+  --color-primary-pressed: var(--color-blue-700);
+
+  /* Semantic: Status */
+  --color-success: var(--color-green-500);
+  --color-warning: var(--color-yellow-400);
+  --color-error: var(--color-red-500);
+
+  /* Semantic: Role */
+  --color-student: var(--color-green-500);
+  --color-graduate: var(--color-purple-500);
+
+  /* Semantic: Service */
+  --color-coffee-chat: var(--color-blue-500);
+  --color-coffee-chat-hover: var(--color-blue-600);
+  --color-coffee-chat-pressed: var(--color-blue-700);
+  --color-roadmap: var(--color-purple-500);
+  --color-roadmap-hover: var(--color-purple-600);
+  --color-roadmap-pressed: var(--color-purple-700);
+  --color-qna: var(--color-pink-500);
+  --color-job-info: var(--color-green-500);
+  --color-job-info-hover: var(--color-green-600);
+  --color-job-info-pressed: var(--color-green-700);
+  --color-point: var(--color-yellow-400);
+
+  /* Service soft (badge/tag backgrounds) */
+  --color-coffee-chat-soft: var(--color-blue-50);
+  --color-roadmap-soft: var(--color-purple-50);
+  --color-qna-soft: var(--color-pink-50);
+  --color-job-info-soft: var(--color-green-50);
+  --color-point-soft: var(--color-yellow-100);
+
+  /* Semantic: Surface */
+  --color-background: #fafbff;
+  --color-surface: #ffffff;
+  --color-surface-raised: var(--color-gray-50);
+  --color-overlay: rgb(15 23 42 / 0.55);
+
+  /* Semantic: Text */
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-600);
+  --color-text-muted: var(--color-gray-500);
+  --color-text-on-primary: #ffffff;
+
+  /* Semantic: Border */
+  --color-border: var(--color-gray-300);
+  --color-border-light: var(--color-gray-200);
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* Semantic radius */
+  --radius-button: 12px;
+  --radius-input: 14px;
+  --radius-card: 20px;
+  --radius-modal: 20px;
+  --radius-badge: 9999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 4px rgb(15 23 42 / 0.04);
+  --shadow-card: 0 4px 16px rgb(15 23 42 / 0.06);
+  --shadow-dropdown: 0 8px 24px rgb(15 23 42 / 0.12);
+  --shadow-modal: 0 16px 40px rgb(15 23 42 / 0.24);
+
+  /* Z-index */
+  --z-header: 10;
+  --z-fab: 20;
+  --z-dropdown: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+
+  /* Spacing */
+  --spacing-page-x: 18px;
+  --spacing-page-y: 24px;
+  --spacing-section: 32px;
+
+  /* Component Sizes */
+  --height-button-sm: 36px;
+  --height-button-md: 44px;
+  --height-button-lg: 44px;
+  --height-input: 52px;
+  --height-header: 56px;
+  --height-bottom-nav: 72px;
+}
