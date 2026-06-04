@@ -72,22 +72,23 @@ export function NotificationPage() {
         className={styles.subHeaderBreakout}
       />
 
-      <ul className={styles.notificationList}>
+      <div className="flex flex-col gap-2 py-2">
         {MOCK_NOTIFICATIONS.map((notification) => (
-          <li key={notification.id}>
-            <NotificationItem
-              type={notification.type}
-              title={notification.title}
-              description={notification.description}
-              createdAt={notification.createdAt}
-              isUnread={notification.isUnread}
-              onClick={notification.id === 1 ? () => setIsModalOpen(true) : undefined}
-            />
-          </li>
+          <NotificationItem
+            key={notification.id}
+            type={notification.type}
+            title={notification.title}
+            description={notification.description}
+            createdAt={notification.createdAt}
+            isUnread={notification.isUnread}
+            onClick={
+              notification.type === 'coffeechat' && notification.isUnread
+                ? () => setIsModalOpen(true)
+                : undefined
+            }
+          />
         ))}
-      </ul>
-
-      <p className={styles.footerText}>모든 알림을 확인했습니다</p>
+      </div>
 
       <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
         <Modal.Content size="sm">
