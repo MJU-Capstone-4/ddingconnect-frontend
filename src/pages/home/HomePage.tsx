@@ -22,31 +22,30 @@ import { Modal } from '@/shared/ui/modal';
 import * as styles from './home-page.styles';
 
 // Demo fallback: 기말 발표 시연 안정성을 위해 유지
-const MOCK_POINT = 1250;
-
-const MOCK_HOME_DATA = {
-  point: MOCK_POINT,
-  nickname: '띵지대',
-  department: '컴퓨터공학과',
-  company: '',
-  role: 'STUDENT' as const,
-  grade: 3,
-  careerYear: 0,
-  activity: {
-    coffeeChatCount: 12,
-    roadmapCount: 3,
-    questionCount: 5,
-  },
-};
-
-// Demo fallback: 기말 발표 시연 안정성을 위해 유지
-const MOCK_ACTIVITY_ITEMS: ActivitySummaryItemData[] = [
-  { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
-  { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
-  { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
-];
-
-const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
+// const MOCK_POINT = 1250;
+//
+// const MOCK_HOME_DATA = {
+//   point: MOCK_POINT,
+//   nickname: '띵지대',
+//   department: '컴퓨터공학과',
+//   company: '',
+//   role: 'STUDENT' as const,
+//   grade: 3,
+//   careerYear: 0,
+//   activity: {
+//     coffeeChatCount: 12,
+//     roadmapCount: 3,
+//     questionCount: 5,
+//   },
+// };
+//
+// const MOCK_ACTIVITY_ITEMS: ActivitySummaryItemData[] = [
+//   { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
+//   { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
+//   { icon: CommentIcon, count: 5, label: 'QnA', tone: 'pink' },
+// ];
+//
+// const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -55,12 +54,8 @@ export function HomePage() {
   const homeQuery = useHomeQuery();
   const pointQuery = usePointQuery();
 
-  const homeData =
-    homeQuery.data ?? (homeQuery.isError && USE_MOCK_FALLBACK ? MOCK_HOME_DATA : null);
-  const point =
-    homeData?.point ??
-    pointQuery.data?.point ??
-    (pointQuery.isError && USE_MOCK_FALLBACK ? MOCK_POINT : 0);
+  const homeData = homeQuery.data ?? null;
+  const point = homeData?.point ?? pointQuery.data?.point ?? 0;
 
   const activityItems: ActivitySummaryItemData[] = homeData
     ? homeData.role === 'GRADUATE'
@@ -83,11 +78,7 @@ export function HomePage() {
           { icon: MapIcon, count: homeData.activity.roadmapCount, label: '로드맵', tone: 'purple' },
           { icon: CommentIcon, count: homeData.activity.questionCount, label: 'QnA', tone: 'pink' },
         ]
-    : homeQuery.isLoading
-      ? MOCK_ACTIVITY_ITEMS.map((item) => ({ ...item, count: 0 }))
-      : homeQuery.isError && USE_MOCK_FALLBACK
-        ? MOCK_ACTIVITY_ITEMS
-        : MOCK_ACTIVITY_ITEMS.map((item) => ({ ...item, count: 0 }));
+    : [];
 
   const subLabel = homeData?.role === 'GRADUATE' ? homeData.company : (homeData?.department ?? '');
   const gradeLabel =
