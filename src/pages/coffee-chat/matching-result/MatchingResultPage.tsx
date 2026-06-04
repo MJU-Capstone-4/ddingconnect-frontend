@@ -2,7 +2,7 @@ import { useId, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 
 import { SeniorProfileCard } from '@/features/coffee-chat/components';
-import type { MatchingCandidate } from '@/features/coffee-chat/types';
+import type { CoffeeChatActivityItem } from '@/features/coffee-chat/types';
 import ArrowDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
@@ -19,7 +19,7 @@ export function MatchingResultPage() {
   const infoContentId = useId();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
-  const candidates: MatchingCandidate[] = location.state?.candidates ?? [];
+  const candidates: CoffeeChatActivityItem[] = location.state?.candidates ?? [];
 
   function handleOpenSeniorPage(memberId: number) {
     navigate(`/coffee-chat/apply/${memberId}`);
@@ -65,19 +65,15 @@ export function MatchingResultPage() {
         ) : (
           <ul className={styles.cardList}>
             {candidates.map((candidate) => (
-              <li key={candidate.memberId}>
+              <li key={candidate.partnerId}>
                 <SeniorProfileCard
-                  name={candidate.nickname}
-                  department={candidate.department}
-                  company={candidate.company}
-                  job={candidate.jobCategories[0] ?? ''}
-                  career={
-                    candidate.careerYear != null
-                      ? `경력 ${candidate.careerYear}년`
-                      : '경력 정보 없음'
-                  }
-                  techStacks={candidate.techStacks}
-                  onClick={() => handleOpenSeniorPage(candidate.memberId)}
+                  name={candidate.partnerNickname}
+                  department={candidate.partnerDepartment}
+                  company=""
+                  job={candidate.partnerJobs[0] ?? ''}
+                  career="경력 정보 없음"
+                  techStacks={candidate.partnerTechStacks}
+                  onClick={() => handleOpenSeniorPage(candidate.partnerId)}
                   className="w-full"
                 />
               </li>

@@ -7,5 +7,6 @@ export function useMyQuestionsQuery() {
   return useQuery({
     queryKey: queryKeys.myActivity.questions(),
     queryFn: getMyQuestions,
+    refetchOnMount: true,
   });
 }

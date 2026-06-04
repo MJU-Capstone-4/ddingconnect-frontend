@@ -16,7 +16,9 @@ export const getRoadmaps = async (): Promise<RoadmapListItem[]> => {
 };
 
 export const createRoadmap = async (body: RoadmapCreateBody): Promise<RoadmapListItem> => {
-  const { data } = await apiClient.post<ApiResponseRoadmapListResponse>('/api/v1/roadmaps', body);
+  const { data } = await apiClient.post<ApiResponseRoadmapListResponse>('/api/v1/roadmaps', body, {
+    timeout: 120_000,
+  });
   const list = data.result ?? [];
   if (list.length === 0) throw new Error(data.message ?? '로드맵 생성에 실패했습니다.');
   return list[0];

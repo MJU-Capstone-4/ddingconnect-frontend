@@ -4,7 +4,7 @@ import { QNA_TAB } from '@/shared/constants/activity-tabs';
 import { getUserRole } from '@/features/auth/model/auth-state';
 import { CoffeeChatActivityCard } from '@/features/coffee-chat/components/coffee-chat-activity-card';
 import { useMyCoffeeChatsQuery } from '@/features/coffee-chat/hooks';
-import type { CoffeeChatActivityItem } from '@/features/coffee-chat/types';
+// import type { CoffeeChatActivityItem } from '@/features/coffee-chat/types';
 import { useMyPageQuery } from '@/features/mypage';
 import { API_TO_UI_CATEGORY } from '@/features/qna/model/question.constants';
 import { useMyQuestionsQuery } from '@/features/qna/hooks';
@@ -21,62 +21,23 @@ import * as styles from './my-activity-page.styles';
 
 // ---------------------------------------------------------------------------
 // Demo fallback: 기말 발표 시연 안정성을 위해 유지
-// ---------------------------------------------------------------------------
-const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
-
-const MOCK_COFFEE_CHATS: CoffeeChatActivityItem[] = [
-  {
-    coffeeChatId: 1,
-    status: 'ACCEPTED',
-    partnerId: 101,
-    partnerNickname: '이선배',
-    partnerDepartment: "컴퓨터공학과 '18",
-    partnerJobs: ['백엔드 개발자'],
-    partnerTechStacks: ['React', 'TypeScript'],
-  },
-  {
-    coffeeChatId: 2,
-    status: 'PENDING',
-    partnerId: 102,
-    partnerNickname: '박선배',
-    partnerDepartment: "소프트웨어학과 '19",
-    partnerJobs: ['프론트엔드 개발자'],
-    partnerTechStacks: ['Vue', 'Node.js'],
-  },
-];
-
-const MOCK_ROADMAPS = [
-  { id: 1, title: '백엔드 개발자 로드맵', createdAt: '2026-04-09T10:00:00.000Z' },
-  { id: 2, title: '디자이너 로드맵', createdAt: '2026-04-08T10:00:00.000Z' },
-  { id: 3, title: '프론트엔드 개발자 로드맵', createdAt: '2026-04-07T10:00:00.000Z' },
-];
-
-const MOCK_QNAS = [
-  {
-    id: 1,
-    category: 'STUDY' as const,
-    memberId: 1,
-    title: '백엔드 개발자 포트폴리오에 꼭 필요한 프로젝트는?',
-    content:
-      '백엔드 개발자로 취업 준비 중인 3학년 학생입니다. 포트폴리오는 어떤 프로젝트를 포함시켜야 할지 고민 중...',
-    viewCount: 156,
-    likeCount: 24,
-    answerCount: 12,
-    likedByMe: false,
-  },
-  {
-    id: 2,
-    category: 'TECHNICAL' as const,
-    memberId: 1,
-    title: 'Spring Boot와 Node.js 중 어떤 걸 먼저 공부해야 할까요?',
-    content:
-      '프론트엔드는 React를 공부하고 있는데, 백엔드도 배우고 싶습니다. 어느 것부터 시작하는 게 좋을까요?',
-    viewCount: 156,
-    likeCount: 24,
-    answerCount: 12,
-    likedByMe: false,
-  },
-];
+// const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
+//
+// const MOCK_COFFEE_CHATS: CoffeeChatActivityItem[] = [
+//   { coffeeChatId: 1, status: 'ACCEPTED', partnerId: 101, partnerNickname: '이선배', partnerDepartment: "컴퓨터공학과 '18", partnerJobs: ['백엔드 개발자'], partnerTechStacks: ['React', 'TypeScript'] },
+//   { coffeeChatId: 2, status: 'PENDING', partnerId: 102, partnerNickname: '박선배', partnerDepartment: "소프트웨어학과 '19", partnerJobs: ['프론트엔드 개발자'], partnerTechStacks: ['Vue', 'Node.js'] },
+// ];
+//
+// const MOCK_ROADMAPS = [
+//   { id: 1, title: '백엔드 개발자 로드맵', createdAt: '2026-04-09T10:00:00.000Z' },
+//   { id: 2, title: '디자이너 로드맵', createdAt: '2026-04-08T10:00:00.000Z' },
+//   { id: 3, title: '프론트엔드 개발자 로드맵', createdAt: '2026-04-07T10:00:00.000Z' },
+// ];
+//
+// const MOCK_QNAS = [
+//   { id: 1, category: 'STUDY' as const, memberId: 1, title: '백엔드 개발자 포트폴리오에 꼭 필요한 프로젝트는?', content: '...', viewCount: 156, likeCount: 24, answerCount: 12, likedByMe: false },
+//   { id: 2, category: 'TECHNICAL' as const, memberId: 1, title: 'Spring Boot와 Node.js 중 어떤 걸 먼저 공부해야 할까요?', content: '...', viewCount: 156, likeCount: 24, answerCount: 12, likedByMe: false },
+// ];
 // ---------------------------------------------------------------------------
 
 type Category = '전체' | '커피챗' | '로드맵' | typeof QNA_TAB;
@@ -128,13 +89,9 @@ export function MyActivityPage() {
     isError: isQuestionsError,
   } = useMyQuestionsQuery();
 
-  // Demo fallback: 기말 발표 시연 안정성을 위해 유지
-  const coffeeChats =
-    isCoffeeChatsError && USE_MOCK_FALLBACK ? MOCK_COFFEE_CHATS : (apiCoffeeChats ?? []);
-
-  const roadmaps = isRoadmapsError && USE_MOCK_FALLBACK ? MOCK_ROADMAPS : (apiRoadmaps ?? []);
-
-  const questions = isQuestionsError && USE_MOCK_FALLBACK ? MOCK_QNAS : (apiQuestions ?? []);
+  const coffeeChats = apiCoffeeChats ?? [];
+  const roadmaps = apiRoadmaps ?? [];
+  const questions = apiQuestions ?? [];
 
   const showCoffeeChat = selectedCategory === '전체' || selectedCategory === '커피챗';
   const showRoadmap = !isGraduate && (selectedCategory === '전체' || selectedCategory === '로드맵');
@@ -188,7 +145,11 @@ export function MyActivityPage() {
                 type="button"
                 className={styles.viewAllBtn}
                 onClick={() =>
-                  navigate(isGraduate ? '/coffee-chat/received' : '/coffee-chat/matching-result')
+                  isGraduate
+                    ? navigate('/coffee-chat/received')
+                    : navigate('/coffee-chat/matching-result', {
+                        state: { candidates: coffeeChats },
+                      })
                 }
                 aria-label="커피챗 전체보기"
               >
@@ -199,7 +160,7 @@ export function MyActivityPage() {
             <div className={styles.cardList}>
               {isCoffeeChatsLoading ? (
                 <p className="py-4 text-center text-sm text-text-secondary">불러오는 중...</p>
-              ) : isCoffeeChatsError && !USE_MOCK_FALLBACK ? (
+              ) : isCoffeeChatsError ? (
                 <ErrorState message="커피챗 활동을 불러오지 못했습니다." />
               ) : coffeeChats.length === 0 ? (
                 <EmptyState message="커피챗 활동이 없습니다." />
@@ -237,7 +198,7 @@ export function MyActivityPage() {
             <div className={styles.cardList}>
               {isRoadmapsLoading ? (
                 <p className="py-4 text-center text-sm text-text-secondary">불러오는 중...</p>
-              ) : isRoadmapsError && !USE_MOCK_FALLBACK ? (
+              ) : isRoadmapsError ? (
                 <ErrorState message="로드맵을 불러오지 못했습니다." />
               ) : roadmaps.length === 0 ? (
                 <EmptyState message="로드맵이 없습니다." />
@@ -277,7 +238,7 @@ export function MyActivityPage() {
             <div className={styles.cardList}>
               {isQuestionsLoading ? (
                 <p className="py-4 text-center text-sm text-text-secondary">불러오는 중...</p>
-              ) : isQuestionsError && !USE_MOCK_FALLBACK ? (
+              ) : isQuestionsError ? (
                 <ErrorState message="질문을 불러오지 못했습니다." />
               ) : questions.length === 0 ? (
                 <EmptyState message="작성한 질문이 없습니다." />

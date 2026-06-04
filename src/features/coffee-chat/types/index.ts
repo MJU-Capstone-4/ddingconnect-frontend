@@ -24,6 +24,7 @@ export type MatchingCandidate = {
   memberId: number;
   role: string;
   nickname: string;
+  profileImage?: string;
   department: string;
   jobCategories: string[];
   techStacks: string[];
@@ -38,6 +39,7 @@ export type MatchingDetail = {
   memberId: number;
   role: string;
   nickname: string;
+  profileImage?: string;
   department: string;
   jobCategories: string[];
   techStacks: string[];

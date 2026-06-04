@@ -124,6 +124,7 @@ export function CoffeeChatApplyPage() {
 
       <div className={S.content}>
         <SeniorProfileCard
+          profileImage={senior.profileImage || undefined}
           name={senior.nickname}
           department={senior.department}
           company={senior.company}
