@@ -12,12 +12,15 @@ import type {
 
 export const getMyQuestions = async (): Promise<QuestionResponse[]> => {
   const { data } = await apiClient.get<ApiResponseListQuestionResponse>('/api/v1/questions/me');
-  return data.result ?? [];
+  return Array.isArray(data.result) ? data.result : [];
 };
 
 export const getQuestions = async (): Promise<QuestionResponse[]> => {
-  const { data } = await apiClient.get<ApiResponseListQuestionResponse>('/api/v1/questions');
-  return data.result ?? [];
+  const { data } = await apiClient.get<{
+    isSuccess: boolean;
+    result: { questions: QuestionResponse[] };
+  }>('/api/v1/questions');
+  return data.result?.questions ?? [];
 };
 
 export const getQuestionDetail = async (questionId: number): Promise<QuestionResponse> => {
