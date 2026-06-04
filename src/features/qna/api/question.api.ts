@@ -12,7 +12,9 @@ import type {
 
 export const getMyQuestions = async (): Promise<QuestionResponse[]> => {
   const { data } = await apiClient.get<ApiResponseListQuestionResponse>('/api/v1/questions/me');
-  return Array.isArray(data.result) ? data.result : [];
+  if (!Array.isArray(data.result))
+    throw new Error(data.message ?? '질문 목록을 불러오는데 실패했습니다.');
+  return data.result;
 };
 
 export const getQuestions = async (): Promise<QuestionResponse[]> => {
