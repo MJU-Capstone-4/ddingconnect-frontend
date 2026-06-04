@@ -6,28 +6,28 @@ import { PointChargeOption } from '@/features/point/components/point-charge-opti
 import * as styles from './point-charge-page.styles';
 
 // Demo fallback: 기말 발표 시연 안정성을 위해 유지
-const MOCK_POINT = 1250;
-
-const MOCK_POINT_PRODUCTS = {
-  point: MOCK_POINT,
-  products: [
-    { id: 1, points: 10, price: 1000, recommended: false },
-    { id: 2, points: 30, price: 3000, recommended: false },
-    { id: 3, points: 50, price: 5000, recommended: true },
-    { id: 4, points: 100, price: 10000, recommended: false },
-    { id: 5, points: 300, price: 30000, recommended: false },
-    { id: 6, points: 500, price: 50000, recommended: false },
-  ],
-};
-
-const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
+// const MOCK_POINT = 1250;
+//
+// const MOCK_POINT_PRODUCTS = {
+//   point: MOCK_POINT,
+//   products: [
+//     { id: 1, points: 10, price: 1000, recommended: false },
+//     { id: 2, points: 30, price: 3000, recommended: false },
+//     { id: 3, points: 50, price: 5000, recommended: true },
+//     { id: 4, points: 100, price: 10000, recommended: false },
+//     { id: 5, points: 300, price: 30000, recommended: false },
+//     { id: 6, points: 500, price: 50000, recommended: false },
+//   ],
+// };
+//
+// const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
 
 export function PointChargePage() {
-  const { data, isLoading, isError, refetch } = usePointProductsQuery();
+  const { data, isLoading, refetch } = usePointProductsQuery();
   const { data: pointData, isLoading: isPointLoading, isError: isPointError } = usePointQuery();
 
-  const resolvedData = data ?? (isError && USE_MOCK_FALLBACK ? MOCK_POINT_PRODUCTS : null);
-  const resolvedPoint = pointData?.point ?? (isPointError && USE_MOCK_FALLBACK ? MOCK_POINT : 0);
+  const resolvedData = data ?? null;
+  const resolvedPoint = pointData?.point ?? 0;
 
   const handleChargeClick = (productId: number, points: number, price: number) => {
     // TODO: 결제 API 확정 후 충전 요청 연동
@@ -36,7 +36,7 @@ export function PointChargePage() {
 
   const renderMyPoint = () => {
     if (isPointLoading) return <span className={styles.myPointValue}>...</span>;
-    if (isPointError && !USE_MOCK_FALLBACK)
+    if (isPointError)
       return (
         <span className={styles.myPointValue} style={{ fontSize: '1rem', color: '#888' }}>
           불러오기 실패

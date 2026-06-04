@@ -40,94 +40,17 @@ const CATEGORY_MAP: Record<Exclude<CategoryFilter, '전체'>, QnaPostCategory> =
 };
 
 // 기말 발표 시연용 mock fallback — API 실패 또는 빈 데이터 시 사용
-// .env에서 VITE_USE_MOCK_FALLBACK=true 로 활성화 가능
-const MOCK_POSTS: QnaPost[] = [
-  {
-    id: 1,
-    category: '취업 준비',
-    title: '백엔드 개발자 포트폴리오에 꼭 필요한 프로젝트는?',
-    content:
-      '백엔드 개발자로 취업 준비 중인 3학년 학생입니다. 포트폴리오에 어떤 프로젝트를 포함시켜야 할지 고민 ...',
-    likeCount: 24,
-    commentCount: 12,
-    viewCount: 156,
-    createdAt: '2시간 전',
-    likedByMe: false,
-  },
-  {
-    id: 2,
-    category: '기술 질문',
-    title: 'Spring Boot와 Node.js 중 어떤 걸 먼저 공부해야 할까요?',
-    content:
-      '프론트엔드는 React를 공부하고 있는데, 백엔드도 배우고 싶습니다. 어느 것부터 시작하는 게 좋을까요?',
-    likeCount: 24,
-    commentCount: 12,
-    viewCount: 156,
-    createdAt: '2시간 전',
-    likedByMe: false,
-  },
-  {
-    id: 3,
-    category: '진로 고민',
-    title: '졸업 후 바로 취업 vs 대학원 진학 고민됩니다',
-    content:
-      '컴퓨터공학과 4학년인데 진로를 결정하기가 어렵습니다. 선배님들의 경험담을 듣고 싶어요.',
-    likeCount: 24,
-    commentCount: 12,
-    viewCount: 156,
-    createdAt: '2시간 전',
-    likedByMe: false,
-  },
-  {
-    id: 4,
-    category: '포트폴리오',
-    title: 'GitHub 프로필 꾸미는 법 알려주세요!',
-    content: 'README 파일을 작성하고 싶은데 어떻게 시작해야 할지 막막합니다.',
-    likeCount: 24,
-    commentCount: 12,
-    viewCount: 156,
-    createdAt: '2시간 전',
-    likedByMe: false,
-  },
-  {
-    id: 5,
-    category: '취업 준비',
-    title: '백엔드 개발자 포트폴리오에 꼭 필요한 프로젝트는?',
-    content:
-      '백엔드 개발자로 취업 준비 중인 3학년 학생입니다. 포트폴리오에 어떤 프로젝트를 포함시켜야 할지 고민 ...',
-    likeCount: 24,
-    commentCount: 12,
-    viewCount: 156,
-    createdAt: '2시간 전',
-    likedByMe: false,
-  },
-  {
-    id: 6,
-    category: '기술 질문',
-    title: '코딩테스트 준비 어떻게 하셨나요?',
-    content:
-      '알고리즘 공부를 시작하려는데 어떤 플랫폼을 이용했는지, 어떤 순서로 공부했는지 알고 싶어요.',
-    likeCount: 45,
-    commentCount: 20,
-    viewCount: 412,
-    createdAt: '4시간 전',
-    likedByMe: false,
-  },
-  {
-    id: 7,
-    category: '진로 고민',
-    title: '스타트업 vs 대기업 첫 취업 고민 중입니다',
-    content:
-      '개발자로서 첫 직장을 어디로 선택해야 성장에 도움이 될까요? 두 곳의 장단점이 궁금합니다.',
-    likeCount: 67,
-    commentCount: 28,
-    viewCount: 534,
-    createdAt: '5시간 전',
-    likedByMe: false,
-  },
-];
-
-const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
+// const MOCK_POSTS: QnaPost[] = [
+//   { id: 1, category: '취업 준비', title: '백엔드 개발자 포트폴리오에 꼭 필요한 프로젝트는?', content: '...', likeCount: 24, commentCount: 12, viewCount: 156, createdAt: '2시간 전', likedByMe: false },
+//   { id: 2, category: '기술 질문', title: 'Spring Boot와 Node.js 중 어떤 걸 먼저 공부해야 할까요?', content: '...', likeCount: 24, commentCount: 12, viewCount: 156, createdAt: '2시간 전', likedByMe: false },
+//   { id: 3, category: '진로 고민', title: '졸업 후 바로 취업 vs 대학원 진학 고민됩니다', content: '...', likeCount: 24, commentCount: 12, viewCount: 156, createdAt: '2시간 전', likedByMe: false },
+//   { id: 4, category: '포트폴리오', title: 'GitHub 프로필 꾸미는 법 알려주세요!', content: '...', likeCount: 24, commentCount: 12, viewCount: 156, createdAt: '2시간 전', likedByMe: false },
+//   { id: 5, category: '취업 준비', title: '백엔드 개발자 포트폴리오에 꼭 필요한 프로젝트는?', content: '...', likeCount: 24, commentCount: 12, viewCount: 156, createdAt: '2시간 전', likedByMe: false },
+//   { id: 6, category: '기술 질문', title: '코딩테스트 준비 어떻게 하셨나요?', content: '...', likeCount: 45, commentCount: 20, viewCount: 412, createdAt: '4시간 전', likedByMe: false },
+//   { id: 7, category: '진로 고민', title: '스타트업 vs 대기업 첫 취업 고민 중입니다', content: '...', likeCount: 67, commentCount: 28, viewCount: 534, createdAt: '5시간 전', likedByMe: false },
+// ];
+//
+// const USE_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
 
 function toUiPost(q: QuestionResponse): QnaPost {
   return {
@@ -162,13 +85,11 @@ export function QnaListPage() {
 
   const isFilterActive = sortType !== '기본';
 
-  // API 성공 + 데이터 있으면 API 데이터 사용, 실패 또는 빈 데이터면 mock fallback
   const rawPosts: QnaPost[] = useMemo(() => {
-    if (apiQuestions && apiQuestions.length > 0) {
+    if (apiQuestions !== undefined) {
       return apiQuestions.map(toUiPost);
     }
-    // fallback: API 실패 또는 빈 데이터 시 mock 사용 (VITE_USE_MOCK_FALLBACK=true 인 경우)
-    return USE_MOCK_FALLBACK ? MOCK_POSTS : [];
+    return [];
   }, [apiQuestions]);
 
   const filteredPosts = useMemo(() => {
@@ -278,7 +199,7 @@ export function QnaListPage() {
       <div className={styles.postList}>
         {isLoading ? (
           <p className={styles.emptyState}>질문 목록을 불러오는 중입니다...</p>
-        ) : isError && !USE_MOCK_FALLBACK ? (
+        ) : isError ? (
           <p className={styles.emptyState}>{getErrorMessage(error)}</p>
         ) : filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (

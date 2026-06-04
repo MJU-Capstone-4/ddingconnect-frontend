@@ -9,7 +9,6 @@ import type {
 } from '@/shared/api/generated/api';
 import type {
   MatchingRequest,
-  MatchingCandidate,
   MatchingDetail,
   MyActivityItem,
   ReceivedCoffeeChatItem,
@@ -54,8 +53,8 @@ export const cancelCoffeeChatRequest = async (coffeeChatId: number): Promise<str
   return data.result ?? '';
 };
 
-export const requestMatching = async (body: MatchingRequest): Promise<MatchingCandidate[]> => {
-  const { data } = await apiClient.post<ApiResponse<MatchingCandidate[]>>(
+export const requestMatching = async (body: MatchingRequest): Promise<CoffeeChatActivityItem[]> => {
+  const { data } = await apiClient.post<ApiResponse<CoffeeChatActivityItem[]>>(
     '/api/v1/coffeechat/matching',
     body,
   );

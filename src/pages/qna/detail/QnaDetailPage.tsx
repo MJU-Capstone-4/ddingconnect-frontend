@@ -25,26 +25,10 @@ import { Button, Chip, HeroSection, Modal } from '@/shared/ui';
 import * as styles from './qna-detail-page.styles';
 
 // 기말 발표 시연용 mock 답변 — 답변 API 응답이 비어있을 때 fallback
-const MOCK_ANSWERS = [
-  {
-    id: 1,
-    author: '이선배',
-    profileDescription: '네이버 · 백엔드 개발자',
-    createdAt: '1시간 전',
-    content:
-      '백엔드 개발자 포트폴리오에는 다음이 필수적입니다:\n1. RESTful API 프로젝트 - CRUD 기능이 포함된 백엔드 API\n2. 데이터베이스 설계 - MySQL/PostgreSQL 등 RDB 활용\n3. 배포 경험 - AWS/GCP 등 클라우드 배포\n\n실제 사용자가 있는 서비스를 만들어보면 더 좋습니다. GitHub에 코드를 잘 정리해서 올려두세요!',
-    likeCount: 24,
-  },
-  {
-    id: 2,
-    author: '이선배',
-    profileDescription: '네이버 · 백엔드 개발자',
-    createdAt: '1시간 전',
-    content:
-      '백엔드 개발자 포트폴리오에는 다음이 필수적입니다:\n1. RESTful API 프로젝트 - CRUD 기능이 포함된 백엔드 API - 적절한 에러 핸들링\n2. 데이터베이스 설계 - MySQL/PostgreSQL 등 RDB 활용 - 정규화된 테이블 설계\n3. 배포 경험 - AWS/GCP 등 클라우드 배포 - Docker 컨테이너화\n\n실제 사용자가 있는 서비스를 만들어보면 더 좋습니다. GitHub에 코드를 잘 정리해서 올려두세요!',
-    likeCount: 24,
-  },
-];
+// const MOCK_ANSWERS = [
+//   { id: 1, author: '이선배', profileDescription: '네이버 · 백엔드 개발자', createdAt: '1시간 전', content: '...', likeCount: 24 },
+//   { id: 2, author: '이선배', profileDescription: '네이버 · 백엔드 개발자', createdAt: '1시간 전', content: '...', likeCount: 24 },
+// ];
 
 function getApiError(error: unknown, fallback: string): string {
   if (axios.isAxiosError(error)) {
@@ -86,7 +70,7 @@ export function QnaDetailPage() {
   const toggleAnswerLikeMutation = useToggleAnswerLikeMutation(questionId!);
 
   const hasApiAnswers = apiAnswers && apiAnswers.length > 0;
-  const useMockFallback = !hasApiAnswers;
+  // const useMockFallback = !hasApiAnswers;
 
   const handleQuestionLike = () => {
     if (!questionId) return;
@@ -385,36 +369,6 @@ export function QnaDetailPage() {
                 </li>
               );
             })}
-          </ul>
-        ) : useMockFallback ? (
-          <ul className={styles.answersList}>
-            {MOCK_ANSWERS.map((answer) => (
-              <li key={answer.id}>
-                <div className={styles.answerCard}>
-                  <div className={styles.answerCardHeader}>
-                    <div className={styles.answerAuthorRow}>
-                      <div className={styles.answerAvatar} aria-hidden="true">
-                        {answer.author.charAt(0)}
-                      </div>
-                      <div className={styles.answerAuthorInfo}>
-                        <span className={styles.answerAuthorName}>{answer.author}</span>
-                        <span className={styles.answerAuthorDesc}>{answer.profileDescription}</span>
-                      </div>
-                    </div>
-                    <span className={styles.answerTime}>{answer.createdAt}</span>
-                  </div>
-                  <p className={styles.answerBody}>{answer.content}</p>
-                  <button
-                    type="button"
-                    className={styles.answerLikeButton}
-                    aria-label={`좋아요 ${answer.likeCount}개`}
-                  >
-                    <LikeIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>{answer.likeCount}</span>
-                  </button>
-                </div>
-              </li>
-            ))}
           </ul>
         ) : (
           <div className="flex items-center justify-center py-12">

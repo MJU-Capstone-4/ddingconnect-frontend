@@ -49,12 +49,13 @@ import {
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
 import type { MyPageResponse } from '@/shared/api/generated/api';
 
-import { MOCK_GRADUATE_PROFILE } from './graduate-my-page.mock';
+// import { MOCK_GRADUATE_PROFILE } from './graduate-my-page.mock';
 import * as S from './graduate-my-page.styles';
 
-const IS_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK === 'true' && import.meta.env.DEV;
+// const IS_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK === 'true' && import.meta.env.DEV;
 
 type GraduateProfile = {
+  name: string;
   nickname: string;
   email: string;
   studentId: string;
@@ -70,16 +71,36 @@ type GraduateProfile = {
   profileImage: string | null;
 };
 
-const MOCK_PROFILE: GraduateProfile = MOCK_GRADUATE_PROFILE;
+// const MOCK_PROFILE: GraduateProfile = MOCK_GRADUATE_PROFILE;
+const EMPTY_GRADUATE_PROFILE: GraduateProfile = {
+  name: '',
+  nickname: '',
+  email: '',
+  studentId: '',
+  department: '',
+  jobType: '',
+  company: '',
+  experience: '',
+  skills: [],
+  socialLinks: [
+    { id: 'github', platform: 'github', label: 'GitHub', url: '' },
+    { id: 'linkedin', platform: 'linkedin', label: 'LinkedIn', url: '' },
+  ],
+  portfolio: null,
+  jobPostingLinks: [],
+  businessCardImageUrl: '',
+  profileImage: null,
+};
 
-const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
-  { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
-  { icon: CommentIcon, count: 5, label: 'Q&A', tone: 'pink' },
-];
+// const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
+//   { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
+//   { icon: CommentIcon, count: 5, label: 'Q&A', tone: 'pink' },
+// ];
 
 function mapApiToProfile(data: MyPageResponse): GraduateProfile {
   const p = data.profile ?? {};
   return {
+    name: p.name ?? '',
     nickname: p.nickname ?? '',
     email: p.email ?? '',
     studentId: p.studentNumber ?? '',
@@ -105,7 +126,7 @@ export function GraduateMyPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
-  const [draftProfile, setDraftProfile] = useState<GraduateProfile>(MOCK_PROFILE);
+  const [draftProfile, setDraftProfile] = useState<GraduateProfile>(EMPTY_GRADUATE_PROFILE);
 
   const { data: mypageData } = useMyPageQuery();
   const { mutate: updateGraduateMyPage, isPending: isSaving } = useUpdateGraduateMyPageMutation();
@@ -116,7 +137,7 @@ export function GraduateMyPage() {
 
   const profile = useMemo(() => {
     if (mypageData) return mapApiToProfile(mypageData);
-    return IS_MOCK_FALLBACK ? MOCK_PROFILE : MOCK_PROFILE;
+    return EMPTY_GRADUATE_PROFILE;
   }, [mypageData]);
 
   const originalJobPosts = useMemo(() => mypageData?.jobPosts ?? [], [mypageData]);
@@ -141,7 +162,7 @@ export function GraduateMyPage() {
           tone: 'pink',
         },
       ]
-    : MOCK_ACTIVITY;
+    : [];
 
   const enterEditMode = () => {
     setDraftProfile(profile);
@@ -172,6 +193,7 @@ export function GraduateMyPage() {
     updateGraduateMyPage(
       {
         profile: {
+          name: draftProfile.name || undefined,
           nickname: draftProfile.nickname || undefined,
           studentNumber: draftProfile.studentId || undefined,
           department: draftProfile.department || undefined,
@@ -347,10 +369,10 @@ export function GraduateMyPage() {
   const basicInfoItems: BasicInfoItem[] = [
     {
       label: '이름',
-      value: currentData.nickname,
+      value: currentData.name,
       icon: <UserIcon className="w-5 h-5" aria-hidden="true" />,
       iconWrapperClassName: S.iconName,
-      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, nickname: v })) : undefined,
+      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, name: v })) : undefined,
     },
     {
       label: '이메일',

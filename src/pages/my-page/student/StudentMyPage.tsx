@@ -45,12 +45,13 @@ import {
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
 import type { MyPageResponse } from '@/shared/api/generated/api';
 
-import { MOCK_STUDENT_PROFILE } from './student-my-page.mock';
+// import { MOCK_STUDENT_PROFILE } from './student-my-page.mock';
 import * as S from './student-my-page.styles';
 
-const IS_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK === 'true' && import.meta.env.DEV;
+// const IS_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK === 'true' && import.meta.env.DEV;
 
 type Profile = {
+  name: string;
   nickname: string;
   email: string;
   studentId: string;
@@ -63,17 +64,34 @@ type Profile = {
   profileImage: string | null;
 };
 
-const MOCK_PROFILE: Profile = MOCK_STUDENT_PROFILE;
+// const MOCK_PROFILE: Profile = MOCK_STUDENT_PROFILE;
+const EMPTY_STUDENT_PROFILE: Profile = {
+  name: '',
+  nickname: '',
+  email: '',
+  studentId: '',
+  department: '',
+  grade: '',
+  interests: [],
+  skills: [],
+  socialLinks: [
+    { id: 'github', platform: 'github', label: 'GitHub', url: '' },
+    { id: 'linkedin', platform: 'linkedin', label: 'LinkedIn', url: '' },
+  ],
+  portfolio: null,
+  profileImage: null,
+};
 
-const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
-  { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
-  { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
-  { icon: CommentIcon, count: 5, label: 'Q&A', tone: 'pink' },
-];
+// const MOCK_ACTIVITY: ActivitySummaryItemData[] = [
+//   { icon: CoffeeIcon, count: 12, label: '커피챗', tone: 'blue' },
+//   { icon: MapIcon, count: 3, label: '로드맵', tone: 'purple' },
+//   { icon: CommentIcon, count: 5, label: 'Q&A', tone: 'pink' },
+// ];
 
 function mapApiToProfile(data: MyPageResponse): Profile {
   const p = data.profile ?? {};
   return {
+    name: p.name ?? '',
     nickname: p.nickname ?? '',
     email: p.email ?? '',
     studentId: p.studentNumber ?? '',
@@ -97,7 +115,7 @@ export function StudentMyPage() {
 
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccountMutation();
-  const [draftProfile, setDraftProfile] = useState<Profile>(MOCK_PROFILE);
+  const [draftProfile, setDraftProfile] = useState<Profile>(EMPTY_STUDENT_PROFILE);
 
   const { data: mypageData } = useMyPageQuery();
   const { mutate: updateStudentMyPage, isPending: isSaving } = useUpdateStudentMyPageMutation();
@@ -107,7 +125,7 @@ export function StudentMyPage() {
 
   const profile = useMemo(() => {
     if (mypageData) return mapApiToProfile(mypageData);
-    return IS_MOCK_FALLBACK ? MOCK_PROFILE : MOCK_PROFILE;
+    return EMPTY_STUDENT_PROFILE;
   }, [mypageData]);
 
   const activityItems: ActivitySummaryItemData[] = mypageData?.activity
@@ -131,7 +149,7 @@ export function StudentMyPage() {
           tone: 'pink',
         },
       ]
-    : MOCK_ACTIVITY;
+    : [];
 
   const enterEditMode = () => {
     setDraftProfile(profile);
@@ -152,6 +170,7 @@ export function StudentMyPage() {
     updateStudentMyPage(
       {
         profile: {
+          name: draftProfile.name || undefined,
           nickname: draftProfile.nickname || undefined,
           studentNumber: draftProfile.studentId || undefined,
           department: draftProfile.department || undefined,
@@ -238,10 +257,10 @@ export function StudentMyPage() {
   const basicInfoItems: BasicInfoItem[] = [
     {
       label: '이름',
-      value: currentData.nickname,
+      value: currentData.name,
       icon: <UserIcon className="w-5 h-5" aria-hidden="true" />,
       iconWrapperClassName: S.iconName,
-      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, nickname: v })) : undefined,
+      onChange: isEditMode ? (v) => setDraftProfile((p) => ({ ...p, name: v })) : undefined,
     },
     {
       label: '이메일',

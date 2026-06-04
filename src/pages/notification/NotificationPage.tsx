@@ -62,7 +62,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
 
 export function NotificationPage() {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
 
   return (
     <div className={styles.page}>
@@ -72,41 +72,43 @@ export function NotificationPage() {
         className={styles.subHeaderBreakout}
       />
 
-      <ul className={styles.notificationList}>
+      <div className="flex flex-col gap-2 py-2">
         {MOCK_NOTIFICATIONS.map((notification) => (
-          <li key={notification.id}>
-            <NotificationItem
-              type={notification.type}
-              title={notification.title}
-              description={notification.description}
-              createdAt={notification.createdAt}
-              isUnread={notification.isUnread}
-              onClick={notification.id === 1 ? () => setIsModalOpen(true) : undefined}
-            />
-          </li>
+          <NotificationItem
+            key={notification.id}
+            type={notification.type}
+            title={notification.title}
+            description={notification.description}
+            createdAt={notification.createdAt}
+            isUnread={notification.isUnread}
+            onClick={
+              notification.type === 'coffeechat' && notification.isUnread
+                ? () => setSelectedNotification(notification)
+                : undefined
+            }
+          />
         ))}
-      </ul>
+      </div>
 
-      <p className={styles.footerText}>모든 알림을 확인했습니다</p>
-
-      <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Modal
+        open={selectedNotification !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedNotification(null);
+        }}
+      >
         <Modal.Content size="sm">
           <Modal.Header tone="blue" layout="row">
             <Modal.Icon className={styles.modalIcon}>
               <CoffeeIcon className="w-5 h-5 text-primary" aria-hidden="true" />
             </Modal.Icon>
             <div className={styles.modalHeaderText}>
-              <Modal.Title className={styles.modalTitle}>
-                새로운 커피챗 신청이 들어왔습니다
-              </Modal.Title>
-              <Modal.Description>2시간 전</Modal.Description>
+              <Modal.Title className={styles.modalTitle}>{selectedNotification?.title}</Modal.Title>
+              <Modal.Description>{selectedNotification?.createdAt}</Modal.Description>
             </div>
             <Modal.Close />
           </Modal.Header>
           <Modal.Body>
-            <p className={styles.modalBodyText}>
-              응용소프트웨어학과 김후배님이 커피챗을 요청했어요!
-            </p>
+            <p className={styles.modalBodyText}>{selectedNotification?.description}</p>
           </Modal.Body>
           <Modal.Footer layout="row">
             <Button
@@ -116,7 +118,7 @@ export function NotificationPage() {
               className="flex-1 w-auto!"
               onClick={() => {
                 // TODO: 커피챗 수락 API 연동
-                setIsModalOpen(false);
+                setSelectedNotification(null);
               }}
             >
               수락하기
@@ -129,7 +131,7 @@ export function NotificationPage() {
               className="flex-1 w-auto!"
               onClick={() => {
                 // TODO: 커피챗 거절 API 연동
-                setIsModalOpen(false);
+                setSelectedNotification(null);
               }}
             >
               거절하기
