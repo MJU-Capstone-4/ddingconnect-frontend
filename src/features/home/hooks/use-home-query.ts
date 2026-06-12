@@ -7,5 +7,7 @@ export function useHomeQuery() {
     queryKey: queryKeys.home.me(),
     queryFn: getHome,
     retry: 1,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }

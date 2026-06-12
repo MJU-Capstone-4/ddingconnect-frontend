@@ -6,5 +6,7 @@ export function useMyPageQuery() {
     queryKey: ['mypage'],
     queryFn: getMyPage,
     retry: 1,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }
