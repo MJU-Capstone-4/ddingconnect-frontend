@@ -1,8 +1,8 @@
-import { useId, useState } from 'react';
+import { useId, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 
 import { SeniorProfileCard } from '@/features/coffee-chat/components';
-import type { CoffeeChatActivityItem } from '@/features/coffee-chat/types';
+import type { MatchingCandidate } from '@/features/coffee-chat/types';
 import ArrowDownIcon from '@/shared/assets/icons/arrow-down.svg?react';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
@@ -19,7 +19,13 @@ export function MatchingResultPage() {
   const infoContentId = useId();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
-  const candidates: CoffeeChatActivityItem[] = location.state?.candidates ?? [];
+  const candidates: MatchingCandidate[] = location.state?.candidates ?? [];
+
+  useEffect(() => {
+    if (!location.state) {
+      navigate('/coffee-chat/matching', { replace: true });
+    }
+  }, [location.state, navigate]);
 
   function handleOpenSeniorPage(memberId: number) {
     navigate(`/coffee-chat/apply/${memberId}`);
@@ -65,15 +71,16 @@ export function MatchingResultPage() {
         ) : (
           <ul className={styles.cardList}>
             {candidates.map((candidate) => (
-              <li key={candidate.partnerId}>
+              <li key={candidate.memberId}>
                 <SeniorProfileCard
-                  name={candidate.partnerNickname}
-                  department={candidate.partnerDepartment}
-                  company=""
-                  job={candidate.partnerJobs[0] ?? ''}
-                  career="경력 정보 없음"
-                  techStacks={candidate.partnerTechStacks}
-                  onClick={() => handleOpenSeniorPage(candidate.partnerId)}
+                  profileImage={candidate.profileImage}
+                  name={candidate.nickname}
+                  department={candidate.department ?? ''}
+                  company={candidate.company ?? ''}
+                  job={candidate.jobCategories?.[0] ?? ''}
+                  career={candidate.careerYear ? `${candidate.careerYear}년차` : '경력 정보 없음'}
+                  techStacks={candidate.techStacks}
+                  onClick={() => handleOpenSeniorPage(candidate.memberId)}
                   className="w-full"
                 />
               </li>
