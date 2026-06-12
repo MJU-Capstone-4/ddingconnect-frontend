@@ -7,6 +7,7 @@ export function useRoadmapsQuery() {
   return useQuery({
     queryKey: queryKeys.roadmap.lists(),
     queryFn: getRoadmaps,
+    staleTime: 0,
     refetchOnMount: true,
   });
 }

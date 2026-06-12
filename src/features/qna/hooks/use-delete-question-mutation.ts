@@ -13,6 +13,8 @@ export function useDeleteQuestionMutation(options?: Options) {
     mutationFn: (questionId: number) => deleteQuestion(questionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.qna.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.myActivity.questions() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.me() });
       options?.onSuccess?.();
     },
   });
