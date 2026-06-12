@@ -14,6 +14,7 @@ export function useCreateQuestionMutation() {
       );
       queryClient.invalidateQueries({ queryKey: queryKeys.qna.lists() });
       queryClient.invalidateQueries({ queryKey: queryKeys.myActivity.questions() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.home.me() });
     },
   });
 }
