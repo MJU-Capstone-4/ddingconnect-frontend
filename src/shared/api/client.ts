@@ -2,6 +2,13 @@ import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL ?? '';
 
+const PUBLIC_PATHS = [
+  '/api/v1/auth/login',
+  '/api/v1/auth/send-code',
+  '/api/v1/auth/verify-code',
+  '/api/v1/auth/signup',
+];
+
 export const apiClient = axios.create({
   baseURL,
   timeout: 10_000,
@@ -9,7 +16,10 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
-  if (token) {
+  const url = config.url ?? '';
+  const isPublicPath = PUBLIC_PATHS.some((path) => url.includes(path));
+
+  if (token && !isPublicPath) {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
   return config;
