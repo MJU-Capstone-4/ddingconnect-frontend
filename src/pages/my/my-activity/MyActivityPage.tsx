@@ -4,7 +4,8 @@ import { QNA_TAB } from '@/shared/constants/activity-tabs';
 import { getUserRole } from '@/features/auth/model/auth-state';
 import { CoffeeChatActivityCard } from '@/features/coffee-chat/components/coffee-chat-activity-card';
 import { useMyCoffeeChatsQuery } from '@/features/coffee-chat/hooks';
-// import type { CoffeeChatActivityItem } from '@/features/coffee-chat/types';
+import { useReceivedCoffeeChatsQuery } from '@/features/coffee-chat/model';
+import type { CoffeeChatActivityItem } from '@/features/coffee-chat/types';
 import { useMyPageQuery } from '@/features/mypage';
 import { API_TO_UI_CATEGORY } from '@/features/qna/model/question.constants';
 import { useMyQuestionsQuery } from '@/features/qna/hooks';
@@ -73,9 +74,18 @@ export function MyActivityPage() {
 
   const {
     data: apiCoffeeChats,
-    isLoading: isCoffeeChatsLoading,
-    isError: isCoffeeChatsError,
+    isLoading: isSentChatsLoading,
+    isError: isSentChatsError,
   } = useMyCoffeeChatsQuery();
+
+  const {
+    data: apiReceivedChats,
+    isLoading: isReceivedChatsLoading,
+    isError: isReceivedChatsError,
+  } = useReceivedCoffeeChatsQuery();
+
+  const isCoffeeChatsLoading = isGraduate ? isReceivedChatsLoading : isSentChatsLoading;
+  const isCoffeeChatsError = isGraduate ? isReceivedChatsError : isSentChatsError;
 
   const {
     data: apiRoadmaps,
@@ -89,7 +99,17 @@ export function MyActivityPage() {
     isError: isQuestionsError,
   } = useMyQuestionsQuery();
 
-  const coffeeChats = apiCoffeeChats ?? [];
+  const coffeeChats: CoffeeChatActivityItem[] = isGraduate
+    ? (apiReceivedChats ?? []).map((chat) => ({
+        coffeeChatId: chat.coffeeChatId,
+        status: chat.status,
+        partnerId: 0,
+        partnerNickname: chat.name,
+        partnerDepartment: chat.department,
+        partnerJobs: [],
+        partnerTechStacks: [],
+      }))
+    : (apiCoffeeChats ?? []);
   const roadmaps = apiRoadmaps ?? [];
   const questions = apiQuestions ?? [];
 

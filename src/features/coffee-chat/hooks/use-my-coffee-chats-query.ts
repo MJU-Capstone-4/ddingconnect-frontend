@@ -7,5 +7,7 @@ export function useMyCoffeeChatsQuery() {
   return useQuery({
     queryKey: queryKeys.myActivity.coffeeChats(),
     queryFn: getMyCoffeeChats,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }

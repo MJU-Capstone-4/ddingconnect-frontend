@@ -6,5 +6,7 @@ export function useReceivedCoffeeChatsQuery() {
   return useQuery({
     queryKey: queryKeys.coffeeChat.received(),
     queryFn: getReceivedCoffeeChats,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }
