@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
 import { useMatchingMutation } from '@/features/coffee-chat/hooks';
+import { labelsToTargetJobs, labelsToTechStacks } from '@/features/mypage';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
 import { getApiError } from '@/shared/utils/get-api-error';
@@ -14,7 +15,7 @@ const INITIAL_DATA: CareerProfileFormValues = {
   gpa: '',
   major: '',
   targetJob: '',
-  skills: '',
+  skills: [],
   targetCompany: '',
 };
 
@@ -22,7 +23,10 @@ export function CoffeeChatMatchingPage() {
   const [formData, setFormData] = useState<CareerProfileFormValues>(INITIAL_DATA);
   const matchingMutation = useMatchingMutation();
 
-  function handleChange(field: keyof CareerProfileFormValues, value: string) {
+  function handleChange<K extends keyof CareerProfileFormValues>(
+    field: K,
+    value: CareerProfileFormValues[K],
+  ) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -31,8 +35,8 @@ export function CoffeeChatMatchingPage() {
       grade: Number(formData.grade),
       gpa: formData.gpa,
       major: formData.major,
-      interestedJob: formData.targetJob,
-      capability: formData.skills,
+      interestedJob: labelsToTargetJobs([formData.targetJob])[0] ?? '',
+      capability: labelsToTechStacks(formData.skills).join(','),
       targetCompany: formData.targetCompany,
     });
   }
