@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
+import { labelsToTargetJobs, labelsToTechStacks } from '@/features/mypage';
 import { useCreateRoadmapMutation } from '@/features/roadmap/hooks';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
@@ -15,7 +16,7 @@ const INITIAL_DATA: CareerProfileFormValues = {
   gpa: '',
   major: '',
   targetJob: '',
-  skills: '',
+  skills: [],
   targetCompany: '',
 };
 
@@ -24,11 +25,8 @@ function toCreateBody(form: CareerProfileFormValues) {
     grade: parseInt(form.grade, 10) || 1,
     gpa: parseFloat(form.gpa) || 0,
     major: form.major,
-    targetJob: form.targetJob,
-    currentSkills: form.skills
-      .split(/[,;\n]+/)
-      .map((s) => s.trim())
-      .filter(Boolean),
+    targetJob: labelsToTargetJobs([form.targetJob])[0] ?? '',
+    currentSkills: labelsToTechStacks(form.skills),
     targetCompany: form.targetCompany,
   };
 }
@@ -51,7 +49,10 @@ export function RoadmapPage() {
     ? getApiError(error, '로드맵 생성에 실패했습니다. 다시 시도해 주세요.')
     : '';
 
-  function handleChange(field: keyof CareerProfileFormValues, value: string) {
+  function handleChange<K extends keyof CareerProfileFormValues>(
+    field: K,
+    value: CareerProfileFormValues[K],
+  ) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
