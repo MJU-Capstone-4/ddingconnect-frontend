@@ -1,7 +1,9 @@
-import { Button, FormField, Input, Select } from '@/shared/ui';
+import { Button, Input, MultiSelect, Select } from '@/shared/ui';
 import type { SelectOption } from '@/shared/ui';
+import { TARGET_JOB_OPTIONS, TECH_STACK_OPTIONS } from '@/features/mypage';
 import { cn } from '@/shared/utils/cn';
 
+import { MAJOR_OPTIONS } from '../../constants';
 import {
   container,
   formBody,
@@ -17,12 +19,22 @@ const GRADE_OPTIONS: SelectOption[] = [
   { label: '4학년', value: '4' },
 ];
 
+const MAJOR_SELECT_OPTIONS: SelectOption[] = MAJOR_OPTIONS.map((major) => ({
+  label: major,
+  value: major,
+}));
+
+const TARGET_JOB_SELECT_OPTIONS: SelectOption[] = TARGET_JOB_OPTIONS.map((job) => ({
+  label: job,
+  value: job,
+}));
+
 export type CareerProfileFormValues = {
   grade: string;
   gpa: string;
   major: string;
   targetJob: string;
-  skills: string;
+  skills: string[];
   targetCompany: string;
 };
 
@@ -30,7 +42,10 @@ export type CareerProfileFormProps = {
   values: CareerProfileFormValues;
   submitLabel: string;
   tone?: 'blue' | 'purple';
-  onChange: (field: keyof CareerProfileFormValues, value: string) => void;
+  onChange: <K extends keyof CareerProfileFormValues>(
+    field: K,
+    value: CareerProfileFormValues[K],
+  ) => void;
   onSubmit?: () => void;
   className?: string;
 };
@@ -47,6 +62,8 @@ export function CareerProfileForm({
     e.preventDefault();
     onSubmit?.();
   }
+
+  const isValid = Boolean(values.major) && Boolean(values.targetJob) && values.skills.length > 0;
 
   return (
     <div className={cn(container, className)}>
@@ -70,26 +87,29 @@ export function CareerProfileForm({
           />
         </div>
 
-        <Input
+        <Select
           label="전공"
+          options={MAJOR_SELECT_OPTIONS}
           value={values.major}
-          placeholder="컴퓨터공학과"
-          onChange={(e) => onChange('major', e.target.value)}
+          placeholder="전공을 선택해주세요"
+          onChange={(value) => onChange('major', value)}
         />
 
-        <Input
+        <Select
           label="관심 직무"
+          options={TARGET_JOB_SELECT_OPTIONS}
           value={values.targetJob}
-          placeholder="백엔드 개발자, 데이터 엔지니어 등"
-          onChange={(e) => onChange('targetJob', e.target.value)}
+          placeholder="직무를 선택해주세요"
+          onChange={(value) => onChange('targetJob', value)}
         />
 
-        <FormField
+        <MultiSelect
           label="현재 보유 역량"
-          multiline
+          options={TECH_STACK_OPTIONS}
           value={values.skills}
-          placeholder="프로그래밍 언어, 프로젝트 경험 등"
-          onChange={(e) => onChange('skills', e.target.value)}
+          placeholder="기술 스택을 선택해주세요"
+          chipTone="gray"
+          onChange={(next) => onChange('skills', next)}
         />
 
         <Input
@@ -100,7 +120,7 @@ export function CareerProfileForm({
         />
 
         <div className={submitWrapper}>
-          <Button type="submit" tone={tone} size="auth" fullWidth>
+          <Button type="submit" tone={tone} size="auth" fullWidth disabled={!isValid}>
             {submitLabel}
           </Button>
         </div>
