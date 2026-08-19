@@ -1,6 +1,6 @@
 import { Button, Input, MultiSelect, Select } from '@/shared/ui';
 import type { SelectOption } from '@/shared/ui';
-import { TARGET_JOB_OPTIONS, TECH_STACK_OPTIONS } from '@/features/mypage';
+import { TARGET_JOB_OPTIONS, TECH_STACK_OPTIONS } from '@/shared/constants/profile-options';
 import { cn } from '@/shared/utils/cn';
 
 import { MAJOR_OPTIONS } from '../../constants';
