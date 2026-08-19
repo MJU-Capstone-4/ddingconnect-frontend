@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
-import { labelsToTargetJobs, labelsToTechStacks } from '@/features/mypage';
+import { labelsToTargetJobs, labelsToTechStacks } from '@/shared/constants/profile-options';
 import { useCreateRoadmapMutation } from '@/features/roadmap/hooks';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';

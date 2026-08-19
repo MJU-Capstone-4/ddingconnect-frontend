@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
 import { useMatchingMutation } from '@/features/coffee-chat/hooks';
-import { labelsToTargetJobs, labelsToTechStacks } from '@/features/mypage';
+import { labelsToTargetJobs, labelsToTechStacks } from '@/shared/constants/profile-options';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
 import { getApiError } from '@/shared/utils/get-api-error';
