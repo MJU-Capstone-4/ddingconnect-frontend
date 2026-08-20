@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router';
 
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
-import { labelsToTargetJobs, labelsToTechStacks } from '@/shared/constants/profile-options';
 import { useCreateRoadmapMutation } from '@/features/roadmap/hooks';
+import { toRoadmapCreateBody } from '@/features/roadmap/model';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
 import { getApiError } from '@/shared/utils/get-api-error';
@@ -19,17 +19,6 @@ const INITIAL_DATA: CareerProfileFormValues = {
   skills: [],
   targetCompany: '',
 };
-
-function toCreateBody(form: CareerProfileFormValues) {
-  return {
-    grade: parseInt(form.grade, 10) || 1,
-    gpa: parseFloat(form.gpa) || 0,
-    major: form.major,
-    targetJob: labelsToTargetJobs([form.targetJob])[0] ?? '',
-    currentSkills: labelsToTechStacks(form.skills),
-    targetCompany: form.targetCompany,
-  };
-}
 
 export function RoadmapPage() {
   const navigate = useNavigate();
@@ -57,7 +46,7 @@ export function RoadmapPage() {
   }
 
   function handleGenerateRoadmap() {
-    createRoadmap(toCreateBody(formData));
+    createRoadmap(toRoadmapCreateBody(formData));
   }
 
   return (
