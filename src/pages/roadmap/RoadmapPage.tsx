@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
 import { useCreateRoadmapMutation } from '@/features/roadmap/hooks';
+import { toRoadmapCreateBody } from '@/features/roadmap/model';
 import MapIcon from '@/shared/assets/icons/map.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
 import { getApiError } from '@/shared/utils/get-api-error';
@@ -15,23 +16,9 @@ const INITIAL_DATA: CareerProfileFormValues = {
   gpa: '',
   major: '',
   targetJob: '',
-  skills: '',
+  skills: [],
   targetCompany: '',
 };
-
-function toCreateBody(form: CareerProfileFormValues) {
-  return {
-    grade: parseInt(form.grade, 10) || 1,
-    gpa: parseFloat(form.gpa) || 0,
-    major: form.major,
-    targetJob: form.targetJob,
-    currentSkills: form.skills
-      .split(/[,;\n]+/)
-      .map((s) => s.trim())
-      .filter(Boolean),
-    targetCompany: form.targetCompany,
-  };
-}
 
 export function RoadmapPage() {
   const navigate = useNavigate();
@@ -51,12 +38,15 @@ export function RoadmapPage() {
     ? getApiError(error, '로드맵 생성에 실패했습니다. 다시 시도해 주세요.')
     : '';
 
-  function handleChange(field: keyof CareerProfileFormValues, value: string) {
+  function handleChange<K extends keyof CareerProfileFormValues>(
+    field: K,
+    value: CareerProfileFormValues[K],
+  ) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
   function handleGenerateRoadmap() {
-    createRoadmap(toCreateBody(formData));
+    createRoadmap(toRoadmapCreateBody(formData));
   }
 
   return (

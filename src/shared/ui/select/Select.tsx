@@ -62,6 +62,13 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
 
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  function setTriggerRefs(node: HTMLButtonElement | null) {
+    triggerRef.current = node;
+    if (typeof ref === 'function') ref(node);
+    else if (ref) ref.current = node;
+  }
 
   const selectedOption = options.find((o) => o.value === value);
   const isEmpty = !selectedOption;
@@ -98,7 +105,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
 
       <div className={cn('relative', fullWidth ? 'w-full' : 'w-[147px]')}>
         <button
-          ref={ref}
+          ref={setTriggerRefs}
           type="button"
           id={selectId}
           role="combobox"
@@ -141,6 +148,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
                       handleSelect(opt.value);
+                      triggerRef.current?.focus();
                     }
                   }}
                   className={cn(selectOption, isSelected && selectOptionSelected)}

@@ -35,14 +35,16 @@ import {
   usePortfolioUploadMutation,
   techStacksToLabels,
   targetJobsToLabels,
-  labelsToTechStacks,
-  labelsToTargetJobs,
   gradeToLabel,
   labelToGrade,
-  TECH_STACK_OPTIONS,
-  TARGET_JOB_OPTIONS,
 } from '@/features/mypage';
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
+import {
+  labelsToTechStacks,
+  labelsToTargetJobs,
+  TECH_STACK_OPTIONS,
+  TARGET_JOB_OPTIONS,
+} from '@/shared/constants/profile-options';
 import type { MyPageResponse } from '@/shared/api/generated/api';
 
 // import { MOCK_STUDENT_PROFILE } from './student-my-page.mock';
