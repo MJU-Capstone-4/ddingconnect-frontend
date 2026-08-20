@@ -14,7 +14,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"*.{js,ts,json,md}\"",
     "typecheck": "tsc -b",
     "commitlint": "commitlint --edit",
-    "prepare": "lefthook install",
+    "prepare": "node scripts/lefthook-install.cjs",
     "api:generate": "swagger-typescript-api generate -p ./swagger/openapi.json -o ./src/shared/api/generated -n api.ts --no-client"
   },
   "dependencies": {
