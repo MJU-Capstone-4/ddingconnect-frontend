@@ -38,15 +38,14 @@ import {
   usePortfolioUploadMutation,
   useBusinessCardUploadMutation,
   techStacksToLabels,
-  labelsToTechStacks,
   jobTypeToLabel,
   labelToJobType,
   careerYearToLabel,
   labelToCareerYear,
-  TECH_STACK_OPTIONS,
   JOB_TYPE_OPTIONS,
 } from '@/features/mypage';
 import type { BasicInfoItem, SocialLinkItem } from '@/features/mypage';
+import { labelsToTechStacks, TECH_STACK_OPTIONS } from '@/shared/constants/profile-options';
 import type { MyPageResponse } from '@/shared/api/generated/api';
 
 // import { MOCK_GRADUATE_PROFILE } from './graduate-my-page.mock';

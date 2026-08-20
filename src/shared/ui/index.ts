@@ -20,6 +20,8 @@ export { FormField } from './form-field';
 export type { FormFieldProps, FormFieldElement } from './form-field';
 export { Select } from './select';
 export type { SelectProps, SelectOption } from './select';
+export { MultiSelect } from './multi-select';
+export type { MultiSelectProps } from './multi-select';
 export { ActivitySummary } from './activity-summary';
 export type {
   ActivitySummaryProps,
