@@ -52,6 +52,7 @@ export function MultiSelect({
 
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const availableOptions = options.filter((opt) => !value.includes(opt));
 
@@ -91,6 +92,7 @@ export function MultiSelect({
 
       <div className={cn('relative', fullWidth ? 'w-full' : 'w-[147px]')}>
         <button
+          ref={triggerRef}
           type="button"
           id={selectId}
           role="combobox"
@@ -121,6 +123,7 @@ export function MultiSelect({
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     handleSelect(opt);
+                    triggerRef.current?.focus();
                   }
                 }}
                 className={selectOption}
