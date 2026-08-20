@@ -143,6 +143,7 @@ export function MultiSelect({
               tone={chipTone}
               size="sm"
               rightIcon={CloseIcon}
+              disabled={disabled}
               onClick={() => handleRemove(item)}
               aria-label={`${item} 삭제`}
             >
