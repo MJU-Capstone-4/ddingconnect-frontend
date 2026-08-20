@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { CareerProfileForm } from '@/features/career';
 import type { CareerProfileFormValues } from '@/features/career';
 import { useMatchingMutation } from '@/features/coffee-chat/hooks';
-import { labelsToTargetJobs, labelsToTechStacks } from '@/shared/constants/profile-options';
+import { toMatchingRequest } from '@/features/coffee-chat/model';
 import CoffeeIcon from '@/shared/assets/icons/coffee.svg?react';
 import { HeroSection } from '@/shared/ui/hero-section';
 import { getApiError } from '@/shared/utils/get-api-error';
@@ -31,14 +31,7 @@ export function CoffeeChatMatchingPage() {
   }
 
   function handleMatch() {
-    matchingMutation.mutate({
-      grade: Number(formData.grade),
-      gpa: formData.gpa,
-      major: formData.major,
-      interestedJob: labelsToTargetJobs([formData.targetJob])[0] ?? '',
-      capability: labelsToTechStacks(formData.skills).join(','),
-      targetCompany: formData.targetCompany,
-    });
+    matchingMutation.mutate(toMatchingRequest(formData));
   }
 
   const errorMessage = matchingMutation.error
